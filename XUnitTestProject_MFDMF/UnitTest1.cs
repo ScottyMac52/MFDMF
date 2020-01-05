@@ -1,7 +1,6 @@
-using MFDMF_Models;
+using MFDMF_Models.Models;
 using MFDMF_Services;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,8 +8,10 @@ using XUnitTestProject_MFDMF.Mocks;
 
 namespace XUnitTestProject_MFDMF
 {
-	public class UnitTest1
+    public class UnitTest1
 	{
+        private NullLoggerFactory _loggerFactory = new NullLoggerFactory();
+
         [Fact]
 		public void Test_Model_ToJson_FromJson_NoSubConfigurations()
         {
@@ -30,9 +31,9 @@ namespace XUnitTestProject_MFDMF
             var testData = loadingService.LoadConfiguration();
 
             // ACT
-            var testJsonObject = new MFDMFConfiguration(testData);
+            var testJsonObject = new MFDMFConfiguration(_loggerFactory, testData);
             var serializedModules = testJsonObject.ToJson();
-            var testModulesDef = MFDMFConfiguration.FromJson(serializedModules);
+            var testModulesDef = MFDMFConfiguration.FromJson(_loggerFactory, serializedModules);
 
             // ASSERT
             Validate(baseFileName, baseName, testDataPath, serializedModules, testModulesDef);
@@ -66,7 +67,7 @@ namespace XUnitTestProject_MFDMF
         private async Task<MFDMFConfiguration> GetFileData(string jsonFile)
         {
             var fileContent = await File.ReadAllTextAsync(jsonFile);
-            return MFDMFConfiguration.FromJson(fileContent);
+            return MFDMFConfiguration.FromJson(_loggerFactory, fileContent);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
     [JsonObject("module")]
     public class ModuleDefinition : IReadableObject, IModuleDefinition

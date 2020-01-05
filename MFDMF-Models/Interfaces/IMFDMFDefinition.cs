@@ -1,10 +1,9 @@
-﻿using System;
+﻿using MFDMF_Models.Models;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MFDMF_Models.Interfaces
 {
-	public interface IMFDMFDefinition
+    public interface IMFDMFDefinition
 	{
         /// <summary>
         /// The path to the graphic files from the CTS utility

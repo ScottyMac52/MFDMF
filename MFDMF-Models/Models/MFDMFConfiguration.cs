@@ -1,40 +1,46 @@
 ﻿using MFDMF_Models.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
     [JsonObject("modules")]
     public class MFDMFConfiguration : IMFDMFDefinition, IReadableObject
     {
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
+
         #region Ctor
 
         /// <summary>
         /// Default constructor
         /// </summary>
         [JsonConstructor()]
-        public MFDMFConfiguration()
+        public MFDMFConfiguration(ILoggerFactory loggerFactory)
         {
             Modules = new List<ModuleDefinition>();
             Displays = new List<DisplayDefinition>();
+            _loggerFactory = loggerFactory;
+            _logger = _loggerFactory?.CreateLogger(typeof(MFDMFConfiguration));
         }
 
-        public MFDMFConfiguration(MFDMFConfiguration copy) : this()
+        public MFDMFConfiguration(ILoggerFactory loggerFactory, MFDMFConfiguration copy) : this(loggerFactory)
         {
-            FilePath = copy.FilePath;
-            DefaultConfig = copy.DefaultConfig;
-            Modules.AddRange(copy.Modules);
-            Displays.AddRange(copy.Displays);
+            FilePath = copy?.FilePath;
+            DefaultConfig = copy?.DefaultConfig;
+            Modules.AddRange(copy?.Modules);
+            Displays.AddRange(copy?.Displays);
         }
 
-        public MFDMFConfiguration(IMFDMFDefinition copy) : this()
+        public MFDMFConfiguration(ILoggerFactory loggerFactory, IMFDMFDefinition copy) : this(loggerFactory)
         {
-            FilePath = copy.FilePath;
-            DefaultConfig = copy.DefaultConfig;
-            Modules.AddRange(copy.Modules);
-            Displays.AddRange(copy.Displays);
+            FilePath = copy?.FilePath;
+            DefaultConfig = copy?.DefaultConfig;
+            Modules.AddRange(copy?.Modules);
+            Displays.AddRange(copy?.Displays);
         }
 
         #endregion Ctor
@@ -46,14 +52,23 @@ namespace MFDMF_Models
         /// </summary>
         /// <param name="jsonString"></param>
         /// <returns><seealso cref="MFDMFConfiguration"/></returns>
-        public static MFDMFConfiguration FromJson(string jsonString)
+        public static MFDMFConfiguration FromJson(ILoggerFactory loggerFactory, string jsonString)
         {
-            var settings = new JsonSerializerSettings()
+            var logger = loggerFactory?.CreateLogger<MFDMFConfiguration>();
+            try
             {
-                TypeNameHandling = TypeNameHandling.All,
-                Formatting = Formatting.Indented
-            };
-            return JsonConvert.DeserializeObject<MFDMFConfiguration>(jsonString, settings);
+                var settings = new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    Formatting = Formatting.Indented
+                };
+                return JsonConvert.DeserializeObject<MFDMFConfiguration>(jsonString, settings);
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError($"Unable to create MFDMFConfiguration, Exception: {ex}");
+            }
+            return null;
         }
 
         #endregion Public static Create methods
@@ -114,8 +129,9 @@ namespace MFDMF_Models
             }
             catch (Exception ex)
             {
-                return $"{{ \"message\": \"{ex.Message}\", \"exceptionType\": \"{ex.GetType().Name}\"}}";
+                _logger?.LogError($"Unable to convert type {GetType().Name} to Json. Exception {ex}");
             }
+            return null;
         }
 
         #endregion Public overrides 

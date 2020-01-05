@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
     [JsonObject("sub-configuration")]
     public class SubConfigurationDefinition : ConfigurationBaseDefinition, IReadableObject, IInsetDisplayGeometry, INameObject
