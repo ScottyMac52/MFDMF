@@ -1,0 +1,25 @@
+﻿<Window x:Class="MFDMF_App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MFDMF_App"
+        mc:Ignorable="d"
+        Title="Multi-Function Display Mgnt App" Topmost="True" Loaded="Window_Loaded" MaxHeight="150" MaxWidth="400" Closing="Window_Closing" ResizeMode="CanMinimize" Cursor="Arrow" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Height="115.048">
+    <StackPanel VerticalAlignment="Top" Width="auto" Height="auto">
+        <Menu DockPanel.Dock="Top" Margin="0,0,0,0" Height="22">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Exit" CommandParameter="Exit" Click="FileMenuItem_Click" />
+            </MenuItem>
+            <MenuItem Header="Utility">
+                <MenuItem Header="_Clear Cache" CommandParameter="Cache" Click="ClearCache_Click"/>
+                <MenuItem Header="_Reload Configuration" CommandParameter="Reload" Click="ReloadConfiguration_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" CommandParameter="About" Click="HelpMenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+        <Label Content="Pick Module: "/>
+        <ComboBox Width="auto" x:Name="cbModules" SelectionChanged="ComboBox_SelectionChanged" Loaded="CbModules_Loaded" />
+    </StackPanel>
+</Window>
