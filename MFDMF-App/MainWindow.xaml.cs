@@ -83,7 +83,7 @@ namespace MFDMF_App
 				return false;
 			}
 			_logger?.LogInformation($"Configuration requested for {moduleName}");
-			SelectedModule = AvailableModules.Where(am => am.ModuleName == moduleName).FirstOrDefault();
+			SelectedModule = AvailableModules.FirstOrDefault(am => am.ModuleName == moduleName);
 			return SelectedModule != null;
 		}
 
