@@ -1,7 +1,6 @@
-﻿using log4net;
-using MFDMF_Models;
-using MFDMF_Models.Comparer;
+﻿using MFDMF_Models.Comparer;
 using MFDMF_Models.Interfaces;
+using MFDMF_Models.Models;
 using MFDMF_Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
 	public class AppSettings
 	{

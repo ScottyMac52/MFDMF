@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
     public abstract class ConfigurationBaseDefinition : IReadableObject, IOffsetGeometry, INameObject
     {

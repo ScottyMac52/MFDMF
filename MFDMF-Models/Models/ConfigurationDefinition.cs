@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
     [JsonObject("configuration")]
     public class ConfigurationDefinition : ConfigurationBaseDefinition, IReadableObject, IDisplayGeometry

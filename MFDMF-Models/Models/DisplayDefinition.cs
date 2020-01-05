@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace MFDMF_Models
+namespace MFDMF_Models.Models
 {
 	[JsonObject("displays")]
 	public class DisplayDefinition : IDisplayGeometry, IReadableObject, INameObject
