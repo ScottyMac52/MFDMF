@@ -1,8 +1,6 @@
-﻿using MFDMF_Models;
-using MFDMF_Models.Interfaces;
+﻿using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
-using MFDMF_Services;
-using Microsoft.Extensions.Logging.Abstractions;
+using MFDMF_Services.Configuration;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,7 +9,7 @@ namespace XUnitTestProject_MFDMF.Mocks
     /// <summary>
     /// Interface mocked Configuration Loader
     /// </summary>
-    public class MockConfigurationLoader : IConfigurationLoadingService
+    public class MockConfigurationLoader : BaseTesting, IConfigurationLoadingService
 	{
         public string BasePath { get; set; }
         public string FileName { get; set; }
@@ -19,13 +17,6 @@ namespace XUnitTestProject_MFDMF.Mocks
         public int ModuleCount { get; set; }
         public int ConfigurationCount { get; set; }
         public int SubConfigurationCount { get; set; }
-
-        private NullLoggerFactory _loggerFactory;
-
-        public MockConfigurationLoader()
-        {
-            _loggerFactory = new NullLoggerFactory();
-        }
 
         public IMFDMFDefinition LoadConfiguration()
 		{
@@ -44,7 +35,7 @@ namespace XUnitTestProject_MFDMF.Mocks
         /// <returns></returns>
         public IMFDMFDefinition GetTestData(string basePath, string fileName, string baseName, int moduleCount, int configurationCount, int subConfigurationCount)
         {
-            var modulesDef = new MFDMFConfiguration(_loggerFactory)
+            var modulesDef = new MFDMFDefinition(LoggerFactory)
             {
                 DefaultConfig = $"{baseName}Module",
                 FilePath = Path.Combine(basePath, fileName),

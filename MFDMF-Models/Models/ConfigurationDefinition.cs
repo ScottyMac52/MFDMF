@@ -5,8 +5,11 @@ using System.Collections.Generic;
 
 namespace MFDMF_Models.Models
 {
+    /// <summary>
+    /// Defines a Configuration of an image displayed
+    /// </summary>
     [JsonObject("configuration")]
-    public class ConfigurationDefinition : ConfigurationBaseDefinition, IReadableObject, IDisplayGeometry
+    public class ConfigurationDefinition : ConfigurationBaseDefinition, IConfigurationDefinition, IReadableObject, IDisplayGeometry
     {
         #region Ctor
 
@@ -91,6 +94,11 @@ namespace MFDMF_Models.Models
             {
                 return $"{{ \"message\": \"{ex.Message}\", \"exceptionType\": \"{ex.GetType().Name}\"}}";
             }
+        }
+
+        protected override string GetReadableString()
+        {
+            return base.ToReadableString();
         }
 
         #endregion Public overrides 

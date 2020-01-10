@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace MFDMF_Models.Models
 {
     [JsonObject("modules")]
-    public class MFDMFConfiguration : IMFDMFDefinition, IReadableObject
+    public class MFDMFDefinition : IMFDMFDefinition, IReadableObject
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
@@ -19,42 +19,39 @@ namespace MFDMF_Models.Models
         /// Default constructor
         /// </summary>
         [JsonConstructor()]
-        public MFDMFConfiguration(ILoggerFactory loggerFactory)
+        public MFDMFDefinition(ILoggerFactory loggerFactory)
         {
             Modules = new List<ModuleDefinition>();
-            Displays = new List<DisplayDefinition>();
             _loggerFactory = loggerFactory;
-            _logger = _loggerFactory?.CreateLogger(typeof(MFDMFConfiguration));
+            _logger = _loggerFactory?.CreateLogger(typeof(MFDMFDefinition));
         }
 
-        public MFDMFConfiguration(ILoggerFactory loggerFactory, MFDMFConfiguration copy) : this(loggerFactory)
+        public MFDMFDefinition(ILoggerFactory loggerFactory, MFDMFDefinition copy) : this(loggerFactory)
         {
             FilePath = copy?.FilePath;
             DefaultConfig = copy?.DefaultConfig;
             Modules.AddRange(copy?.Modules);
-            Displays.AddRange(copy?.Displays);
         }
 
-        public MFDMFConfiguration(ILoggerFactory loggerFactory, IMFDMFDefinition copy) : this(loggerFactory)
+        public MFDMFDefinition(ILoggerFactory loggerFactory, IMFDMFDefinition copy) : this(loggerFactory)
         {
             FilePath = copy?.FilePath;
             DefaultConfig = copy?.DefaultConfig;
             Modules.AddRange(copy?.Modules);
-            Displays.AddRange(copy?.Displays);
         }
-
+        
         #endregion Ctor
 
         #region Public static Create methods
 
         /// <summary>
-        /// Converts JSON to a <seealso cref="MFDMFConfiguration"/>
+        /// Converts JSON to a <seealso cref="MFDMFDefinition"/>
         /// </summary>
         /// <param name="jsonString"></param>
-        /// <returns><seealso cref="MFDMFConfiguration"/></returns>
-        public static MFDMFConfiguration FromJson(ILoggerFactory loggerFactory, string jsonString)
+        /// <returns><seealso cref="MFDMFDefinition"/></returns>
+        public static MFDMFDefinition FromJson(ILoggerFactory loggerFactory, string jsonString)
         {
-            var logger = loggerFactory?.CreateLogger<MFDMFConfiguration>();
+            var logger = loggerFactory?.CreateLogger<MFDMFDefinition>();
             try
             {
                 var settings = new JsonSerializerSettings()
@@ -62,7 +59,14 @@ namespace MFDMF_Models.Models
                     TypeNameHandling = TypeNameHandling.All,
                     Formatting = Formatting.Indented
                 };
-                return JsonConvert.DeserializeObject<MFDMFConfiguration>(jsonString, settings);
+
+                var loadedConfig = JsonConvert.DeserializeObject<MFDMFDefinition>(jsonString, settings);
+                loadedConfig?.Modules?.ForEach(module =>
+                {
+                    module.PreProcessModule(loadedConfig);
+                });
+
+                return loadedConfig;
             }
             catch (Exception ex)
             {
@@ -90,9 +94,10 @@ namespace MFDMF_Models.Models
         /// </summary>
         [JsonProperty("modules")]
         public List<ModuleDefinition> Modules { get; set; }
-
-        [JsonProperty("displays")]
-        public List<DisplayDefinition> Displays { get; set; }
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+        [JsonProperty("enabled")]
+        public bool? Enabled { get; set; }
 
         #endregion MFDMF properties
 
@@ -108,7 +113,7 @@ namespace MFDMF_Models.Models
         }
 
         /// <summary>
-        /// Returns the portion of the readable string specific to <seealso cref="MFDMFConfiguration"/>
+        /// Returns the portion of the readable string specific to <seealso cref="MFDMFDefinition"/>
         /// </summary>
         /// <returns></returns>
         public string ToReadableString()
@@ -117,7 +122,7 @@ namespace MFDMF_Models.Models
         }
 
         /// <summary>
-        /// Returns JSON for <seealso cref="MFDMFConfiguration"/>
+        /// Returns JSON for <seealso cref="MFDMFDefinition"/>
         /// </summary>
         /// <returns></returns>
         public string ToJson()

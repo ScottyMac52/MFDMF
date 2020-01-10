@@ -1,0 +1,30 @@
+[
+	{
+		"name": "Main",
+		"width": 2560,
+		"height": 1440,
+		"left": 0,
+		"top": 0
+	},
+	{
+		"name": "LMFD",
+		"width": 1280,
+		"height": 720,
+		"left": -1280,
+		"top": 0
+	},
+	{
+		"name": "WHKEY",
+		"width": 1920,
+		"height": 1080,
+		"left": 2561,
+		"top": 0
+	},
+	{
+		"name": "RMFD",
+		"width": 1280,
+		"height": 720,
+		"left": 4481,
+		"top": 0
+	}
+]

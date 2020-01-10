@@ -1,9 +1,0 @@
-﻿<Application x:Class="MFDMF_App.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MFDMF_App"
-             DispatcherUnhandledException="Application_DispatcherUnhandledException"  ShutdownMode="OnExplicitShutdown" Exit="Application_Exit">
-    <Application.Resources>
-         
-    </Application.Resources>
-</Application>

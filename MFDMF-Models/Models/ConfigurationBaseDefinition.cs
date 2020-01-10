@@ -6,8 +6,18 @@ using System.IO;
 
 namespace MFDMF_Models.Models
 {
-    public abstract class ConfigurationBaseDefinition : IReadableObject, IOffsetGeometry, INameObject
+    /// <summary>
+    /// Abstract definition of a Configuration item that is displayed as an image
+    /// </summary>
+    public abstract class ConfigurationBaseDefinition : IConfigurationDefinition
     {
+        #region Constants
+
+        private const int HASH_START = 17;
+        private const int HASH_NUM = 23;
+
+        #endregion Constants
+
         #region Utilities 
 
         /// <summary>
@@ -48,18 +58,8 @@ namespace MFDMF_Models.Models
 
         #endregion Ctor
 
-        #region Identifying properties
+        #region IImagePath properties
 
-        /// <summary>
-        /// Module Name
-        /// </summary>
-		[JsonProperty("moduleName")]
-        public string ModuleName { get; set; }
-        /// <summary>
-        /// Name of the Configuration
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
         /// <summary>
         /// FileName for the image cropping that this configuration uses
         /// </summary>
@@ -76,20 +76,37 @@ namespace MFDMF_Models.Models
         /// Determines if the configuration is rendered
         /// </summary>
         [JsonProperty("enabled")]
-        public bool Enabled { get; set; }
+        public bool? Enabled { get; set; }
+
+        #endregion IImagePath properties
+
+        #region IModuleName properties
+
+        /// <summary>
+        /// Module Name
+        /// </summary>
+        [JsonProperty("moduleName")]
+        public string ModuleName { get; set; }
+
+        #endregion IModuleName properties
+
+        #region Identifying properties 
+
+        /// <summary>
+        /// Name of the Configuration
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
         /// Default readable string
         /// </summary>
         /// <returns></returns>
-        protected virtual string GetReadableString()
-        {
-            return "";
-        }
+        protected abstract string GetReadableString();
 
         #endregion Identifying properties
 
-        #region Image cropping properties
+        #region Image cropping properties IOffsetGeometry
 
         /// <summary>
         /// Translucency of the image expressed as percentage of solidness 
@@ -117,9 +134,43 @@ namespace MFDMF_Models.Models
         [JsonProperty("yOffsetFinish")]
         public int YOffsetFinish { get; set; }
 
-        #endregion Image cropping properties
+        #endregion Image cropping properties IOffsetGeometry
 
         #region Public overrides
+
+        /// <summary>
+		/// Determines Equality
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public override bool Equals(object obj)
+        {
+            var compareTo = obj as DisplayDefinition;
+            return GetHashCode().Equals(compareTo.GetHashCode());
+        }
+
+        /// <summary>
+        /// Hashcode implemented since Equals is implemented
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = HASH_START;
+                hashCode += (Name?.GetHashCode() ?? 0) * HASH_NUM;
+                hashCode += (ModuleName?.GetHashCode() ?? 0) * HASH_NUM;
+                hashCode += (FileName?.GetHashCode() ?? 0) * HASH_NUM;
+                hashCode += (FilePath?.GetHashCode() ?? 0) * HASH_NUM;
+                hashCode += Enabled.GetHashCode() * HASH_NUM;
+                hashCode += Opacity.GetHashCode() * HASH_NUM;
+                hashCode += XOffsetStart * HASH_NUM;
+                hashCode += XOffsetFinish * HASH_NUM;
+                hashCode += YOffsetStart * HASH_NUM;
+                hashCode += YOffsetFinish * HASH_NUM;
+                return hashCode;
+            }
+        }
 
         /// <summary>
         /// Describes the Configuration

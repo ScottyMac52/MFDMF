@@ -1,7 +1,8 @@
 ﻿using MFDMF_Models.Comparer;
 using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
-using MFDMF_Services;
+using MFDMF_Services.Configuration;
+using MFDMF_Services.Displays;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,60 +12,146 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MFDMF_App
+namespace MFDMFApp
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		#region IoC Injected fields
+
 		private readonly AppSettings _settings;
 		private readonly IConfigurationLoadingService _loadingService;
+		private readonly IDisplayConfigurationService _displayConfigurationService;
 		private readonly ILoggerFactory _loggerFactory;
-		private readonly ILogger<MainWindow> _logger;
-		public IMFDMFDefinition Configuration { get; private set; }
-		//public SortedList<string, AuxWindow> WindowList { get; private set; }
 
+		#endregion IoC Injected fields
+
+		#region private and protected fields and properties
+
+		/// <summary>
+		/// MainWindow <see cref="ILogger"/>
+		/// </summary>
+		private readonly ILogger<MainWindow> _logger;
+		private readonly StartOptions _startOptions;
+		/// <summary>
+		/// Configuration for all modules <see cref="IMFDMFDefinition"/>
+		/// </summary>
+		protected IMFDMFDefinition Configuration { get; private set; }
+		/// <summary>
+		/// List of all created <see cref="ConfigurationWindow"/> Windows
+		/// </summary>
+		protected SortedList<string, ConfigurationWindow> WindowList { get; private set; }
 		/// <summary>
 		/// The list of available modules
 		/// </summary>
-		protected List<ModuleDefinition> AvailableModules { get; set; }
+		private List<ModuleDefinition> _availableModules;
 
 		/// <summary>
 		/// Currently selected Module
 		/// </summary>
-		protected ModuleDefinition SelectedModule { get; set; }
+		protected IModuleDefinition SelectedModule { get; set; }
 
 		/// <summary>
 		/// The name of the module that was passed in
 		/// </summary>
-		public string PassedModule { get; internal set; }
-
+		protected string PassedModule { get; private set; }
 		/// <summary>
 		/// The name of the sub-module that was passed
 		/// </summary>
-		public string PassedSubModule { get; internal set; }
+		protected string PassedSubModule { get; private set; }
 
-		public MainWindow(IConfigurationLoadingService loadingService, IOptions<AppSettings> settings, ILoggerFactory loggerFactory)
+
+		#endregion private and protected fields and properties
+
+		#region Constructor
+
+		/// <summary>
+		/// Ctor
+		/// </summary>
+		/// <param name="loadingService"><see cref="IConfigurationLoadingService"/> loaded via Dependency Injection</param>
+		/// <param name="displayConfigurationService"><see cref="IDisplayConfigurationService"/> loaded via Dependency Injection</param>
+		/// <param name="settings"><see cref="AppSettings"/> loaded via Dependency Injection</param>
+		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> logging factory loaded via Dependency Injection</param>
+		public MainWindow(IConfigurationLoadingService loadingService, IDisplayConfigurationService displayConfigurationService, IOptions<AppSettings> settings, ILoggerFactory loggerFactory)
 		{
 			InitializeComponent();
-			_settings = settings.Value;
+			_settings = settings?.Value;
 			_loadingService = loadingService;
+			_displayConfigurationService = displayConfigurationService;
 			_loggerFactory = loggerFactory;
 			_logger = _loggerFactory.CreateLogger<MainWindow>();
+			WindowList = new SortedList<string, ConfigurationWindow>();
+			_startOptions = (StartOptions) ((MainApp)Application.Current).Host.Services.GetService(typeof(StartOptions));
 		}
 
-		#region Public methods
+		#endregion Constructor
+		
+		#region Modules and SubModule processing
+
+		/// <summary>
+		/// Creates all the windows for the <see cref="ConfigurationDefinition"/> definitions
+		/// </summary>
+		private void CreateWindows()
+		{
+			_logger?.LogDebug($"Creating configuration {SelectedModule?.DisplayName}");
+			var displayDefinitions = _displayConfigurationService.LoadDisplays();
+			SelectedModule?.Configurations?.ForEach(config =>
+			{
+				if (config?.Enabled ?? false)
+				{
+					_logger?.LogInformation($"Creating {config.ToReadableString()}");
+					var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings)
+					{
+						Configuration = config,
+						FilePath = config.FilePath,
+						SubConfigurationName = PassedSubModule
+					};
+					configWindow.Show();
+					if (configWindow.IsWindowLoaded)
+					{
+						WindowList.Add(config.Name, configWindow);
+						configWindow.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						configWindow?.Close();
+					}
+				}
+				else
+				{
+					_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
+				}
+			});
+		}
+
+		/// <summary>
+		/// Destroys all active <see cref="ConfigurationWindow"/>
+		/// </summary>
+		private void DestroyWindows()
+		{
+			WindowList.ToList().ForEach(mfd =>
+			{
+				if (mfd.Value.IsLoaded)
+				{
+					mfd.Value.Hide();
+					mfd.Value.Close();
+				}
+			});
+			WindowList.Clear();
+			_logger?.LogInformation(Properties.Resources.WindowListCleared);
+		}
 
 		/// <summary>
 		/// Sets up the main window
 		/// </summary>
-		public void SetupWindow()
+		private void SetupWindow()
 		{
 			//WindowList = new SortedList<string, AuxWindow>();
 			var moduleList = Configuration?.Modules;
 			moduleList?.Sort(new ModuleDefinitionComparer());
-			AvailableModules = moduleList;
+			_availableModules = moduleList;
 			cbModules.ItemsSource = moduleList;
 			cbModules.DisplayMemberPath = "DisplayName";
 			cbModules.SelectedValuePath = "ModuleName";
@@ -75,66 +162,17 @@ namespace MFDMF_App
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>
-		public bool GetSelectedDefinition(string moduleName)
+		private bool GetSelectedDefinition(string moduleName)
 		{
 			if (string.IsNullOrEmpty(moduleName))
 			{
 				return false;
 			}
 			_logger?.LogInformation($"Configuration requested for {moduleName}");
-			SelectedModule = AvailableModules.FirstOrDefault(am => am.ModuleName == moduleName);
+			SelectedModule = _availableModules.FirstOrDefault(am => am.ModuleName == moduleName);
 			return SelectedModule != null;
 		}
 
-
-		public void CreateWindows()
-		{
-			_logger?.LogDebug($"Creating configuration {SelectedModule?.DisplayName}");
-			SelectedModule?.Configurations?.ForEach(config =>
-			{
-				_logger?.LogInformation($"Creating {config.ToReadableString()}");
-				/*
-				var newAuxWindow = new AuxWindow()
-				{
-					Logger = Logger,
-					Configuration = config,
-					FilePath = Config.FilePath,
-					SubConfigurationName = PassedSubModule
-				};
-				newAuxWindow.Show();
-				if (newAuxWindow.IsWindowLoaded)
-				{
-					WindowList.Add(config.Name, newAuxWindow);
-					newAuxWindow.Visibility = Visibility.Visible;
-				}
-				else
-				{
-					newAuxWindow?.Close();
-				}
-				*/
-			});
-		}
-
-		public void DestroyWindows()
-		{
-			/*
-			WindowList.ToList().ForEach(mfd =>
-			{
-				if (mfd.Value.IsLoaded)
-				{
-					mfd.Value.Hide();
-					mfd.Value.Close();
-				}
-			});
-
-			WindowList.Clear();
-			*/
-			_logger?.LogInformation($"Window list cleared.");
-		}
-
-		#endregion Public methods
-
-		#region Modules and SubModule processing
 
 		/// <summary>
 		/// Used to change the selected module 
@@ -169,11 +207,7 @@ namespace MFDMF_App
 			}
 			catch (IndexOutOfRangeException ioorx)
 			{
-				_logger?.LogError($"Not able to determine selected module", ioorx);
-			}
-			catch(Exception ex)
-			{
-				_logger?.LogError($"Unexpected exception has occurred, not able to determine selected module", ex);
+				_logger?.LogError($"Not able to determine selected module {ioorx}");
 			}
 		}
 
@@ -185,33 +219,41 @@ namespace MFDMF_App
 				try
 				{
 					CreateWindows();
-					_logger?.LogInformation($"Module loaded {moduleName}.");
+					_logger?.LogInformation($"Module loaded {moduleName}");
 				}
 				catch (IndexOutOfRangeException ioorx)
 				{
-					_logger?.LogError($"Not able to determine selected module", ioorx);
+					_logger?.LogError($"Not able to determine selected module {ioorx}");
 				}
 			}
 			else
 			{
-				_logger?.LogError($"{moduleName} does not exist as a module in the current configuration.");
+				_logger?.LogError($"{moduleName} does not exist as a module in the current configuration");
 			}
 
 		}
 
 		private void CbModules_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (!string.IsNullOrEmpty(Configuration.DefaultConfig) || !string.IsNullOrEmpty(PassedModule))
+
+			if (!string.IsNullOrEmpty(Configuration?.DefaultConfig) || !string.IsNullOrEmpty(PassedModule))
 			{
 				if (string.IsNullOrEmpty(PassedModule))
 				{
-					_logger?.LogInformation($"Loading the default configuration {Configuration.DefaultConfig}...");
+					_logger?.LogInformation($"Loading the default configuration {Configuration?.DefaultConfig}");
 				}
 				else
 				{
-					_logger?.LogInformation($"Loading the requested configuration {PassedModule}...");
+					_logger?.LogInformation($"Loading the requested configuration {PassedModule}");
 				}
-				var selectedModule = PassedModule ?? Configuration.DefaultConfig;
+				var selectedModule = PassedModule ?? Configuration?.DefaultConfig;
+
+				var selectedMod = _availableModules.FirstOrDefault(am => am.ModuleName.Equals(selectedModule, StringComparison.InvariantCulture));
+				if(selectedMod == null)
+				{
+					_logger?.LogError($"Unable to find a module named {selectedModule} in the configuration. Selecting the default module {Configuration?.DefaultConfig}");
+					selectedModule = Configuration?.DefaultConfig;
+				}
 				cbModules.SelectedValue = selectedModule;
 			}
 		}
@@ -222,31 +264,32 @@ namespace MFDMF_App
 
 		private void Window_Closed(object sender, EventArgs e)
 		{
-			_logger?.LogInformation($"MainWindow Is Closed.");
+			_logger?.LogInformation(Properties.Resources.MainWindowClosed);
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			_logger?.LogInformation("Closing the Windows...");
+			_logger?.LogInformation(Properties.Resources.MainWindowClosing);
 			DestroyWindows();
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			_logger?.LogInformation($"Loading configuration from {_settings.ConfigurationFile}");
+			PassedModule = _startOptions?.ModuleName;
+			PassedSubModule = _startOptions?.SubModuleName;
+			_logger?.LogInformation($"Loading configuration from {_settings.ConfigurationFile} Module: {PassedModule} SubModule: {PassedSubModule}");
 			Configuration = _loadingService?.LoadConfiguration();
 			_logger?.LogInformation($"{Configuration?.Modules?.Count ?? 0} Modules loaded");
 			SetupWindow();
 		}
 
 		#endregion Window events
-		
+
 		#region Menu Item processing
 
 		private void FileMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
-			App.Current.Shutdown(0);
 		}
 
 		/// <summary>
@@ -259,34 +302,27 @@ namespace MFDMF_App
 			DestroyWindows();
 			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\");
 			var cacheParent = new DirectoryInfo(cacheFolder);
-			var fileList = cacheParent?.EnumerateFiles("*.*", SearchOption.AllDirectories).ToList();
-			fileList?.ForEach((file) =>
+			var dirs = cacheParent.EnumerateDirectories().ToList();
+			dirs.ForEach(dir =>
 			{
 				try
 				{
-					file?.Delete();
+					dir.Delete(true);
+					_logger?.LogInformation($"Deleted cache at {dir.FullName}");
 				}
 				catch (Exception ex)
 				{
-					_logger?.LogError($"Unable to delete cache file: {file.FullName}", ex);
+					_logger?.LogError($"Unable to delete cache file: {dir.FullName}, Exception: {ex}");
+					throw;
 				}
 			});
-			try
-			{
-				cacheParent?.Delete(true);
-
-			}
-			catch (Exception ex)
-			{
-				_logger?.LogError($"Unable to delete cache directory: {cacheFolder}", ex);
-			}
 			CreateWindows();
 		}
 
 
 		private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(((App)Application.Current).VersionString);
+			MessageBox.Show(MainApp.VersionString);
 		}
 
 		/// <summary>
