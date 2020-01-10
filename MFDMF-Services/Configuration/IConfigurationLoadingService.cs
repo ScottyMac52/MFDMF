@@ -1,6 +1,6 @@
 ﻿using MFDMF_Models.Interfaces;
 
-namespace MFDMF_Services
+namespace MFDMF_Services.Configuration
 {
 	public interface IConfigurationLoadingService
 	{

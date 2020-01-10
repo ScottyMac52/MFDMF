@@ -5,7 +5,7 @@ using System;
 namespace MFDMF_Models.Models
 {
     [JsonObject("sub-configuration")]
-    public class SubConfigurationDefinition : ConfigurationBaseDefinition, IReadableObject, IInsetDisplayGeometry, INameObject
+    public class SubConfigurationDefinition : ConfigurationBaseDefinition, IConfigurationDefinition, IInsetDisplayGeometry
     {
         #region Ctor
 
@@ -31,7 +31,7 @@ namespace MFDMF_Models.Models
 
         #endregion Ctor
 
-        #region Basic Image Properties StartX, EndX, StartY and EndY
+        #region Basic Image Properties StartX, EndX, StartY and EndY - IInsetDisplayGeometry
 
         /// <summary>
         /// The X coordinate inside of the Configuration image relative to (0,0) to start rendering the image
@@ -54,7 +54,7 @@ namespace MFDMF_Models.Models
         [JsonProperty("endY")]
         public int EndY { get; set; }
 
-        #endregion Basic Image Properties StartX, EndX, StartY and EndY
+        #endregion Basic Image Properties StartX, EndX, StartY and EndY - IInsetDisplayGeometry
 
         #region Public overrides 
 
@@ -73,7 +73,7 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public override string ToReadableString()
         {
-            return $"{EndX - StartX}_{EndY - StartY}";
+            return $"{GetReadableString()}_{EndX - StartX}_{EndY - StartY}";
         }
 
         /// <summary>
@@ -91,6 +91,11 @@ namespace MFDMF_Models.Models
             {
                 return $"{{ \"message\": \"{ex.Message}\", \"exceptionType\": \"{ex.GetType().Name}\"}}";
             }
+        }
+
+        protected override string GetReadableString()
+        {
+            return base.ToReadableString();
         }
 
 

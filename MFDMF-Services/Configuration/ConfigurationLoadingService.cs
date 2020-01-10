@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IO;
 
-namespace MFDMF_Services
+namespace MFDMF_Services.Configuration
 {
     public class ConfigurationLoadingService : IConfigurationLoadingService
     {
         private readonly AppSettings _settings;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<ConfigurationLoadingService> _logger;
+        private readonly ILogger<IConfigurationLoadingService> _logger;
 
         /// <summary>
         /// Constructor uses IoC dependency injection
@@ -43,7 +43,7 @@ namespace MFDMF_Services
         {
             _logger?.LogInformation($"Loading configuration from {jsonFile}");
             var fileContent = File.ReadAllText(jsonFile);
-            return MFDMFConfiguration.FromJson(_loggerFactory, fileContent);
+            return MFDMFDefinition.FromJson(_loggerFactory, fileContent);
         }
 
     }

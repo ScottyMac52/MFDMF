@@ -1,6 +1,5 @@
 using MFDMF_Models.Models;
-using MFDMF_Services;
-using Microsoft.Extensions.Logging.Abstractions;
+using MFDMF_Services.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -8,10 +7,8 @@ using XUnitTestProject_MFDMF.Mocks;
 
 namespace XUnitTestProject_MFDMF
 {
-    public class UnitTest1
-	{
-        private NullLoggerFactory _loggerFactory = new NullLoggerFactory();
-
+    public class TestConfigurationLoading : BaseTesting
+    {
         [Fact]
 		public void Test_Model_ToJson_FromJson_NoSubConfigurations()
         {
@@ -31,9 +28,9 @@ namespace XUnitTestProject_MFDMF
             var testData = loadingService.LoadConfiguration();
 
             // ACT
-            var testJsonObject = new MFDMFConfiguration(_loggerFactory, testData);
+            var testJsonObject = new MFDMFDefinition(LoggerFactory, testData);
             var serializedModules = testJsonObject.ToJson();
-            var testModulesDef = MFDMFConfiguration.FromJson(_loggerFactory, serializedModules);
+            var testModulesDef = MFDMFDefinition.FromJson(LoggerFactory, serializedModules);
 
             // ASSERT
             Validate(baseFileName, baseName, testDataPath, serializedModules, testModulesDef);
@@ -64,10 +61,10 @@ namespace XUnitTestProject_MFDMF
             Assert.Equal(testData.DefaultConfig, fileData.DefaultConfig);
         }
 
-        private async Task<MFDMFConfiguration> GetFileData(string jsonFile)
+        private async Task<MFDMFDefinition> GetFileData(string jsonFile)
         {
             var fileContent = await File.ReadAllTextAsync(jsonFile);
-            return MFDMFConfiguration.FromJson(_loggerFactory, fileContent);
+            return MFDMFDefinition.FromJson(LoggerFactory, fileContent);
         }
 
         /// <summary>
@@ -78,7 +75,7 @@ namespace XUnitTestProject_MFDMF
         /// <param name="testDataPath"></param>
         /// <param name="serializedModules"></param>
         /// <param name="testModulesDef"></param>
-        private void Validate(string baseFileName, string baseName, string testDataPath, string serializedModules, MFDMFConfiguration testModulesDef)
+        private void Validate(string baseFileName, string baseName, string testDataPath, string serializedModules, MFDMFDefinition testModulesDef)
         {
             var moduleCounter = 1;
             var configurationCounter = 1;

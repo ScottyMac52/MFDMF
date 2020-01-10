@@ -3,12 +3,11 @@ using System.Collections.Generic;
 
 namespace MFDMF_Models.Interfaces
 {
-	public interface IModuleDefinition
+	public interface IModuleDefinition : IImagePath, IReadableObject, IModuleName
 	{
 		List<ConfigurationDefinition> Configurations { get; set; }
 		string DisplayName { get; set; }
-		string FileName { get; set; }
-		string ModuleName { get; set; }
-		MFDMFConfiguration Parent { get; }
+		IMFDMFDefinition Parent { get; }
+		void PreProcessModule(IMFDMFDefinition parent);
 	}
 }

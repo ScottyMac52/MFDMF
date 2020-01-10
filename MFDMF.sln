@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFDMF-App", "MFDMF-App\MFDMF-App.csproj", "{E1853831-359A-415E-9984-15B59EE91586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFDMFApp", "MFDMF-App\MFDMFApp.csproj", "{E1853831-359A-415E-9984-15B59EE91586}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFDMF-Models", "MFDMF-Models\MFDMF-Models.csproj", "{D0246B94-346A-4B9B-B3D5-982782093B8C}"
 EndProject

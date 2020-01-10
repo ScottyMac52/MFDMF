@@ -1,9 +1,9 @@
-﻿<Window x:Class="MFDMF_App.MainWindow"
+﻿<Window x:Class="MFDMFApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MFDMF_App"
+        xmlns:local="clr-namespace:MFDMFApp"
         mc:Ignorable="d"
         Title="Multi-Function Display Mgnt App" Topmost="True" Loaded="Window_Loaded" MaxHeight="150" MaxWidth="400" Closing="Window_Closing" ResizeMode="CanMinimize" Cursor="Arrow" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Height="115.048">
     <StackPanel VerticalAlignment="Top" Width="auto" Height="auto">
