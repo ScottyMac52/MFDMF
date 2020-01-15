@@ -11,13 +11,30 @@
 		"width": 1280,
 		"height": 720,
 		"left": -1280,
-		"top": 0
+		"top": 0,
+		"xOffsetStart": 101,
+		"xOffsetFinish": 776,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
 	},
 	{
 		"name": "WHKEY",
-		"width": 1920,
+		"width": 1200,
 		"height": 1080,
 		"left": 2561,
+		"top": 0,
+		"xOffsetStart": 0,
+		"xOffsetFinish": 3330,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 2295,
+		"opacity": 1.0
+	},
+	{
+		"name": "JOYKEY",
+		"width": 720,
+		"height": 1080,
+		"left": 3761,
 		"top": 0
 	},
 	{
@@ -25,6 +42,11 @@
 		"width": 1280,
 		"height": 720,
 		"left": 4481,
-		"top": 0
+		"top": 0,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
 	}
 ]

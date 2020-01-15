@@ -1,11 +1,14 @@
 ﻿using CommandLine;
 using MFDMF_Models.Models;
+using MFDMF_Models.Models.TestPattern;
 using MFDMF_Services.Configuration;
 using MFDMF_Services.Displays;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -20,14 +23,25 @@ namespace MFDMFApp
 
 		public IHost Host { get; }
 
+		/// <summary>
+		/// Application Ctor
+		/// </summary>
+		/// <param name="args"></param>
 		public MainApp(string[] args)
 		{
 			Host = ConfigureApp.Configure((services, configuration) =>
 			{
 				services.AddScoped<IConfigurationLoadingService, ConfigurationLoadingService>();
 				services.AddScoped<IDisplayConfigurationService, DisplayConfigurationService>();
+				services.AddScoped<IModelLoaderService, ModelLoaderService>();
 				services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
-				services.AddSingleton(GetStartOptions(args)); 
+				services.Configure<AppSettings>(options =>
+				{
+					options.ModuleNames = configuration.GetSection("AppSettings:ModuleFiles").Get<List<string>>();
+					options.ImageList = configuration.GetSection("AppSettings:TestImages").Get<List<ImageEntry>>();
+					options.PatternList = configuration.GetSection("AppSettings:TestPatterns").Get<List<TestPatternDefinition>>();
+				});
+				services.AddSingleton(GetStartOptions(args));
 				services.AddSingleton<MainWindow>();
 			});
 
@@ -35,8 +49,7 @@ namespace MFDMFApp
 			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
 			_logger.LogInformation($"Starting {GetVersionString()}");
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
-			SessionEnding += MainApp_SessionEnding;
-		}
+	}
 
 		/// <summary>
 		/// Loads the start options 
@@ -101,16 +114,6 @@ namespace MFDMFApp
 			var companyAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
 			var versionAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
 			return $"{productAttribute.Product} Copyright {companyAttribute.Company} {copyrightAttribute.Copyright} version {versionAttribute.InformationalVersion}";
-		}
-
-		/// <summary>
-		/// Cancel from Session ending for now
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void MainApp_SessionEnding(object sender, SessionEndingCancelEventArgs e)
-		{
-			e.Cancel = true;
 		}
 
 		/// <summary>

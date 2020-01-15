@@ -1,0 +1,110 @@
+[
+	{
+		"name": "A-10C",
+		"displayName": "A-10C Warthog",
+		"fileName": "A-10C\\DCS A10C MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Warthog",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Warthog",
+				"fileName": "A-10C\\DCS A10C WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Warthog",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_WarthogCDU",
+				"filename": "A-10C\\DCS A10C CDU.jpg",
+				"enabled": true,
+				"width": 694,
+				"height": 352,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 694,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 352,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_WarthogUFC",
+				"filename": "A-10C\\DCS A-10C UFC.jpg",
+				"enabled": true,
+				"width": 694,
+				"height": 210,
+				"top": 373,
+				"left": 10,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 1730,
+				"yOffsetStart": 590,
+				"yOffsetFinish": 990,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "A-10CHV",
+		"displayName": "A-10C Warthog HiViz",
+		"fileName": "_High Contrast MFDs\\DCS A10C MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Warthog",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Warthog",
+				"fileName": "A-10C\\DCS A10C WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Skyhawk",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_WarthogCDU",
+				"filename": "A-10C\\DCS A10C CDU.jpg",
+				"enabled": true,
+				"width": 694,
+				"height": 352,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 694,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 352,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_WarthogUFC",
+				"filename": "A-10C\\DCS A-10C UFC.jpg",
+				"enabled": true,
+				"width": 694,
+				"height": 210,
+				"top": 373,
+				"left": 10,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 1730,
+				"yOffsetStart": 590,
+				"yOffsetFinish": 990,
+				"opacity": 1.0
+			}
+		]
+	}
+]

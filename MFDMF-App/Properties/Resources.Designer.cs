@@ -61,11 +61,50 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Color {
+            get {
+                object obj = ResourceManager.GetObject("Color", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ConvergenceGrid {
+            get {
+                object obj = ResourceManager.GetObject("ConvergenceGrid", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error has occurred. The error has been logged..
         /// </summary>
         internal static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file could not be found.
+        /// </summary>
+        internal static string ErrorFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] IndianHead {
+            get {
+                object obj = ResourceManager.GetObject("IndianHead", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -88,11 +127,31 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] MaxRes {
+            get {
+                object obj = ResourceManager.GetObject("MaxRes", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting the main window.
         /// </summary>
         internal static string StartingMain {
             get {
                 return ResourceManager.GetString("StartingMain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TV {
+            get {
+                object obj = ResourceManager.GetObject("TV", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

@@ -117,8 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Color" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\43764010-tv-color-test-pattern-test-card-vector.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ConvergenceGrid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\convergence-fine-1024x768.gif;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>An unexpected error has occurred. The error has been logged.</value>
+  </data>
+  <data name="ErrorFileNotFound" xml:space="preserve">
+    <value>The file could not be found</value>
+  </data>
+  <data name="IndianHead" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RCA_Indian_Head_test_pattern.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MainWindowClosed" xml:space="preserve">
     <value>Main window is closed</value>
@@ -126,8 +139,14 @@
   <data name="MainWindowClosing" xml:space="preserve">
     <value>Main window is closing</value>
   </data>
+  <data name="MaxRes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\maxresdefault.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="StartingMain" xml:space="preserve">
     <value>Starting the main window</value>
+  </data>
+  <data name="TV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tv-test-patterns-02.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WindowListCleared" xml:space="preserve">
     <value>Window list has been cleared</value>

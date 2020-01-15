@@ -23,6 +23,17 @@ namespace XUnitTestProject_MFDMF.Mocks
             return GetTestData(BasePath, FileName, BaseName, ModuleCount, ConfigurationCount, SubConfigurationCount);
 		}
 
+        public ModuleDefinition LoadModuleConfigurationFile(string jsonFile)
+        {
+            throw new System.NotImplementedException();
+        }
+
+
+        public List<ModuleDefinition> LoadModulesConfigurationFile(string jsonFile)
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// 
         /// </summary>

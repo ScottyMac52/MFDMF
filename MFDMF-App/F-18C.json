@@ -1,0 +1,58 @@
+[
+	{
+		"name": "FA-18CBlock20",
+		"displayName": "F-18C Block 20 Hornet",
+		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 0.7
+			},
+			{
+				"name": "WHKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 0.75
+			},
+			{
+				"name": "RMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 0.7
+			},
+			{
+				"name": "JOYKEY_Hornet",
+				"width": 400,
+				"height": 400,
+				"left": 20,
+				"top": 10,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 0.7
+			}
+		]
+	}
+]

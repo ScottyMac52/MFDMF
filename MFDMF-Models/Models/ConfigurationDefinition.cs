@@ -68,7 +68,7 @@ namespace MFDMF_Models.Models
         /// List of SubConfigurations
         /// </summary>
         [JsonProperty("subConfigDef")]
-        public List<SubConfigurationDefinition> SubConfigurations { get; set; }
+        public virtual List<SubConfigurationDefinition> SubConfigurations { get; set; }
 
         #endregion SubConfiguration support
 

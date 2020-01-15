@@ -1,0 +1,110 @@
+[
+	{
+		"name": "AJS-37",
+		"displayName": "AJS-37 Viggen",
+		"fileName": "AJS-37\\DCS AJS37 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Viggen",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Viggen",
+				"fileName": "AJS-37\\DCS AJS37 WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Viggen",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_AJS-37-CK37",
+				"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+				"enabled": true,
+				"width": 380,
+				"height": 500,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 517,
+				"yOffsetStart": 30,
+				"yOffsetFinish": 680,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_AJS-37-BX",
+				"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+				"enabled": true,
+				"width": 280,
+				"height": 500,
+				"left": 10,
+				"top": 525,
+				"xOffsetStart": 518,
+				"xOffsetFinish": 875,
+				"yOffsetStart": 30,
+				"yOffsetFinish": 680,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "AJS-37HV",
+		"displayName": "AJS-37 Viggen HiViz",
+		"fileName": "_High Contrast MFDs\\DCS AJS37 MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Viggen",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Viggen",
+				"fileName": "AJS-37\\DCS AJS37 WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Viggen",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_AJS-37-CK37",
+				"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+				"enabled": true,
+				"width": 380,
+				"height": 500,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 517,
+				"yOffsetStart": 30,
+				"yOffsetFinish": 680,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_AJS-37-BX",
+				"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+				"enabled": true,
+				"width": 280,
+				"height": 500,
+				"left": 10,
+				"top": 525,
+				"xOffsetStart": 518,
+				"xOffsetFinish": 875,
+				"yOffsetStart": 30,
+				"yOffsetFinish": 680,
+				"opacity": 1.0
+			}
+		]
+	}
+]
