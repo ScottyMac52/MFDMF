@@ -10,7 +10,7 @@ namespace MFDMF_Models.Models
 	/// </summary>
 	/// <remarks>The <see cref="ConfigurationDefinition"/> objects can use coordinates relative to the display configuration by prepending their name with the name of the display</remarks>
 	[JsonObject("displays")]
-	public class DisplayDefinition : IDisplayGeometry, IReadableObject, INameObject
+	public class DisplayDefinition : IDisplayGeometry, IReadableObject, INameObject, IOffsetGeometry
 	{
 		#region Constants
 
@@ -87,6 +87,37 @@ namespace MFDMF_Models.Models
 		public int Top { get; set; }
 
 		#endregion Display Definitin properties Name, Left, Top, Width, Height
+
+		#region Image cropping properties IOffsetGeometry
+
+		/// <summary>
+		/// Translucency of the image expressed as percentage of solidness 
+		/// </summary>
+		[JsonProperty("opacity")]
+		public float? Opacity { get; set; }
+		/// <summary>
+		/// Starting X position of the Crop
+		/// </summary>
+		[JsonProperty("xOffsetStart")]
+		public int? XOffsetStart { get; set; }
+		/// <summary>
+		/// Starting Y position of the Crop
+		/// </summary>
+		[JsonProperty("yOffsetStart")]
+		public int? YOffsetStart { get; set; }
+		/// <summary>
+		/// Ending X position of the Crop
+		/// </summary>
+		[JsonProperty("xOffsetFinish")]
+		public int? XOffsetFinish { get; set; }
+		/// <summary>
+		/// Ending Y position of the Crop
+		/// </summary>
+		[JsonProperty("yOffsetFinish")]
+		public int? YOffsetFinish { get; set; }
+
+		#endregion Image cropping properties IOffsetGeometry
+
 
 		#region Public overrides 
 

@@ -41,6 +41,8 @@ namespace MFDMFApp
 		/// </summary>
 		public bool IsWindowLoaded { get; protected set; }
 
+		public bool IsTestPattern { get; set; }
+
 		#endregion fields and properties
 
 		#region Constructor
@@ -51,12 +53,13 @@ namespace MFDMFApp
 		/// <param name="loggerFactory"></param>
 		/// <param name="displayDefinitions"></param>
 		/// <param name="settings"></param>
-		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings)
+		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings, bool useTestPattern = false)
 		{
 			_settings = settings;
 			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
 			_displayDefinitions = displayDefinitions;
 			InitializeComponent();
+			IsTestPattern = useTestPattern;
 		}
 
 		#endregion Constructor
@@ -75,8 +78,11 @@ namespace MFDMFApp
 			ResizeMode = ResizeMode.NoResize;
 			Width = Configuration?.Width ?? 0;
 			Height = Configuration?.Height ?? 0;
-			Opacity = Configuration?.Opacity ?? 1.0F;
-
+			Opacity = Configuration.Opacity ??= _displayForConfig.Opacity ??= 1.0F;
+			Configuration.XOffsetStart ??= _displayForConfig.XOffsetStart;
+			Configuration.XOffsetFinish ??= _displayForConfig.XOffsetFinish;
+			Configuration.YOffsetStart ??= _displayForConfig.YOffsetStart;
+			Configuration.YOffsetFinish ??= _displayForConfig.YOffsetFinish;
 			Left = (_displayForConfig?.Left ?? 0) + (Configuration?.Left ?? 0);
 			Top = (_displayForConfig?.Top ?? 0) + (Configuration?.Top ?? 0);
 
@@ -92,6 +98,33 @@ namespace MFDMFApp
 		#endregion Protected methods
 
 		#region Image Loading
+
+		/// <summary>
+		/// Loads an image from a byte[]
+		/// </summary>
+		/// <param name="imageData"></param>
+		/// <returns></returns>
+		private BitmapImage LoadImage(byte[] imageData)
+		{
+			if (imageData == null || imageData.Length == 0) return null;
+			var image = new BitmapImage();
+			using (var mem = new MemoryStream(imageData))
+			{
+				mem.Position = 0;
+				image.BeginInit();
+				image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+				image.CacheOption = BitmapCacheOption.OnLoad;
+				image.UriSource = null;
+				image.StreamSource = mem;
+				image.EndInit();
+			}
+			image.Freeze();
+			imgMain.Source = image;
+			imgMain.Width = Width;
+			imgMain.Height = Height;
+			imgMain.Visibility = Visibility.Visible;
+			return image;
+		}
 
 		/// <summary>
 		/// Loads the configured image either from the user's cache or from the original location
@@ -127,6 +160,11 @@ namespace MFDMFApp
 			}
 		}
 
+		public void LoadImageFromBytes(byte[] imageBytes)
+		{
+			LoadImage(imageBytes);
+		}
+
 		/// <summary>
 		/// Loads the image from the cache or crops it from the source image
 		/// </summary>
@@ -159,7 +197,9 @@ namespace MFDMFApp
 					filePath = Path.Combine(configSource.FilePath, configSource.FileName);
 
 					var imgSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
-					Int32Rect offSet = new Int32Rect(configSource.XOffsetStart, configSource.YOffsetStart, configSource.XOffsetFinish - configSource.XOffsetStart, configSource.YOffsetFinish - configSource.YOffsetStart);
+					var width = (configSource.XOffsetFinish ?? 0) - (configSource.XOffsetStart ?? 0);
+					var height = (configSource.YOffsetFinish ?? 0) - (configSource.YOffsetStart ?? 0);
+					Int32Rect offSet = new Int32Rect(configSource.XOffsetStart ?? 0, configSource.YOffsetStart ?? 0, width, height);
 					BitmapImage src = new BitmapImage();
 					src.BeginInit();
 					src.UriSource = imgSource;
@@ -233,8 +273,11 @@ namespace MFDMFApp
 				if (Configuration?.Enabled ?? false)
 				{
 					IsWindowLoaded = true;
-					LoadImage();
-					_logger?.LogDebug($"Loading the configuration for {Configuration.Name} from Module {Configuration.ModuleName} as {Title} ({Left}, {Top}) for ({Width}, {Height})");
+					if (!IsTestPattern)
+					{
+						LoadImage();
+						_logger?.LogDebug($"Loading the configuration for {Configuration.Name} from Module {Configuration.ModuleName} as {Title} ({Left}, {Top}) for ({Width}, {Height})");
+					}
 				}
 				else
 				{

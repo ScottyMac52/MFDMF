@@ -1,0 +1,54 @@
+[
+	{
+		"name": "A-4E",
+		"displayName": "A-4E Skyhawk",
+		"fileName": "A-4E\\DCS A4E MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Skyhawk",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Skyhawk",
+				"fileName": "A-4E\\DCS A4E WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Skyhawk",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	},
+	{
+		"name": "A-4EHV",
+		"displayName": "A-4E Skyhawk HiViz",
+		"fileName": "_High Contrast MFDs\\DCS A4E MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Skyhawk",
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Skyhawk",
+				"fileName": "A-4E\\DCS A4E WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Skyhawk",
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	}
+]

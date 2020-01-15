@@ -33,7 +33,7 @@ namespace MFDMFApp
 				{
 					loggerConfiguration.MinimumLevel.Debug();
 					loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
-					loggerConfiguration.MinimumLevel.Override("MFDMF-App", LogEventLevel.Warning);
+					loggerConfiguration.MinimumLevel.Override("MFDMFApp", LogEventLevel.Information);
 					loggerConfiguration.Enrich.FromLogContext();
 					loggerConfiguration.WriteTo.Console();
 					loggerConfiguration.WriteTo.RollingFile(logFile + "-{Date}.log", LogEventLevel.Information, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level}] [{SourceContext}] [{Message}]{NewLine}{Exception}");

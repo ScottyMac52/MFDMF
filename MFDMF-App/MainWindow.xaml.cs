@@ -1,10 +1,12 @@
 ﻿using MFDMF_Models.Comparer;
 using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
+using MFDMF_Models.Models.TestPattern;
 using MFDMF_Services.Configuration;
 using MFDMF_Services.Displays;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,16 +27,14 @@ namespace MFDMFApp
 		private readonly IConfigurationLoadingService _loadingService;
 		private readonly IDisplayConfigurationService _displayConfigurationService;
 		private readonly ILoggerFactory _loggerFactory;
+		private readonly ILogger<MainWindow> _logger;
+		private readonly StartOptions _startOptions;
+
 
 		#endregion IoC Injected fields
 
 		#region private and protected fields and properties
 
-		/// <summary>
-		/// MainWindow <see cref="ILogger"/>
-		/// </summary>
-		private readonly ILogger<MainWindow> _logger;
-		private readonly StartOptions _startOptions;
 		/// <summary>
 		/// Configuration for all modules <see cref="IMFDMFDefinition"/>
 		/// </summary>
@@ -47,12 +47,10 @@ namespace MFDMFApp
 		/// The list of available modules
 		/// </summary>
 		private List<ModuleDefinition> _availableModules;
-
 		/// <summary>
 		/// Currently selected Module
 		/// </summary>
 		protected IModuleDefinition SelectedModule { get; set; }
-
 		/// <summary>
 		/// The name of the module that was passed in
 		/// </summary>
@@ -61,6 +59,10 @@ namespace MFDMFApp
 		/// The name of the sub-module that was passed
 		/// </summary>
 		protected string PassedSubModule { get; private set; }
+		/// <summary>
+		/// List of Test Pattern definitions
+		/// </summary>
+		private List<TestPatternDefinition> TestPatternDefinitions { get; set; }
 
 
 		#endregion private and protected fields and properties
@@ -95,35 +97,63 @@ namespace MFDMFApp
 		/// </summary>
 		private void CreateWindows()
 		{
-			_logger?.LogDebug($"Creating configuration {SelectedModule?.DisplayName}");
 			var displayDefinitions = _displayConfigurationService.LoadDisplays();
-			SelectedModule?.Configurations?.ForEach(config =>
+
+			if ((TestPatternDefinitions?.Count ?? 0) > 0)
 			{
-				if (config?.Enabled ?? false)
+				_logger.LogInformation($"Creating TestPattern Definitions for {TestPatternDefinitions?.Count ?? 0} Configurations");
+				TestPatternDefinitions.ForEach(testPattern =>
 				{
-					_logger?.LogInformation($"Creating {config.ToReadableString()}");
-					var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings)
+					var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings, true)
 					{
-						Configuration = config,
-						FilePath = config.FilePath,
+						Configuration = testPattern,
+						FilePath = testPattern.FilePath,
 						SubConfigurationName = PassedSubModule
 					};
+					configWindow.LoadImageFromBytes(testPattern.ImageBytes);
 					configWindow.Show();
 					if (configWindow.IsWindowLoaded)
 					{
-						WindowList.Add(config.Name, configWindow);
+						WindowList.Add(testPattern.Name, configWindow);
 						configWindow.Visibility = Visibility.Visible;
 					}
 					else
 					{
 						configWindow?.Close();
 					}
-				}
-				else
+				});
+			}
+			else
+			{
+				_logger?.LogDebug($"Creating configuration {SelectedModule?.DisplayName}");
+				SelectedModule?.Configurations?.ForEach(config =>
 				{
-					_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
-				}
-			});
+					if (config?.Enabled ?? false)
+					{
+						_logger?.LogInformation($"Creating {config.ToReadableString()}");
+						var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings)
+						{
+							Configuration = config,
+							FilePath = config.FilePath,
+							SubConfigurationName = PassedSubModule
+						};
+						configWindow.Show();
+						if (configWindow.IsWindowLoaded)
+						{
+							WindowList.Add(config.Name, configWindow);
+							configWindow.Visibility = Visibility.Visible;
+						}
+						else
+						{
+							configWindow?.Close();
+						}
+					}
+					else
+					{
+						_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
+					}
+				});
+			}
 		}
 
 		/// <summary>
@@ -213,6 +243,7 @@ namespace MFDMFApp
 
 		private void ProcessChangedModule(string moduleName)
 		{
+			TestPatternDefinitions = null;
 			if (GetSelectedDefinition(moduleName))
 			{
 				DestroyWindows();
@@ -277,9 +308,7 @@ namespace MFDMFApp
 		{
 			PassedModule = _startOptions?.ModuleName;
 			PassedSubModule = _startOptions?.SubModuleName;
-			_logger?.LogInformation($"Loading configuration from {_settings.ConfigurationFile} Module: {PassedModule} SubModule: {PassedSubModule}");
-			Configuration = _loadingService?.LoadConfiguration();
-			_logger?.LogInformation($"{Configuration?.Modules?.Count ?? 0} Modules loaded");
+			ReloadConfiguration();
 			SetupWindow();
 		}
 
@@ -332,12 +361,104 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void ReloadConfiguration_Click(object sender, RoutedEventArgs e)
 		{
+			ReloadConfiguration();
+		}
+
+		/// <summary>
+		/// Used to always load the configuration
+		/// </summary>
+		private void ReloadConfiguration()
+		{
 			var module = (string)cbModules.SelectedValue;
 			DestroyWindows();
 			Configuration = _loadingService?.LoadConfiguration();
+			_logger?.LogInformation($"Loaded configuration from {_settings.ConfigurationFile} Module: {PassedModule} SubModule: {PassedSubModule} {Configuration?.Modules?.Count ?? 0} Modules loaded");
+			
+			if((_settings.ModuleNames?.Count ?? 0) > 0)
+			{
+				_settings.ModuleNames.ForEach(mf =>
+				{
+					try
+					{
+						var fileToLoad = Path.Combine(Directory.GetCurrentDirectory(), mf);
+						var modulesToAdd = _loadingService.LoadModulesConfigurationFile(fileToLoad);
+						modulesToAdd.All(PreProcessModule);
+					}
+					catch(JsonException jsonex)
+					{
+						_logger?.LogError($"Unable to load file {mf}. Exception: {jsonex}");
+					}
+
+				});
+			}
+
+
 			SetupWindow();
-			ChangeSelectedModule(module);
+			ChangeSelectedModule(module ?? Configuration?.DefaultConfig);
 		}
+
+		private bool PreProcessModule(ModuleDefinition arg)
+		{
+			arg?.PreProcessModule(Configuration);
+			Configuration?.Modules?.Add(arg);
+			return true;
+		}
+		
+		/// <summary>
+		/// Generates and displays the configured Test Pattern
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Generate_Pattern_Click(object sender, RoutedEventArgs e)
+		{
+			TestPatternDefinitions = new List<TestPatternDefinition>();
+			// Evaluate choice
+			var displays = _displayConfigurationService.LoadDisplays();
+
+			displays.ForEach(display =>
+			{
+				// Find the Test Pattern for the current display
+				var testPattern = _settings.PatternList?.FirstOrDefault(pl => (pl.Name?.Equals(display.Name, StringComparison.InvariantCulture) ?? false));
+
+				if (testPattern != null)
+				{
+					var testImage = _settings.ImageList.FirstOrDefault(il => (il.Name?.Equals(testPattern.Pattern, StringComparison.InvariantCulture) ?? false));
+					testPattern.Enabled = true;
+					testPattern.Width = display.Width;
+					testPattern.Height = display.Height;
+					testPattern.XOffsetFinish = testImage.Width;
+					testPattern.YOffsetFinish = testImage.Height;
+					byte[] imageBytes = null;
+					switch (testImage?.Name)
+					{
+						case "Color":
+							imageBytes = Properties.Resources.Color;
+							break;
+						case "ConvergenceGrid":
+							imageBytes = Properties.Resources.ConvergenceGrid;
+							break;
+						case "IndianHead":
+							imageBytes = Properties.Resources.IndianHead;
+							break;
+						case "MaxRes":
+							imageBytes = Properties.Resources.MaxRes;
+							break;
+						case "TV":
+							imageBytes = Properties.Resources.TV;
+							break;
+						default:
+							break;
+					}
+					testPattern.ImageBytes = imageBytes;
+					_logger?.LogInformation($"Created Test Pattern: {testPattern}");
+					TestPatternDefinitions.Add(testPattern);
+				}
+			});
+
+			DestroyWindows();
+			CreateWindows();
+		}
+
 
 		#endregion Menu Item processing
 

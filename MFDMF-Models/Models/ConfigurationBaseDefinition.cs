@@ -112,27 +112,27 @@ namespace MFDMF_Models.Models
         /// Translucency of the image expressed as percentage of solidness 
         /// </summary>
         [JsonProperty("opacity")]
-        public float Opacity { get; set; }
+        public float? Opacity { get; set; }
         /// <summary>
         /// Starting X position of the Crop
         /// </summary>
         [JsonProperty("xOffsetStart")]
-        public int XOffsetStart { get; set; }
+        public int? XOffsetStart { get; set; }
         /// <summary>
         /// Starting Y position of the Crop
         /// </summary>
         [JsonProperty("yOffsetStart")]
-        public int YOffsetStart { get; set; }
+        public int? YOffsetStart { get; set; }
         /// <summary>
         /// Ending X position of the Crop
         /// </summary>
         [JsonProperty("xOffsetFinish")]
-        public int XOffsetFinish { get; set; }
+        public int? XOffsetFinish { get; set; }
         /// <summary>
         /// Ending Y position of the Crop
         /// </summary>
         [JsonProperty("yOffsetFinish")]
-        public int YOffsetFinish { get; set; }
+        public int? YOffsetFinish { get; set; }
 
         #endregion Image cropping properties IOffsetGeometry
 
@@ -163,11 +163,11 @@ namespace MFDMF_Models.Models
                 hashCode += (FileName?.GetHashCode() ?? 0) * HASH_NUM;
                 hashCode += (FilePath?.GetHashCode() ?? 0) * HASH_NUM;
                 hashCode += Enabled.GetHashCode() * HASH_NUM;
-                hashCode += Opacity.GetHashCode() * HASH_NUM;
-                hashCode += XOffsetStart * HASH_NUM;
-                hashCode += XOffsetFinish * HASH_NUM;
-                hashCode += YOffsetStart * HASH_NUM;
-                hashCode += YOffsetFinish * HASH_NUM;
+                hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
+                hashCode += (XOffsetStart ??= 0) * HASH_NUM;
+                hashCode += (XOffsetFinish ??= 0) * HASH_NUM;
+                hashCode += (YOffsetStart ??= 0) * HASH_NUM;
+                hashCode += (YOffsetFinish ??= 0) * HASH_NUM;
                 return hashCode;
             }
         }

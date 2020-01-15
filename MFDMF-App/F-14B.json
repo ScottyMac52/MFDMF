@@ -1,0 +1,47 @@
+[
+	{
+		"name": "F-14P",
+		"displayName": "F-14B Tomcat (Pilot)",
+		"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Profile JPGs",
+		"fileName": "F-14\\DCS F14Plt MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Tomcat",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 0.7
+			},
+			{
+				"name": "WHKEY_Tomcat",
+				"fileName": "F-14\\DCS F14Plt WH.jpg",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 0.75
+			},
+			{
+				"name": "RMFD_Tomcat",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 0.7
+			}
+		]
+	}
+]
