@@ -156,6 +156,42 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User requested the main window be closed.
+        /// </summary>
+        internal static string UserRequestedAppClose {
+            get {
+                return ResourceManager.GetString("UserRequestedAppClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User requested the cache be cleared.
+        /// </summary>
+        internal static string UserRequestedCacheClear {
+            get {
+                return ResourceManager.GetString("UserRequestedCacheClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User requested the configuration be reloaded.
+        /// </summary>
+        internal static string UserRequestedReload {
+            get {
+                return ResourceManager.GetString("UserRequestedReload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User requested the Test Pattern be displayed.
+        /// </summary>
+        internal static string UserRequestedTestPattern {
+            get {
+                return ResourceManager.GetString("UserRequestedTestPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Window list has been cleared.
         /// </summary>
         internal static string WindowListCleared {

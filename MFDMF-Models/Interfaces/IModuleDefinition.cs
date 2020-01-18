@@ -7,7 +7,5 @@ namespace MFDMF_Models.Interfaces
 	{
 		List<ConfigurationDefinition> Configurations { get; set; }
 		string DisplayName { get; set; }
-		IMFDMFDefinition Parent { get; }
-		void PreProcessModule(IMFDMFDefinition parent);
 	}
 }

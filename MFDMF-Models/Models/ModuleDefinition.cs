@@ -13,37 +13,26 @@ namespace MFDMF_Models.Models
 
         /// <summary>
         /// Ctor
-        /// </summary>      
-        [JsonConstructor()]
-        public ModuleDefinition(IMFDMFDefinition parent = null)
-        {
-            Parent = parent;
-            Configurations = new List<ConfigurationDefinition>();
-        }
-
-        /// <summary>
-        /// Copy constructor
         /// </summary>
         /// <param name="copy"></param>
-        public ModuleDefinition(IModuleDefinition copy) : this(copy.Parent)
+        [JsonConstructor()]
+        public ModuleDefinition(ModuleDefinition copy = null) 
         {
-            ModuleName = copy.ModuleName;
-            DisplayName = copy.DisplayName;
-            FileName = copy.FileName;
-            FilePath = copy.FilePath;
-            Enabled = copy.Enabled;
-            Configurations.AddRange(copy.Configurations);
+            ModuleName ??= copy?.ModuleName;
+            DisplayName ??= copy?.DisplayName;
+            FileName ??= copy?.FileName;
+            FilePath ??= copy?.FilePath;
+            Enabled ??= copy?.Enabled;
+            if((copy?.Configurations?.Count ?? 0) > 0)
+            {
+                Configurations.AddRange(copy?.Configurations);
+            }
         }
 
         #endregion Ctor
 
         #region Module Definition properties Parent, ModuleName, DisplayName, FileName, Configurations
 
-        /// <summary>
-        /// Parent to this Module
-        /// </summary>
-        [JsonIgnore()]
-        public IMFDMFDefinition Parent { get; internal set; }
         /// <summary>
         /// Name of the Module
         /// </summary>
@@ -77,38 +66,6 @@ namespace MFDMF_Models.Models
 
 		#endregion Module Definition properties Parent, ModuleName, DisplayName, FileName, Configurations
 
-		#region Public methods
-
-		/// <summary>
-		/// Ensures that the Hierarchy receives default values for important properties but ensures children can override
-		/// </summary>
-		/// <param name="parent"></param>
-		public void PreProcessModule(IMFDMFDefinition parent)
-        {
-            Parent = parent;
-            FilePath ??= parent.FilePath;
-            FileName ??= parent.FileName;
-            Enabled ??= parent.Enabled;
-            
-            Configurations?.ForEach(config =>
-            {
-                config.FilePath ??= FilePath;
-                config.FileName ??= FileName;
-                config.ModuleName ??= ModuleName;
-                config.Enabled ??= Enabled;
-
-                config?.SubConfigurations?.ForEach(subConfig =>
-                {
-                    subConfig.FilePath ??= config.FilePath;
-                    subConfig.FileName ??= config.FileName;
-                    subConfig.ModuleName ??= config.ModuleName;
-                    subConfig.Enabled ??= config.Enabled;
-                });
-            });
-        }
-
-        #endregion Public methods
-
         #region Public overrides 
 
         /// <summary>
@@ -126,7 +83,7 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public string ToReadableString()
         {
-            return $"Parent: {Parent?.ToReadableString()} Module: {ModuleName} Display: {DisplayName} Filename: {FileName} Configurations: {Configurations.Where(con => (con.Enabled ?? false) == true).ToList().Count}";
+            return $"Module: {ModuleName} Display: {DisplayName} Filename: {FileName} Configurations: {Configurations.Where(con => (con.Enabled ?? false) == true).ToList().Count}";
         }
 
         /// <summary>
@@ -147,6 +104,5 @@ namespace MFDMF_Models.Models
         }
 
         #endregion Public overrides 
-
     }
 }

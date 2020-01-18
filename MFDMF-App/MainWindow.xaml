@@ -21,6 +21,6 @@
             </MenuItem>
         </Menu>
         <Label Content="Pick Module: "/>
-        <ComboBox Width="auto" x:Name="cbModules" SelectionChanged="ComboBox_SelectionChanged" Loaded="CbModules_Loaded" />
+        <ComboBox Width="auto" x:Name="cbModules" SelectionChanged="ComboBox_SelectionChanged" />
     </StackPanel>
 </Window>

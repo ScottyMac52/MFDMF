@@ -13,6 +13,14 @@
     <Copyright>© 2018-2020</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Output</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Output</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="A-10C.json" />
     <None Remove="A-4E.json" />
@@ -22,8 +30,6 @@
     <None Remove="F-14B.json" />
     <None Remove="F-16C.json" />
     <None Remove="F-18C.json" />
-    <None Remove="modules.json" />
-    <None Remove="msmSettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,12 +49,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="F-18C.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="modules.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="msmSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="F-14B.json">

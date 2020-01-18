@@ -1,7 +1,7 @@
 using MFDMF_Models.Models;
 using MFDMF_Services.Configuration;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 using XUnitTestProject_MFDMF.Mocks;
 
@@ -23,48 +23,14 @@ namespace XUnitTestProject_MFDMF
                 FileName = baseFileName,
                 ModuleCount = 20,
                 ConfigurationCount = 20,
-                SubConfigurationCount = 20
+                SubConfigurationCount = 0
             };
-            var testData = loadingService.LoadConfiguration();
 
             // ACT
-            var testJsonObject = new MFDMFDefinition(LoggerFactory, testData);
-            var serializedModules = testJsonObject.ToJson();
-            var testModulesDef = MFDMFDefinition.FromJson(LoggerFactory, serializedModules);
+            var testData = loadingService.LoadModulesConfigurationFile(testDataPath);
 
             // ASSERT
-            Validate(baseFileName, baseName, testDataPath, serializedModules, testModulesDef);
-        }
-
-        [Fact]
-        public void Test_Model_From_File_Matches()
-        {
-            // ARRANGE
-            var baseFileName = "LMFD";
-            var baseName = "Test";
-            var testDataPath = Path.Combine(Directory.GetCurrentDirectory(), @"TestData\TestModule");
-            IConfigurationLoadingService loadingService = new MockConfigurationLoader()
-            {
-                BaseName = baseName,
-                BasePath = testDataPath,
-                FileName = baseFileName,
-                ModuleCount = 20,
-                ConfigurationCount = 5,
-                SubConfigurationCount = 5
-            };
-            var testData = loadingService.LoadConfiguration();
-
-            // ACT
-            var fileData = GetFileData(Path.Combine(testDataPath, "testData.json")).GetAwaiter().GetResult();
-
-            // ASSERT
-            Assert.Equal(testData.DefaultConfig, fileData.DefaultConfig);
-        }
-
-        private async Task<MFDMFDefinition> GetFileData(string jsonFile)
-        {
-            var fileContent = await File.ReadAllTextAsync(jsonFile);
-            return MFDMFDefinition.FromJson(LoggerFactory, fileContent);
+            Validate(baseFileName, baseName, testDataPath, testData, 20, 20, 0);
         }
 
         /// <summary>
@@ -73,19 +39,19 @@ namespace XUnitTestProject_MFDMF
         /// <param name="baseFileName"></param>
         /// <param name="baseName"></param>
         /// <param name="testDataPath"></param>
-        /// <param name="serializedModules"></param>
         /// <param name="testModulesDef"></param>
-        private void Validate(string baseFileName, string baseName, string testDataPath, string serializedModules, MFDMFDefinition testModulesDef)
+        /// <param name="moduleCount"></param>
+        /// <param name="configCount"></param>
+        /// <param name="subConfigCount"></param>
+        private void Validate(string baseFileName, string baseName, string testDataPath, List<ModuleDefinition> testModulesDef, int moduleCount, int configCount, int subConfigCount)
         {
-            var moduleCounter = 1;
-            var configurationCounter = 1;
-            var subConfigurationCounter = 1;
+            var moduleCounter = 0;
+            var configurationCounter = 0;
+            var subConfigurationCounter = 0;
 
-            Assert.Contains($"{baseName}Module", serializedModules);
-            Assert.Equal($"{baseName}Module", testModulesDef.DefaultConfig);
-
-            testModulesDef?.Modules?.ForEach(module =>
+            testModulesDef?.ForEach(module =>
             {
+                moduleCounter++;
                 var moduleName = $"{baseName}Module{moduleCounter}";
                 Assert.Equal($"{baseName} Module {moduleCounter}", module.DisplayName);
                 Assert.Equal(moduleName, module.ModuleName);
@@ -93,6 +59,7 @@ namespace XUnitTestProject_MFDMF
 
                 module?.Configurations?.ForEach(configuration =>
                 {
+                    configurationCounter++;
                     var configurationName = $"{baseName}Config{configurationCounter}";
                     var configurationFilename = $"{baseFileName}{configurationCounter}.jpg";
                     Assert.Equal(moduleName, configuration.ModuleName);
@@ -110,26 +77,28 @@ namespace XUnitTestProject_MFDMF
 
                     configuration?.SubConfigurations?.ForEach(subConfiguration =>
                     {
+                        subConfigurationCounter++;
                         Assert.Equal($"{baseName}Module{moduleCounter}", subConfiguration.ModuleName);
                         Assert.Equal(testDataPath, subConfiguration.FilePath);
                         Assert.Equal($"{baseName}Inset{subConfigurationCounter}", subConfiguration.Name);
                         Assert.Equal($"inset{subConfigurationCounter}.jpg", subConfiguration.FileName);
-                        Assert.Equal(0, subConfiguration.StartX);
-                        Assert.Equal(10, subConfiguration.EndX);
-                        Assert.Equal(0, subConfiguration.StartY);
-                        Assert.Equal(10, subConfiguration.EndY);
+                        Assert.Equal(0, subConfiguration.Left);
+                        Assert.Equal(10, subConfiguration.Width);
+                        Assert.Equal(0, subConfiguration.Top);
+                        Assert.Equal(10, subConfiguration.Height);
                         Assert.Equal(1, subConfiguration.XOffsetStart);
                         Assert.Equal(50, subConfiguration.XOffsetFinish);
                         Assert.Equal(1, subConfiguration.YOffsetStart);
                         Assert.Equal(50, subConfiguration.YOffsetFinish);
-                        subConfigurationCounter++;
                     });
-                    subConfigurationCounter = 1;
-                    configurationCounter++;
+                    Assert.Equal(subConfigCount, subConfigurationCounter);
+                    subConfigurationCounter = 0;
                 });
-                configurationCounter = 1;
-                moduleCounter++;
+                Assert.Equal(configCount, configurationCounter);
+                configurationCounter = 0;
             });
+            Assert.Equal(moduleCount, moduleCounter);
+            moduleCounter = 0;
         }
     }
 }

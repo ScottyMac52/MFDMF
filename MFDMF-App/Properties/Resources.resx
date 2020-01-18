@@ -148,6 +148,18 @@
   <data name="TV" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tv-test-patterns-02.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="UserRequestedAppClose" xml:space="preserve">
+    <value>User requested the main window be closed</value>
+  </data>
+  <data name="UserRequestedCacheClear" xml:space="preserve">
+    <value>User requested the cache be cleared</value>
+  </data>
+  <data name="UserRequestedReload" xml:space="preserve">
+    <value>User requested the configuration be reloaded</value>
+  </data>
+  <data name="UserRequestedTestPattern" xml:space="preserve">
+    <value>User requested the Test Pattern be displayed</value>
+  </data>
   <data name="WindowListCleared" xml:space="preserve">
     <value>Window list has been cleared</value>
   </data>
