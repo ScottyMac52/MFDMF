@@ -33,7 +33,6 @@ namespace MFDMFApp
 			{
 				services.AddScoped<IConfigurationLoadingService, ConfigurationLoadingService>();
 				services.AddScoped<IDisplayConfigurationService, DisplayConfigurationService>();
-				services.AddScoped<IModelLoaderService, ModelLoaderService>();
 				services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 				services.Configure<AppSettings>(options =>
 				{

@@ -18,20 +18,9 @@ namespace XUnitTestProject_MFDMF.Mocks
         public int ConfigurationCount { get; set; }
         public int SubConfigurationCount { get; set; }
 
-        public IMFDMFDefinition LoadConfiguration()
-		{
-            return GetTestData(BasePath, FileName, BaseName, ModuleCount, ConfigurationCount, SubConfigurationCount);
-		}
-
-        public ModuleDefinition LoadModuleConfigurationFile(string jsonFile)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
         public List<ModuleDefinition> LoadModulesConfigurationFile(string jsonFile)
         {
-            throw new System.NotImplementedException();
+            return GetTestData(BasePath, FileName, BaseName, ModuleCount, ConfigurationCount, SubConfigurationCount);
         }
 
         /// <summary>
@@ -44,14 +33,9 @@ namespace XUnitTestProject_MFDMF.Mocks
         /// <param name="configurationCount"></param>
         /// <param name="subConfigurationCount"></param>
         /// <returns></returns>
-        public IMFDMFDefinition GetTestData(string basePath, string fileName, string baseName, int moduleCount, int configurationCount, int subConfigurationCount)
+        public List<ModuleDefinition> GetTestData(string basePath, string fileName, string baseName, int moduleCount, int configurationCount, int subConfigurationCount)
         {
-            var modulesDef = new MFDMFDefinition(LoggerFactory)
-            {
-                DefaultConfig = $"{baseName}Module",
-                FilePath = Path.Combine(basePath, fileName),
-                Modules = new List<ModuleDefinition>()
-            };
+            var moduleDefintions = new List<ModuleDefinition>();
 
             for (int x = 1; x <= moduleCount; x++)
             {
@@ -79,17 +63,17 @@ namespace XUnitTestProject_MFDMF.Mocks
                         XOffsetFinish = 50,
                         YOffsetStart = 1,
                         YOffsetFinish = 50,
-                        SubConfigurations = new List<SubConfigurationDefinition>()
+                        SubConfigurations = new List<ConfigurationDefinition>()
                     };
                     for (int z = 1; z <= subConfigurationCount; z++)
                     {
-                        var newSubConfiguration = new SubConfigurationDefinition()
+                        var newSubConfiguration = new ConfigurationDefinition()
                         {
                             Enabled = true,
-                            StartX = 0,
-                            EndX = 10,
-                            StartY = 0,
-                            EndY = 10,
+                            Left = 0,
+                            Width = 10,
+                            Top = 0,
+                            Height = 10,
                             FileName = $"inset{z}.jpg",
                             FilePath = basePath,
                             ModuleName = newModule.ModuleName,
@@ -103,9 +87,10 @@ namespace XUnitTestProject_MFDMF.Mocks
                     }
                     newModule.Configurations.Add(newConfig);
                 }
-                modulesDef.Modules.Add(newModule);
+                moduleDefintions.Add(newModule);
             };
-            return modulesDef;
+
+            return moduleDefintions;
         }
     }
 }

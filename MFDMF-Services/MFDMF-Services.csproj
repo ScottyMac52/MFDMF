@@ -5,6 +5,10 @@
     <RootNamespace>MFDMF_Services</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Output</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Runtime.WindowsRuntime.UI.Xaml" Version="4.7.0" />
   </ItemGroup>

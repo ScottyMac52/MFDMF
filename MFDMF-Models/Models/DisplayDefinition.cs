@@ -54,7 +54,7 @@ namespace MFDMF_Models.Models
 		/// <returns><seealso cref="DisplayDefinition"/></returns>
 		public static DisplayDefinition FromJson(ILoggerFactory loggerFactory, string jsonString)
 		{
-			var logger = loggerFactory?.CreateLogger<MFDMFDefinition>();
+			var logger = loggerFactory?.CreateLogger<DisplayDefinition>();
 			try
 			{
 				var settings = new JsonSerializerSettings()
@@ -117,8 +117,7 @@ namespace MFDMF_Models.Models
 		public int? YOffsetFinish { get; set; }
 
 		#endregion Image cropping properties IOffsetGeometry
-
-
+		
 		#region Public overrides 
 
 		/// <summary>

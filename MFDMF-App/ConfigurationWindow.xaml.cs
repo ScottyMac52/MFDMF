@@ -23,6 +23,8 @@ namespace MFDMFApp
 		private readonly AppSettings _settings;
 		private readonly List<DisplayDefinition> _displayDefinitions;
 		private DisplayDefinition _displayForConfig;
+		private byte[] _imageBytes;
+		private bool _isTestPattern;
 
 		/// <summary>
 		/// The configuration for this Window
@@ -41,8 +43,6 @@ namespace MFDMFApp
 		/// </summary>
 		public bool IsWindowLoaded { get; protected set; }
 
-		public bool IsTestPattern { get; set; }
-
 		#endregion fields and properties
 
 		#region Constructor
@@ -50,27 +50,29 @@ namespace MFDMFApp
 		/// <summary>
 		/// Ctor
 		/// </summary>
-		/// <param name="loggerFactory"></param>
-		/// <param name="displayDefinitions"></param>
-		/// <param name="settings"></param>
-		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings, bool useTestPattern = false)
+		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> used to create the <see cref="ILogger"/></param>
+		/// <param name="displayDefinitions">Loaded display definitions <see cref="List{T}"/> of <see cref="DisplayDefinition"/></param>
+		/// <param name="settings">The <see cref="AppSettings"/> for the application</param>
+		/// <param name="imageBytes">Image bytes to use for the image for load</param>
+		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings, byte[] imageBytes = null)
 		{
 			_settings = settings;
 			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
 			_displayDefinitions = displayDefinitions;
 			InitializeComponent();
-			IsTestPattern = useTestPattern;
+			_isTestPattern = (imageBytes?.Length ?? 0) > 0;
+			_imageBytes = imageBytes;
 		}
 
 		#endregion Constructor
 
-		#region Protected methods
+		#region Initialize method
 
 		/// <summary>
 		///  Uses the Configuration to set the properties for this MFD
 		/// </summary>
 		/// <returns></returns>
-		protected bool InitializeWindow()
+		private bool InitializeWindow()
 		{
 			// See if there is a Display that matches the name 
 			_displayForConfig = _displayDefinitions?.FirstOrDefault(dd => dd.Name == Configuration?.Name || (Configuration?.Name?.StartsWith(dd.Name, StringComparison.CurrentCulture) ?? false));
@@ -79,10 +81,10 @@ namespace MFDMFApp
 			Width = Configuration?.Width ?? 0;
 			Height = Configuration?.Height ?? 0;
 			Opacity = Configuration.Opacity ??= _displayForConfig.Opacity ??= 1.0F;
-			Configuration.XOffsetStart ??= _displayForConfig.XOffsetStart;
-			Configuration.XOffsetFinish ??= _displayForConfig.XOffsetFinish;
-			Configuration.YOffsetStart ??= _displayForConfig.YOffsetStart;
-			Configuration.YOffsetFinish ??= _displayForConfig.YOffsetFinish;
+			Configuration.XOffsetStart ??= _displayForConfig?.XOffsetStart;
+			Configuration.XOffsetFinish ??= _displayForConfig?.XOffsetFinish;
+			Configuration.YOffsetStart ??= _displayForConfig?.YOffsetStart;
+			Configuration.YOffsetFinish ??= _displayForConfig?.YOffsetFinish;
 			Left = (_displayForConfig?.Left ?? 0) + (Configuration?.Left ?? 0);
 			Top = (_displayForConfig?.Top ?? 0) + (Configuration?.Top ?? 0);
 
@@ -95,74 +97,112 @@ namespace MFDMFApp
 			return true;
 		}
 
-		#endregion Protected methods
+		#endregion Initialize method
 
 		#region Image Loading
 
 		/// <summary>
-		/// Loads an image from a byte[]
+		/// Deletes all controls from the <see cref="Grid"/> and adds a new one
 		/// </summary>
-		/// <param name="imageData"></param>
 		/// <returns></returns>
-		private BitmapImage LoadImage(byte[] imageData)
+		private Image CreateNewImage()
 		{
-			if (imageData == null || imageData.Length == 0) return null;
-			var image = new BitmapImage();
-			using (var mem = new MemoryStream(imageData))
+			var controlGrid = this.Content as Grid;
+			while(controlGrid.Children.Count > 0)
 			{
-				mem.Position = 0;
-				image.BeginInit();
-				image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-				image.CacheOption = BitmapCacheOption.OnLoad;
-				image.UriSource = null;
-				image.StreamSource = mem;
-				image.EndInit();
+				controlGrid.Children.RemoveAt(0);
 			}
-			image.Freeze();
-			imgMain.Source = image;
-			imgMain.Width = Width;
-			imgMain.Height = Height;
-			imgMain.Visibility = Visibility.Visible;
-			return image;
+			var imgMain = new Image()
+			{
+				Name = "imgMain",
+				StretchDirection = StretchDirection.Both,
+				Stretch = Stretch.Fill
+			};
+			controlGrid.Children.Add(imgMain);
+			return imgMain;
 		}
 
 		/// <summary>
-		/// Loads the configured image either from the user's cache or from the original location
+		/// Loads the configured image either from the test pattern, user's cache or from the original location
 		/// </summary>
 		private void LoadImage()
 		{
-			if (Configuration?.Enabled ?? false)
+			var imgMain = CreateNewImage();
+
+			if (_isTestPattern)
 			{
 				IsWindowLoaded = false;
-				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{Configuration.ModuleName}");
-				var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}";
-				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}_{Configuration.Name}.jpg");
-				if (File.Exists(cacheFile))
+				var image = new BitmapImage();
+				using (var mem = new MemoryStream(_imageBytes))
 				{
-					BitmapImage bitmap = new BitmapImage();
-					bitmap.BeginInit();
-					bitmap.CacheOption = BitmapCacheOption.OnLoad;
-					bitmap.UriSource = new Uri(cacheFile);
-					bitmap.EndInit();
-					imgMain.Source = bitmap;
-					imgMain.Width = Width;
-					imgMain.Height = Height;
-					imgMain.Visibility = Visibility.Visible;
+					mem.Position = 0;
+					image.BeginInit();
+					image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+					image.CacheOption = BitmapCacheOption.OnLoad;
+					image.UriSource = null;
+					image.StreamSource = mem;
+					image.EndInit();
+				}
+				image.Freeze();
+				imgMain.Source = image;
+				imgMain.Width = Width;
+				imgMain.Height = Height;
+				imgMain.Visibility = Visibility.Visible;
+				IsWindowLoaded = true;
+				return;
+			}
+
+			try
+			{
+				if (Configuration?.Enabled ?? false)
+				{
+					IsWindowLoaded = false;
+					var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{Configuration.ModuleName}");
+					var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}";
+					var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}_{Configuration.Name}.jpg");
+					if (File.Exists(cacheFile))
+					{
+						BitmapImage bitmap = new BitmapImage();
+						bitmap.BeginInit();
+						bitmap.CacheOption = BitmapCacheOption.OnLoad;
+						bitmap.UriSource = new Uri(cacheFile);
+						bitmap.EndInit();
+						imgMain.Source = bitmap;
+						imgMain.Width = Width;
+						imgMain.Height = Height;
+						imgMain.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						imgMain.Source = GetBitMapSource(Configuration, cacheFolder, cacheFile);
+						imgMain.Width = Width;
+						imgMain.Height = Height;
+						imgMain.Visibility = Visibility.Visible;
+					}
+					IsWindowLoaded = true;
 				}
 				else
 				{
-					imgMain.Source = GetBitMapSource(Configuration, cacheFolder, cacheFile);
-					imgMain.Width = Width;
-					imgMain.Height = Height;
-					imgMain.Visibility = Visibility.Visible;
+					_logger.LogWarning($"Configuration {Configuration.Name} for Module {Configuration.ModuleName} is disabled");
 				}
-				IsWindowLoaded = true;
 			}
-		}
-
-		public void LoadImageFromBytes(byte[] imageBytes)
-		{
-			LoadImage(imageBytes);
+			catch (Exception ex)
+			{
+				_logger?.LogError($"Unable to load {Configuration.ToReadableString()}", ex);
+				throw;
+			}
+			finally
+			{
+				if (imgMain != null)
+				{
+					_logger?.LogInformation($"Configuration {Configuration.ToReadableString()} is loaded");
+				}
+				else
+				{
+					_logger?.LogWarning($"Configuration was not loaded -> {Configuration.ToReadableString()}");
+					Close();
+				}
+			}
 		}
 
 		/// <summary>
@@ -174,65 +214,44 @@ namespace MFDMFApp
 		/// <param name="cacheFile">Full path to the requested file in the cache</param>
 		/// <returns><seealso cref="BitmapSource"/></returns>
 		private BitmapSource GetBitMapSource<T>(T configSource, string cacheFolder, string cacheFile)
-			where T : ConfigurationBaseDefinition
+			where T : ConfigurationDefinition
 		{
 			BitmapSource bitmapSource = null;
-			string filePath = string.Empty;
 
-			try
+			if (File.Exists(cacheFile))
 			{
-				if (File.Exists(cacheFile))
+				_logger.LogInformation($"Cache file found: {cacheFile}");
+				Stream imageStreamSource = new FileStream(cacheFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+				PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+				bitmapSource = decoder.Frames[0];
+			}
+			else
+			{
+				if (!Directory.Exists(cacheFolder))
 				{
-					_logger.LogInformation($"Cache file found: {cacheFile}");
-					Stream imageStreamSource = new FileStream(cacheFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-					PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-					bitmapSource = decoder.Frames[0];
+					Directory.CreateDirectory(cacheFolder);
 				}
-				else
-				{
-					if (!Directory.Exists(cacheFolder))
-					{
-						Directory.CreateDirectory(cacheFolder);
-					}
-					filePath = Path.Combine(configSource.FilePath, configSource.FileName);
+				var filePath = Path.Combine(configSource.FilePath, configSource.FileName);
 
-					var imgSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
-					var width = (configSource.XOffsetFinish ?? 0) - (configSource.XOffsetStart ?? 0);
-					var height = (configSource.YOffsetFinish ?? 0) - (configSource.YOffsetStart ?? 0);
-					Int32Rect offSet = new Int32Rect(configSource.XOffsetStart ?? 0, configSource.YOffsetStart ?? 0, width, height);
-					BitmapImage src = new BitmapImage();
-					src.BeginInit();
-					src.UriSource = imgSource;
-					src.CacheOption = BitmapCacheOption.OnLoad;
-					src.EndInit();
-					var croppedBitmap = new CroppedBitmap(src, offSet);
-					var noAlphaSource = new FormatConvertedBitmap();
-					noAlphaSource.BeginInit();
-					noAlphaSource.Source = croppedBitmap;
-					noAlphaSource.DestinationFormat = PixelFormats.Bgr24;
-					//noAlphaSource.AlphaThreshold = 0;
-					noAlphaSource.EndInit();
-					SaveImage(noAlphaSource, cacheFolder, cacheFile);
-					bitmapSource = noAlphaSource;
-					return noAlphaSource;
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger?.LogError($"Unable to load {configSource.ToReadableString()}", ex);
-				throw;
-			}
-			finally
-			{
-				if (bitmapSource != null)
-				{
-					_logger?.LogInformation($"Configuration {configSource.ToReadableString()} is loaded");
-				}
-				else
-				{
-					_logger?.LogWarning($"Configuration was not loaded -> {configSource.ToReadableString()}");
-					Close();
-				}
+				var imgSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
+				var width = (configSource.XOffsetFinish ?? 0) - (configSource.XOffsetStart ?? 0);
+				var height = (configSource.YOffsetFinish ?? 0) - (configSource.YOffsetStart ?? 0);
+				Int32Rect offSet = new Int32Rect(configSource.XOffsetStart ?? 0, configSource.YOffsetStart ?? 0, width, height);
+				BitmapImage src = new BitmapImage();
+				src.BeginInit();
+				src.UriSource = imgSource;
+				src.CacheOption = BitmapCacheOption.OnLoad;
+				src.EndInit();
+				var croppedBitmap = new CroppedBitmap(src, offSet);
+				var noAlphaSource = new FormatConvertedBitmap();
+				noAlphaSource.BeginInit();
+				noAlphaSource.Source = croppedBitmap;
+				noAlphaSource.DestinationFormat = PixelFormats.Bgr24;
+				//noAlphaSource.AlphaThreshold = 0;
+				noAlphaSource.EndInit();
+				SaveImage(noAlphaSource, cacheFolder, cacheFile);
+				bitmapSource = noAlphaSource;
+				return noAlphaSource;
 			}
 
 			return bitmapSource;
@@ -270,19 +289,8 @@ namespace MFDMFApp
 		{
 			if (InitializeWindow())
 			{
-				if (Configuration?.Enabled ?? false)
-				{
-					IsWindowLoaded = true;
-					if (!IsTestPattern)
-					{
-						LoadImage();
-						_logger?.LogDebug($"Loading the configuration for {Configuration.Name} from Module {Configuration.ModuleName} as {Title} ({Left}, {Top}) for ({Width}, {Height})");
-					}
-				}
-				else
-				{
-					_logger?.LogInformation($"Configuration for {Configuration.Name} for Module {Configuration.ModuleName} is currently disabled in configuration");
-				}
+				LoadImage();
+				_logger?.LogDebug($"Loading the configuration for {Configuration.Name} from Module {Configuration.ModuleName} as {Title} ({Left}, {Top}) for ({Width}, {Height})");
 			}
 		}
 
@@ -293,9 +301,6 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			IsWindowLoaded = false;
-			imgMain = null;
-			imgInsert = null;
 			_logger?.LogDebug($"Configuration {Configuration?.Name} for Module {Configuration?.ModuleName} is closing");
 		}
 
@@ -306,6 +311,7 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void Window_Closed(object sender, EventArgs e)
 		{
+			IsWindowLoaded = false;
 			_logger?.LogInformation($"Configuration {Configuration?.Name} for Module {Configuration?.ModuleName} is unloaded");
 		}
 

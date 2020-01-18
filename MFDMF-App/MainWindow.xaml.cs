@@ -22,27 +22,19 @@ namespace MFDMFApp
 	public partial class MainWindow : Window
 	{
 		#region IoC Injected fields
-
 		private readonly AppSettings _settings;
 		private readonly IConfigurationLoadingService _loadingService;
 		private readonly IDisplayConfigurationService _displayConfigurationService;
 		private readonly ILoggerFactory _loggerFactory;
 		private readonly ILogger<MainWindow> _logger;
 		private readonly StartOptions _startOptions;
-
-
 		#endregion IoC Injected fields
 
 		#region private and protected fields and properties
-
-		/// <summary>
-		/// Configuration for all modules <see cref="IMFDMFDefinition"/>
-		/// </summary>
-		protected IMFDMFDefinition Configuration { get; private set; }
 		/// <summary>
 		/// List of all created <see cref="ConfigurationWindow"/> Windows
 		/// </summary>
-		protected SortedList<string, ConfigurationWindow> WindowList { get; private set; }
+		private SortedList<string, ConfigurationWindow> _windowList;
 		/// <summary>
 		/// The list of available modules
 		/// </summary>
@@ -50,25 +42,30 @@ namespace MFDMFApp
 		/// <summary>
 		/// Currently selected Module
 		/// </summary>
-		protected IModuleDefinition SelectedModule { get; set; }
+		private IModuleDefinition _selectedModule;
 		/// <summary>
 		/// The name of the module that was passed in
 		/// </summary>
-		protected string PassedModule { get; private set; }
+		private string _module;
 		/// <summary>
 		/// The name of the sub-module that was passed
 		/// </summary>
-		protected string PassedSubModule { get; private set; }
+		private string _subModule;
 		/// <summary>
 		/// List of Test Pattern definitions
 		/// </summary>
-		private List<TestPatternDefinition> TestPatternDefinitions { get; set; }
-
-
+		private List<TestPatternDefinition> _testPatterns;
+		/// <summary>
+		/// The list of modules that are currently loaded
+		/// </summary>
+		private List<ModuleDefinition> _modules;
+		/// <summary>
+		/// List of the dsiplays for the configuration
+		/// </summary>
+		private List<DisplayDefinition> _displays;
 		#endregion private and protected fields and properties
 
 		#region Constructor
-
 		/// <summary>
 		/// Ctor
 		/// </summary>
@@ -84,10 +81,10 @@ namespace MFDMFApp
 			_displayConfigurationService = displayConfigurationService;
 			_loggerFactory = loggerFactory;
 			_logger = _loggerFactory.CreateLogger<MainWindow>();
-			WindowList = new SortedList<string, ConfigurationWindow>();
+			_windowList = new SortedList<string, ConfigurationWindow>();
 			_startOptions = (StartOptions) ((MainApp)Application.Current).Host.Services.GetService(typeof(StartOptions));
+			_modules = new List<ModuleDefinition>();
 		}
-
 		#endregion Constructor
 		
 		#region Modules and SubModule processing
@@ -97,24 +94,21 @@ namespace MFDMFApp
 		/// </summary>
 		private void CreateWindows()
 		{
-			var displayDefinitions = _displayConfigurationService.LoadDisplays();
-
-			if ((TestPatternDefinitions?.Count ?? 0) > 0)
+			if ((_testPatterns?.Count ?? 0) > 0)
 			{
-				_logger.LogInformation($"Creating TestPattern Definitions for {TestPatternDefinitions?.Count ?? 0} Configurations");
-				TestPatternDefinitions.ForEach(testPattern =>
+				_logger.LogInformation($"Creating TestPattern Definitions for {_testPatterns?.Count ?? 0} Configurations");
+				_testPatterns.ForEach(testPattern =>
 				{
-					var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings, true)
+					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings, testPattern.ImageBytes)
 					{
 						Configuration = testPattern,
 						FilePath = testPattern.FilePath,
-						SubConfigurationName = PassedSubModule
+						SubConfigurationName = _subModule
 					};
-					configWindow.LoadImageFromBytes(testPattern.ImageBytes);
 					configWindow.Show();
 					if (configWindow.IsWindowLoaded)
 					{
-						WindowList.Add(testPattern.Name, configWindow);
+						_windowList.Add(testPattern.Name, configWindow);
 						configWindow.Visibility = Visibility.Visible;
 					}
 					else
@@ -125,22 +119,22 @@ namespace MFDMFApp
 			}
 			else
 			{
-				_logger?.LogDebug($"Creating configuration {SelectedModule?.DisplayName}");
-				SelectedModule?.Configurations?.ForEach(config =>
+				_logger?.LogDebug($"Creating configuration {_selectedModule?.DisplayName}");
+				_selectedModule?.Configurations?.ForEach(config =>
 				{
 					if (config?.Enabled ?? false)
 					{
 						_logger?.LogInformation($"Creating {config.ToReadableString()}");
-						var configWindow = new ConfigurationWindow(_loggerFactory, displayDefinitions, _settings)
+						var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
 						{
 							Configuration = config,
 							FilePath = config.FilePath,
-							SubConfigurationName = PassedSubModule
+							SubConfigurationName = _subModule
 						};
 						configWindow.Show();
 						if (configWindow.IsWindowLoaded)
 						{
-							WindowList.Add(config.Name, configWindow);
+							_windowList.Add(config.Name, configWindow);
 							configWindow.Visibility = Visibility.Visible;
 						}
 						else
@@ -161,7 +155,7 @@ namespace MFDMFApp
 		/// </summary>
 		private void DestroyWindows()
 		{
-			WindowList.ToList().ForEach(mfd =>
+			_windowList.ToList().ForEach(mfd =>
 			{
 				if (mfd.Value.IsLoaded)
 				{
@@ -169,7 +163,7 @@ namespace MFDMFApp
 					mfd.Value.Close();
 				}
 			});
-			WindowList.Clear();
+			_windowList.Clear();
 			_logger?.LogInformation(Properties.Resources.WindowListCleared);
 		}
 
@@ -179,7 +173,7 @@ namespace MFDMFApp
 		private void SetupWindow()
 		{
 			//WindowList = new SortedList<string, AuxWindow>();
-			var moduleList = Configuration?.Modules;
+			var moduleList = _modules;
 			moduleList?.Sort(new ModuleDefinitionComparer());
 			_availableModules = moduleList;
 			cbModules.ItemsSource = moduleList;
@@ -199,8 +193,8 @@ namespace MFDMFApp
 				return false;
 			}
 			_logger?.LogInformation($"Configuration requested for {moduleName}");
-			SelectedModule = _availableModules.FirstOrDefault(am => am.ModuleName == moduleName);
-			return SelectedModule != null;
+			_selectedModule = _availableModules.FirstOrDefault(am => am.ModuleName == moduleName);
+			return _selectedModule != null;
 		}
 
 
@@ -208,11 +202,22 @@ namespace MFDMFApp
 		/// Used to change the selected module 
 		/// </summary>
 		/// <param name="moduleName"></param>
-		public void ChangeSelectedModule(string moduleName)
+		/// <param name="forceReload">If true then the module selection is forced</param>
+		public void ChangeSelectedModule(string moduleName, bool forceReload)
 		{
+			if(forceReload)
+			{
+				cbModules.SelectedIndex = -1;
+			}
 			if (moduleName != (string)cbModules?.SelectedValue)
 			{
 				cbModules.SelectedValue = moduleName;
+			}
+
+			if(cbModules.SelectedIndex == -1)
+			{
+				_logger?.LogError($"Unable to find a configuration name {moduleName}");
+				throw new ArgumentOutOfRangeException(nameof(moduleName));
 			}
 		}
 
@@ -222,7 +227,7 @@ namespace MFDMFApp
 		/// <param name="subModeSpecified"></param>
 		public void ChangeSelectedSubModule(string subModeSpecified)
 		{
-			PassedSubModule = subModeSpecified;
+			_subModule = subModeSpecified;
 			DestroyWindows();
 			CreateWindows();
 		}
@@ -243,7 +248,7 @@ namespace MFDMFApp
 
 		private void ProcessChangedModule(string moduleName)
 		{
-			TestPatternDefinitions = null;
+			_testPatterns = null;
 			if (GetSelectedDefinition(moduleName))
 			{
 				DestroyWindows();
@@ -264,31 +269,6 @@ namespace MFDMFApp
 
 		}
 
-		private void CbModules_Loaded(object sender, RoutedEventArgs e)
-		{
-
-			if (!string.IsNullOrEmpty(Configuration?.DefaultConfig) || !string.IsNullOrEmpty(PassedModule))
-			{
-				if (string.IsNullOrEmpty(PassedModule))
-				{
-					_logger?.LogInformation($"Loading the default configuration {Configuration?.DefaultConfig}");
-				}
-				else
-				{
-					_logger?.LogInformation($"Loading the requested configuration {PassedModule}");
-				}
-				var selectedModule = PassedModule ?? Configuration?.DefaultConfig;
-
-				var selectedMod = _availableModules.FirstOrDefault(am => am.ModuleName.Equals(selectedModule, StringComparison.InvariantCulture));
-				if(selectedMod == null)
-				{
-					_logger?.LogError($"Unable to find a module named {selectedModule} in the configuration. Selecting the default module {Configuration?.DefaultConfig}");
-					selectedModule = Configuration?.DefaultConfig;
-				}
-				cbModules.SelectedValue = selectedModule;
-			}
-		}
-
 		#endregion Modules and SubModule processing
 
 		#region Window events
@@ -306,8 +286,9 @@ namespace MFDMFApp
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			PassedModule = _startOptions?.ModuleName;
-			PassedSubModule = _startOptions?.SubModuleName;
+			_displays = _displayConfigurationService.LoadDisplays();
+			_module = _startOptions?.ModuleName;
+			_subModule = _startOptions?.SubModuleName;
 			ReloadConfiguration();
 			SetupWindow();
 		}
@@ -318,6 +299,7 @@ namespace MFDMFApp
 
 		private void FileMenuItem_Click(object sender, RoutedEventArgs e)
 		{
+			_logger?.LogInformation(Properties.Resources.UserRequestedAppClose);
 			Close();
 		}
 
@@ -328,6 +310,7 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void ClearCache_Click(object sender, RoutedEventArgs e)
 		{
+			_logger?.LogInformation(Properties.Resources.UserRequestedCacheClear);
 			DestroyWindows();
 			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\");
 			var cacheParent = new DirectoryInfo(cacheFolder);
@@ -361,21 +344,21 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void ReloadConfiguration_Click(object sender, RoutedEventArgs e)
 		{
-			ReloadConfiguration();
+			_logger?.LogInformation(Properties.Resources.UserRequestedReload);
+			ReloadConfiguration(true);
 		}
 
 		/// <summary>
 		/// Used to always load the configuration
 		/// </summary>
-		private void ReloadConfiguration()
+		private void ReloadConfiguration(bool forceReload = false)
 		{
 			var module = (string)cbModules.SelectedValue;
 			DestroyWindows();
-			Configuration = _loadingService?.LoadConfiguration();
-			_logger?.LogInformation($"Loaded configuration from {_settings.ConfigurationFile} Module: {PassedModule} SubModule: {PassedSubModule} {Configuration?.Modules?.Count ?? 0} Modules loaded");
 			
 			if((_settings.ModuleNames?.Count ?? 0) > 0)
 			{
+				_modules?.Clear();
 				_settings.ModuleNames.ForEach(mf =>
 				{
 					try
@@ -388,19 +371,42 @@ namespace MFDMFApp
 					{
 						_logger?.LogError($"Unable to load file {mf}. Exception: {jsonex}");
 					}
-
 				});
 			}
-
-
 			SetupWindow();
-			ChangeSelectedModule(module ?? Configuration?.DefaultConfig);
+			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
+			_logger.LogInformation($"Loading module {selectedModule}");
+			ChangeSelectedModule(selectedModule, forceReload);
 		}
 
 		private bool PreProcessModule(ModuleDefinition arg)
 		{
-			arg?.PreProcessModule(Configuration);
-			Configuration?.Modules?.Add(arg);
+			if(arg == null)
+			{
+				return false;
+			}
+
+			arg.Enabled ??= true;
+			arg.FilePath ??= _settings.FilePath;
+
+			arg?.Configurations?.ForEach(config =>
+			{
+				config.ModuleName ??= arg.ModuleName;
+				config.FilePath ??= arg?.FilePath;
+				config.FileName ??= arg.FileName;
+				config.Enabled ??= arg.Enabled ??= true;
+
+				config?.SubConfigurations?.ForEach(subConfig =>
+				{
+					subConfig.ModuleName ??= config?.ModuleName;
+					subConfig.FilePath ??= config?.FilePath;
+					subConfig.FileName ??= config?.FileName;
+					subConfig.Enabled ??= config?.Enabled;
+					subConfig.Opacity ??= config.Opacity;
+				});
+			});
+
+			_modules?.Add(arg);
 			return true;
 		}
 		
@@ -411,11 +417,10 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void Generate_Pattern_Click(object sender, RoutedEventArgs e)
 		{
-			TestPatternDefinitions = new List<TestPatternDefinition>();
-			// Evaluate choice
-			var displays = _displayConfigurationService.LoadDisplays();
+			_logger?.LogInformation(Properties.Resources.UserRequestedTestPattern);
+			_testPatterns = new List<TestPatternDefinition>();
 
-			displays.ForEach(display =>
+			_displays.ForEach(display =>
 			{
 				// Find the Test Pattern for the current display
 				var testPattern = _settings.PatternList?.FirstOrDefault(pl => (pl.Name?.Equals(display.Name, StringComparison.InvariantCulture) ?? false));
@@ -451,7 +456,7 @@ namespace MFDMFApp
 					}
 					testPattern.ImageBytes = imageBytes;
 					_logger?.LogInformation($"Created Test Pattern: {testPattern}");
-					TestPatternDefinitions.Add(testPattern);
+					_testPatterns.Add(testPattern);
 				}
 			});
 
@@ -459,8 +464,6 @@ namespace MFDMFApp
 			CreateWindows();
 		}
 
-
 		#endregion Menu Item processing
-
 	}
 }

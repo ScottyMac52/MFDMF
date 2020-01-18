@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MFDMF_Models.Interfaces
 {
-	public interface IConfigurationDefinition : IReadableObject, IImagePath, INameObject, IModuleName
+	public interface IConfigurationDefinition : IReadableObject, IImagePath, INameObject, IModuleName, IDisplayGeometry
 	{
 	}
 }

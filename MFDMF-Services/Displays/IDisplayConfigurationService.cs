@@ -8,7 +8,5 @@ namespace MFDMF_Services.Displays
 	public interface IDisplayConfigurationService
 	{
 		List<DisplayDefinition> LoadDisplays();
-
-		bool SaveDisplayConfigurations(List<DisplayDefinition> displayDefinitions);
-	}
+}
 }

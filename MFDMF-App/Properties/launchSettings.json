@@ -2,7 +2,7 @@
   "profiles": {
     "MFDMFApp": {
       "commandName": "Project",
-      "commandLineArgs": "-m \"F-16CBlock50\""
+      "commandLineArgs": "-m \"F-18C\""
     }
   }
 }
