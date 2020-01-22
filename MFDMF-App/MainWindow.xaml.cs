@@ -107,7 +107,7 @@ namespace MFDMFApp
 						}
 					});
 
-					_logger?.LogInformation($"Creating {config.ToReadableString()}");
+					_logger?.LogInformation($"Creating {config.ModuleName}-{config.Name} from {config.FileName}");
 					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
 					{
 						Configuration = config,
@@ -270,11 +270,14 @@ namespace MFDMFApp
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			var watch = System.Diagnostics.Stopwatch.StartNew();
 			_displays = _displayConfigurationService.LoadDisplays();
 			_module = _startOptions?.ModuleName;
 			_subModule = _startOptions?.SubModuleName;
 			ReloadConfiguration();
 			SetupWindow();
+			watch.Stop();
+			_logger.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		#endregion Window events
@@ -294,9 +297,10 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void ClearCache_Click(object sender, RoutedEventArgs e)
 		{
+			var watch = System.Diagnostics.Stopwatch.StartNew();
 			_logger?.LogInformation(Properties.Resources.UserRequestedCacheClear);
 			DestroyWindows();
-			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\");
+			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\");
 			var cacheParent = new DirectoryInfo(cacheFolder);
 			var dirs = cacheParent.EnumerateDirectories().ToList();
 			dirs.ForEach(dir =>
@@ -313,6 +317,8 @@ namespace MFDMFApp
 				}
 			});
 			CreateWindows();
+			watch.Stop();
+			_logger.LogInformation($"Clear cache took: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 
@@ -337,6 +343,7 @@ namespace MFDMFApp
 		/// </summary>
 		private void ReloadConfiguration(bool forceReload = false)
 		{
+			var watch = System.Diagnostics.Stopwatch.StartNew();
 			var module = (string)cbModules.SelectedValue;
 			DestroyWindows();
 			
@@ -361,6 +368,8 @@ namespace MFDMFApp
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
 			_logger.LogInformation($"Loading module {selectedModule}");
 			ChangeSelectedModule(selectedModule, forceReload);
+			watch.Stop();
+			_logger.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		#endregion Menu Item processing
