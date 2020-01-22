@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestProject_MFDMF", "X
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFDMF-Services", "MFDMF-Services\MFDMF-Services.csproj", "{AC5D7D20-53FD-4130-A47C-391598D71D01}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{3FBD1557-38C3-4338-BC5F-F388DE34BDBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{AC5D7D20-53FD-4130-A47C-391598D71D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC5D7D20-53FD-4130-A47C-391598D71D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC5D7D20-53FD-4130-A47C-391598D71D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FBD1557-38C3-4338-BC5F-F388DE34BDBB}.Debug|Any CPU.ActiveCfg = Debug
+		{3FBD1557-38C3-4338-BC5F-F388DE34BDBB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

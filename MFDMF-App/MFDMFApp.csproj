@@ -11,6 +11,7 @@
     <Company>Vyper Industries</Company>
     <Product>Multi-Function Display Management Application</Product>
     <Copyright>© 2018-2020</Copyright>
+    <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

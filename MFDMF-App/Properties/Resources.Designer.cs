@@ -146,6 +146,16 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon MFD {
+            get {
+                object obj = ResourceManager.GetObject("MFD", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting the main window.
         /// </summary>
         internal static string StartingMain {
