@@ -17,13 +17,5 @@ namespace MFDMF_Models.Models
 		/// List of Modules to load
 		/// </summary>
 		public List<string> ModuleNames { get; set; }
-		/// <summary>
-		/// List of images that are used for test patterns
-		/// </summary>
-		public List<ImageEntry> ImageList { get; set; }
-		/// <summary>
-		/// List of test patterns
-		/// </summary>
-		public List<TestPatternDefinition> PatternList { get; set; }
 	}
 }

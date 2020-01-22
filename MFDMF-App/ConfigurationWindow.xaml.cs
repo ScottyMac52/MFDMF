@@ -136,7 +136,7 @@ namespace MFDMFApp
 
 			if (_settings.SaveCroppedImages ?? false)
 			{
-				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{config.ModuleName}");
+				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{config.ModuleName}");
 				var imagePrefix = $"{config.Name}-{config.XOffsetStart}-{config.XOffsetFinish}-{config.YOffsetStart}-{config.YOffsetFinish}";
 				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
 				newBitmap.Save(cacheFile);
@@ -273,7 +273,7 @@ namespace MFDMFApp
 		private void LoadImage()
 		{
 			// Load the image dict
-			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{Configuration.ModuleName}");
+			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{Configuration.ModuleName}");
 
 			var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}-{Configuration.Left}-{Configuration.Top}-{Configuration.Width}-{Configuration.Height}-{Configuration.Name}-{Configuration.Opacity ?? 1.0F}";
 			if((SubConfigurationName?.Length ?? 0) > 0)

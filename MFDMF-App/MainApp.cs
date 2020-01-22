@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using MFDMF_Models.Models;
-using MFDMF_Models.Models.TestPattern;
 using MFDMF_Services.Configuration;
 using MFDMF_Services.Displays;
 using Microsoft.Extensions.Configuration;
@@ -37,8 +36,6 @@ namespace MFDMFApp
 				services.Configure<AppSettings>(options =>
 				{
 					options.ModuleNames = configuration.GetSection("AppSettings:ModuleFiles").Get<List<string>>();
-					options.ImageList = configuration.GetSection("AppSettings:TestImages").Get<List<ImageEntry>>();
-					options.PatternList = configuration.GetSection("AppSettings:TestPatterns").Get<List<TestPatternDefinition>>();
 				});
 				services.AddSingleton(GetStartOptions(args));
 				services.AddSingleton<MainWindow>();

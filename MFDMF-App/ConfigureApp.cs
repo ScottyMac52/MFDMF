@@ -17,7 +17,7 @@ namespace MFDMFApp
 		/// <returns></returns>
 		internal static IHost Configure(Action<IServiceCollection, IConfiguration> addtionalServices = null)
 		{
-			var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\Logs\\status");
+			var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}Logs\\status");
 
 			return Host.CreateDefaultBuilder()
 				.ConfigureAppConfiguration((context, builder) =>

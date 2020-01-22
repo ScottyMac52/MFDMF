@@ -61,6 +61,15 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vyper Industries\\MFDMF\\.
+        /// </summary>
+        internal static string BaseDataDirectory {
+            get {
+                return ResourceManager.GetString("BaseDataDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] Color {
