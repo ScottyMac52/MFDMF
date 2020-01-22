@@ -3,6 +3,10 @@
     public interface IOffsetGeometry
 	{
         /// <summary>
+        /// Used for Subconfigurations to designate them as switchable images
+        /// </summary>
+        bool? UseAsSwitch { get; set; }
+        /// <summary>
         /// The percentage of Opacity for the object
         /// </summary>
         float? Opacity { get; set; }

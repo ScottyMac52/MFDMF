@@ -52,10 +52,6 @@ namespace MFDMFApp
 		/// </summary>
 		private string _subModule;
 		/// <summary>
-		/// List of Test Pattern definitions
-		/// </summary>
-		private List<TestPatternDefinition> _testPatterns;
-		/// <summary>
 		/// The list of modules that are currently loaded
 		/// </summary>
 		private List<ModuleDefinition> _modules;
@@ -94,60 +90,49 @@ namespace MFDMFApp
 		/// </summary>
 		private void CreateWindows()
 		{
-			if ((_testPatterns?.Count ?? 0) > 0)
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+			_logger?.LogDebug($"Creating configuration {_selectedModule?.DisplayName}");
+			_selectedModule?.Configurations?.ForEach(config =>
 			{
-				_logger.LogInformation($"Creating TestPattern Definitions for {_testPatterns?.Count ?? 0} Configurations");
-				_testPatterns.ForEach(testPattern =>
+				if (config?.Enabled ?? false)
 				{
-					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings, testPattern.ImageBytes)
+					var subModule = "";
+					// see if this configuration has a sub configuration that has been requested
+					_subModule?.Split("|")?.ToList()?.ForEach(subMod =>
 					{
-						Configuration = testPattern,
-						FilePath = testPattern.FilePath,
-						SubConfigurationName = _subModule
+						var configSubModule = config?.SubConfigurations?.FirstOrDefault(sub => sub.Name == subMod)?.Name;
+						if(!string.IsNullOrEmpty(configSubModule))
+						{
+							subModule = configSubModule;
+						}
+					});
+
+					_logger?.LogInformation($"Creating {config.ToReadableString()}");
+					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
+					{
+						Configuration = config,
+						FilePath = config.FilePath,
+						SubConfigurationName = subModule
 					};
 					configWindow.Show();
 					if (configWindow.IsWindowLoaded)
 					{
-						_windowList.Add(testPattern.Name, configWindow);
+						_windowList.Add(config.Name, configWindow);
 						configWindow.Visibility = Visibility.Visible;
 					}
 					else
 					{
 						configWindow?.Close();
 					}
-				});
-			}
-			else
-			{
-				_logger?.LogDebug($"Creating configuration {_selectedModule?.DisplayName}");
-				_selectedModule?.Configurations?.ForEach(config =>
+				}
+				else
 				{
-					if (config?.Enabled ?? false)
-					{
-						_logger?.LogInformation($"Creating {config.ToReadableString()}");
-						var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
-						{
-							Configuration = config,
-							FilePath = config.FilePath,
-							SubConfigurationName = _subModule
-						};
-						configWindow.Show();
-						if (configWindow.IsWindowLoaded)
-						{
-							_windowList.Add(config.Name, configWindow);
-							configWindow.Visibility = Visibility.Visible;
-						}
-						else
-						{
-							configWindow?.Close();
-						}
-					}
-					else
-					{
-						_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
-					}
-				});
-			}
+					_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
+				}
+			});
+			watch.Stop();
+			_logger.LogInformation($"Module {_selectedModule.DisplayName}: SubModule(s): {_subModule} loaded in {watch.ElapsedMilliseconds} milliseconds");
+
 		}
 
 		/// <summary>
@@ -248,7 +233,6 @@ namespace MFDMFApp
 
 		private void ProcessChangedModule(string moduleName)
 		{
-			_testPatterns = null;
 			if (GetSelectedDefinition(moduleName))
 			{
 				DestroyWindows();
@@ -365,7 +349,7 @@ namespace MFDMFApp
 					{
 						var fileToLoad = Path.Combine(Directory.GetCurrentDirectory(), mf);
 						var modulesToAdd = _loadingService.LoadModulesConfigurationFile(fileToLoad);
-						modulesToAdd.All(PreProcessModule);
+						_modules?.AddRange(modulesToAdd);
 					}
 					catch(JsonException jsonex)
 					{
@@ -377,91 +361,6 @@ namespace MFDMFApp
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
 			_logger.LogInformation($"Loading module {selectedModule}");
 			ChangeSelectedModule(selectedModule, forceReload);
-		}
-
-		private bool PreProcessModule(ModuleDefinition arg)
-		{
-			if(arg == null)
-			{
-				return false;
-			}
-
-			arg.Enabled ??= true;
-			arg.FilePath ??= _settings.FilePath;
-
-			arg?.Configurations?.ForEach(config =>
-			{
-				config.ModuleName ??= arg.ModuleName;
-				config.FilePath ??= arg?.FilePath;
-				config.FileName ??= arg.FileName;
-				config.Enabled ??= arg.Enabled ??= true;
-
-				config?.SubConfigurations?.ForEach(subConfig =>
-				{
-					subConfig.ModuleName ??= config?.ModuleName;
-					subConfig.FilePath ??= config?.FilePath;
-					subConfig.FileName ??= config?.FileName;
-					subConfig.Enabled ??= config?.Enabled;
-					subConfig.Opacity ??= config.Opacity;
-				});
-			});
-
-			_modules?.Add(arg);
-			return true;
-		}
-		
-		/// <summary>
-		/// Generates and displays the configured Test Pattern
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void Generate_Pattern_Click(object sender, RoutedEventArgs e)
-		{
-			_logger?.LogInformation(Properties.Resources.UserRequestedTestPattern);
-			_testPatterns = new List<TestPatternDefinition>();
-
-			_displays.ForEach(display =>
-			{
-				// Find the Test Pattern for the current display
-				var testPattern = _settings.PatternList?.FirstOrDefault(pl => (pl.Name?.Equals(display.Name, StringComparison.InvariantCulture) ?? false));
-
-				if (testPattern != null)
-				{
-					var testImage = _settings.ImageList.FirstOrDefault(il => (il.Name?.Equals(testPattern.Pattern, StringComparison.InvariantCulture) ?? false));
-					testPattern.Enabled = true;
-					testPattern.Width = display.Width;
-					testPattern.Height = display.Height;
-					testPattern.XOffsetFinish = testImage.Width;
-					testPattern.YOffsetFinish = testImage.Height;
-					byte[] imageBytes = null;
-					switch (testImage?.Name)
-					{
-						case "Color":
-							imageBytes = Properties.Resources.Color;
-							break;
-						case "ConvergenceGrid":
-							imageBytes = Properties.Resources.ConvergenceGrid;
-							break;
-						case "IndianHead":
-							imageBytes = Properties.Resources.IndianHead;
-							break;
-						case "MaxRes":
-							imageBytes = Properties.Resources.MaxRes;
-							break;
-						case "TV":
-							imageBytes = Properties.Resources.TV;
-							break;
-						default:
-							break;
-					}
-					testPattern.ImageBytes = imageBytes;
-					_logger?.LogInformation($"Created Test Pattern: {testPattern}");
-					_testPatterns.Add(testPattern);
-				}
-			});
-
-			DestroyWindows();
-			CreateWindows();
 		}
 
 		#endregion Menu Item processing

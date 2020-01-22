@@ -9,6 +9,7 @@ namespace MFDMF_Models.Models
 		public string LoggingThreshold { get; set; }
 		public string DisplayConfigurationFile { get; set; }
 		public bool? ShowTooltips { get; set; }
+		public bool? SaveCroppedImages { get; set; }
 		public string DefaultConfiguration { get; set; }
 		public string FilePath { get; set; }
 

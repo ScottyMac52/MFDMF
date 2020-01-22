@@ -26,10 +26,12 @@
     <None Remove="A-4E.json" />
     <None Remove="AJS-37.json" />
     <None Remove="appsettings.json" />
+    <None Remove="CTSProf.json" />
     <None Remove="displays.json" />
     <None Remove="F-14B.json" />
     <None Remove="F-16C.json" />
     <None Remove="F-18C.json" />
+    <None Remove="TestPattern.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +47,9 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="CTSProf.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="displays.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -55,6 +60,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="F-16C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestPattern.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -88,6 +96,7 @@
     <PackageReference Include="Microsoft.NETCore.DotNetAppHost" Version="3.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 

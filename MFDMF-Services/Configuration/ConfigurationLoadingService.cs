@@ -13,22 +13,22 @@ namespace MFDMF_Services.Configuration
     /// </summary>
     public class ConfigurationLoadingService : IConfigurationLoadingService
     {
-		#region Private readonly fields
+        #region Private readonly fields
 
-		private readonly AppSettings _settings;
+        private readonly AppSettings _settings;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<IConfigurationLoadingService> _logger;
 
-		#endregion Private readonly fields
+        #endregion Private readonly fields
 
-		#region Ctor
+        #region Ctor
 
-		/// <summary>
-		/// Constructor uses IoC dependency injection
-		/// </summary>
-		/// <param name="settings"></param>
-		/// <param name="loggerFactory"></param>
-		public ConfigurationLoadingService(IOptions<AppSettings> settings, ILoggerFactory loggerFactory)
+        /// <summary>
+        /// Constructor uses IoC dependency injection
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="loggerFactory"></param>
+        public ConfigurationLoadingService(IOptions<AppSettings> settings, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory?.CreateLogger<ConfigurationLoadingService>();
@@ -48,14 +48,14 @@ namespace MFDMF_Services.Configuration
         {
             try
             {
-                if(!File.Exists(jsonFile))
+                if (!File.Exists(jsonFile))
                 {
                     throw new FileNotFoundException($"Unable to find the file {jsonFile}");
                 }
                 _logger?.LogInformation($"Loading configuration from {jsonFile}");
                 var fileContent = File.ReadAllText(jsonFile);
                 var moduleDefinitions = JsonConvert.DeserializeObject<List<ModuleDefinition>>(fileContent);
-                return moduleDefinitions;
+                return PreProcessModules(moduleDefinitions);
             }
             catch (Exception ex)
             {
@@ -66,5 +66,47 @@ namespace MFDMF_Services.Configuration
 
         #endregion Public methods
 
+        /// <summary>
+        /// Make sure the Hierarchy is setup
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <returns></returns>
+        private List<ModuleDefinition> PreProcessModules(List<ModuleDefinition> modules)
+        {
+            modules?.ForEach(arg =>
+            {
+                if (arg != null)
+                {
+                    arg.Enabled ??= true;
+                    arg.FilePath ??= _settings.FilePath;
+
+                    arg?.Configurations?.ForEach(config =>
+                    {
+                        config.ModuleName ??= arg.ModuleName;
+                        config.FilePath ??= arg?.FilePath;
+                        config.FileName ??= arg.FileName;
+                        config.Enabled ??= arg.Enabled ??= true;
+
+                        var currentConfig = config;
+                        while ((currentConfig?.SubConfigurations?.Count ?? 0) > 0)
+                        {
+                            currentConfig?.SubConfigurations?.ForEach(subConfig =>
+                            {
+                                subConfig.Parent = currentConfig;
+                                subConfig.ModuleName ??= config?.ModuleName;
+                                subConfig.FilePath ??= config?.FilePath;
+                                subConfig.FileName ??= config?.FileName;
+                                subConfig.Enabled ??= config?.Enabled;
+                                subConfig.Opacity ??= config.Opacity;
+                                currentConfig = subConfig;
+                            });
+                        }
+                    });
+                }
+            });
+
+
+            return modules;
+        }
     }
 }

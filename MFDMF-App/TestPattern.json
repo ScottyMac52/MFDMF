@@ -1,0 +1,234 @@
+[
+	{
+		"name": "TestPattern1",
+		"displayName": "Test Pattern 1",
+		"filePath": "C:\\Users\\Scott\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
+		"fileName": "tv-test-patterns-02.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_TestPattern",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 720,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 576,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_TestPattern",
+				"enabled": true,
+				"width": 1200,
+				"height": 1080,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 720,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 576,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_TestPattern",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 720,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 576,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_TestPattern",
+				"fileName": "convergence-fine-1024x768.gif",
+				"enabled": true,
+				"width": 720,
+				"height": 1080,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1024,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 768,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "TestPattern2",
+		"displayName": "Test Pattern 2",
+		"filePath": "C:\\Users\\Scott\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
+		"fileName": "43764010-tv-color-test-pattern-test-card-vector.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_TestPattern",
+				"enabled": true,
+				"width": 1280,
+				"height": 720,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1300,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 978,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_TestPattern",
+				"enabled": true,
+				"width": 1200,
+				"height": 1080,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1300,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 978,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_TestPattern",
+				"enabled": true,
+				"width": 1280,
+				"height": 720,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1300,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 978,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_TestPattern",
+				"fileName": "convergence-fine-1024x768.gif",
+				"enabled": true,
+				"width": 720,
+				"height": 1080,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1024,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 768,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "TestPattern3",
+		"displayName": "Test Pattern with 1 SubConfig",
+		"filePath": "C:\\Users\\Scott\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
+		"fileName": "43764010-tv-color-test-pattern-test-card-vector.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_TestPattern",
+				"enabled": true,
+				"width": 1280,
+				"height": 720,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 1300,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 978,
+				"opacity": 1.0,
+				"subConfigDef": [
+					{
+						"name": "InsetTest",
+						"enabled": true,
+						"fileName": "maxresdefault.jpg",
+						"width": 640,
+						"height": 360,
+						"left": 320,
+						"top": 180,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 1280,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 720,
+						"opacity": 1.0
+					}
+				]
+			},
+					{
+						"name": "WHKEY_TestPattern",
+						"fileName": "convergence-fine-1024x768.gif",
+						"enabled": true,
+						"width": 1200,
+						"height": 1080,
+						"left": 0,
+						"top": 0,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 1024,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 768,
+						"opacity": 1.0,
+						"subConfigDef": [
+							{
+								"name": "InsetTest",
+								"enabled": true,
+								"fileName": "maxresdefault.jpg",
+								"width": 800,
+								"height": 600,
+								"left": 110,
+								"top": 80,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 1280,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 720,
+								"opacity": 1.0,
+								"subConfigDef": [
+									{
+										"name": "InsetTest2",
+										"fileName": "tv-test-patterns-02.jpg",
+										"enabled": false,
+										"width": 300,
+										"height": 270,
+										"left": 600,
+										"top": 0,
+										"xOffsetStart": 0,
+										"xOffsetFinish": 720,
+										"yOffsetStart": 0,
+										"yOffsetFinish": 576,
+										"opacity": 1.0
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "RMFD_TestPattern",
+						"enabled": true,
+						"width": 1280,
+						"height": 720,
+						"left": 0,
+						"top": 0,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 1300,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 978,
+						"opacity": 1.0
+					},
+					{
+						"name": "JOYKEY_TestPattern",
+						"fileName": "convergence-fine-1024x768.gif",
+						"enabled": true,
+						"width": 720,
+						"height": 1080,
+						"left": 0,
+						"top": 0,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 1024,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 768,
+						"opacity": 1.0
+					}
+				]
+			}
+]

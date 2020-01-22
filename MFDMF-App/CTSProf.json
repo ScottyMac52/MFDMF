@@ -1,0 +1,59 @@
+[
+	{
+		"name": "CTSProf",
+		"displayName": "CTS Profile Selection",
+		"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs",
+		"fileName": "Vyper\\CTSConfigLMFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_CTSProf",
+				"fileName": "Vyper\\CTSConfigLMFD.jpg",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 667,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 441
+			},
+			{
+				"name": "WHKEY_CTSProf",
+				"fileName": "HTML\\gfx\\vr_hotas_sel.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 1449,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 1184
+			},
+			{
+				"name": "RMFD_CTSProf",
+				"fileName": "Vyper\\CTSConfigRMFD.jpg",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 667,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 441
+			},
+			{
+				"name": "ConfigKey",
+				"fileName": "HTML\\gfx\\MFD_Presets.png",
+				"enabled": true,
+				"width": 850,
+				"height": 700,
+				"left": 3625,
+				"top": 100,
+				"xOffsetStart": 1,
+				"xOffsetFinish": 478,
+				"yOffsetStart": 1,
+				"yOffsetFinish": 237
+			}
+		]
+	}
+]
