@@ -1,6 +1,6 @@
 [
 	{
-		"name": "F-18C",
+		"name": "FA-18C",
 		"displayName": "F-18C Block 20 Hornet 2 MFD",
 		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
 		"configurations": [
@@ -57,7 +57,7 @@
 		]
 	},
 	{
-		"name": "F-18CHV",
+		"name": "FA-18CHV",
 		"displayName": "F-18C Block 20 Hornet 2 MFD Hi Viz ",
 		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
 		"configurations": [

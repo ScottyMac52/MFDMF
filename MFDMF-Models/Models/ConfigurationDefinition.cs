@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MFDMF_Models.Models
 {
@@ -100,6 +101,12 @@ namespace MFDMF_Models.Models
         #region Identifying properties 
 
         /// <summary>
+        /// The parent of this configuration
+        /// </summary>
+        [JsonIgnore()]
+        public ConfigurationDefinition Parent { get; set; }
+
+        /// <summary>
         /// Name of the Configuration
         /// </summary>
         [JsonProperty("name")]
@@ -109,6 +116,11 @@ namespace MFDMF_Models.Models
 
         #region Image cropping properties IOffsetGeometry
 
+        /// <summary>
+        /// If true and in a subconfiguration used as an inset switch
+        /// </summary>
+        [JsonProperty("useAsSwitch")]
+        public bool? UseAsSwitch { get; set; }
         /// <summary>
         /// Translucency of the image expressed as percentage of solidness 
         /// </summary>
@@ -208,7 +220,8 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public virtual string ToReadableString()
         {
-            return $"{Name} at ({Left}, {Top}) for ({Width}, {Height})";
+            var fileName = Path.Combine(FilePath,FileName);
+            return $"ImageSource: {fileName} Found: {File.Exists(fileName)} Cropped from: ({XOffsetStart ?? 0},{YOffsetStart ?? 0}) to ({(XOffsetFinish ?? 0) - (XOffsetStart ?? 0)}, {(YOffsetFinish ?? 0) - (YOffsetStart ?? 0)}) for {Name} at ({Left}, {Top}) for ({Width}, {Height}) ";
         }
 
         public virtual string ToJson()

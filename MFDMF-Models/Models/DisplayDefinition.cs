@@ -91,6 +91,11 @@ namespace MFDMF_Models.Models
 		#region Image cropping properties IOffsetGeometry
 
 		/// <summary>
+		/// Not really used with <see cref="DisplayDefinition"/>
+		/// </summary>
+		[JsonProperty("useAsSwitch")]
+		public bool? UseAsSwitch { get; set; }
+		/// <summary>
 		/// Translucency of the image expressed as percentage of solidness 
 		/// </summary>
 		[JsonProperty("opacity")]
@@ -117,7 +122,7 @@ namespace MFDMF_Models.Models
 		public int? YOffsetFinish { get; set; }
 
 		#endregion Image cropping properties IOffsetGeometry
-		
+
 		#region Public overrides 
 
 		/// <summary>

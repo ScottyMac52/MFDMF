@@ -3,6 +3,8 @@ using MFDMFApp.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -23,8 +25,6 @@ namespace MFDMFApp
 		private readonly AppSettings _settings;
 		private readonly List<DisplayDefinition> _displayDefinitions;
 		private DisplayDefinition _displayForConfig;
-		private byte[] _imageBytes;
-		private bool _isTestPattern;
 
 		/// <summary>
 		/// The configuration for this Window
@@ -53,15 +53,12 @@ namespace MFDMFApp
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> used to create the <see cref="ILogger"/></param>
 		/// <param name="displayDefinitions">Loaded display definitions <see cref="List{T}"/> of <see cref="DisplayDefinition"/></param>
 		/// <param name="settings">The <see cref="AppSettings"/> for the application</param>
-		/// <param name="imageBytes">Image bytes to use for the image for load</param>
-		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings, byte[] imageBytes = null)
+		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings)
 		{
 			_settings = settings;
 			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
 			_displayDefinitions = displayDefinitions;
 			InitializeComponent();
-			_isTestPattern = (imageBytes?.Length ?? 0) > 0;
-			_imageBytes = imageBytes;
 		}
 
 		#endregion Constructor
@@ -80,7 +77,7 @@ namespace MFDMFApp
 			ResizeMode = ResizeMode.NoResize;
 			Width = Configuration?.Width ?? 0;
 			Height = Configuration?.Height ?? 0;
-			Opacity = Configuration.Opacity ??= _displayForConfig.Opacity ??= 1.0F;
+			Opacity = Configuration?.Opacity ?? _displayForConfig?.Opacity ?? 1.0F;
 			Configuration.XOffsetStart ??= _displayForConfig?.XOffsetStart;
 			Configuration.XOffsetFinish ??= _displayForConfig?.XOffsetFinish;
 			Configuration.YOffsetStart ??= _displayForConfig?.YOffsetStart;
@@ -105,162 +102,228 @@ namespace MFDMFApp
 		/// Deletes all controls from the <see cref="Grid"/> and adds a new one
 		/// </summary>
 		/// <returns></returns>
-		private Image CreateNewImage()
+		private System.Windows.Controls.Image CreateNewImage(string imageName)
 		{
 			var controlGrid = this.Content as Grid;
 			while(controlGrid.Children.Count > 0)
 			{
 				controlGrid.Children.RemoveAt(0);
 			}
-			var imgMain = new Image()
+			var imgMain = new System.Windows.Controls.Image()
 			{
-				Name = "imgMain",
-				StretchDirection = StretchDirection.Both,
-				Stretch = Stretch.Fill
+				Name = imageName
 			};
 			controlGrid.Children.Add(imgMain);
 			return imgMain;
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="src"></param>
+		/// <param name="config"></param>
+		/// <returns></returns>
+		private Bitmap Crop(Bitmap src, ConfigurationDefinition config)
+		{
+			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
+			var cropRect = new Rectangle(new System.Drawing.Point(config.XOffsetStart ?? 0, config.YOffsetStart ?? 0), imageSize);
+
+			var newBitmap = new Bitmap(cropRect.Width, cropRect.Height);
+			using (var g = Graphics.FromImage(newBitmap))
+			{
+				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
+			}
+
+			if (_settings.SaveCroppedImages ?? false)
+			{
+				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{config.ModuleName}");
+				var imagePrefix = $"{config.Name}-{config.XOffsetStart}-{config.XOffsetFinish}-{config.YOffsetStart}-{config.YOffsetFinish}";
+				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
+				newBitmap.Save(cacheFile);
+			}
+			return newBitmap;
+		}
+
+
+
+		/// <summary>
+		/// Superimposes one image on top of another 
+		/// </summary>
+		/// <param name="imageDictionary"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="Exception"></exception>
+		private Bitmap Superimpose(Dictionary<string, Bitmap> imageDictionary)
+		{
+			// Based oon the current configuration we need to pull the main image
+			Bitmap newBitmap;
+			var key = $"{Configuration.ModuleName}-{Configuration.Name}";
+			var mainImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
+
+			using (var cropped = Crop(mainImage, Configuration))
+			{
+				newBitmap = (Bitmap) SetOpacity(cropped, Configuration.Opacity);
+			}
+
+			_logger.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
+
+			if (newBitmap == null)
+			{
+				_logger.LogError($"Unable to find the image with a key of {key}");
+				throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
+			}
+			using(var g = Graphics.FromImage(newBitmap))
+			{
+				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+
+				var currentConfig = Configuration;
+				while ((currentConfig?.SubConfigurations?.Count ?? 0) > 0)
+				{
+					currentConfig?.SubConfigurations?.ForEach(subConfig =>
+					{
+						if ((subConfig.Enabled  ?? false && !(subConfig.UseAsSwitch ?? false)) || ((subConfig.UseAsSwitch ?? false) && (SubConfigurationName?.Equals(subConfig.Name, StringComparison.InvariantCultureIgnoreCase) ?? false)))
+						{
+							key = $"{subConfig.ModuleName}-{subConfig?.Parent?.Name}-{subConfig.Name}";
+							var insetImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
+							using var croppedInset = Crop(insetImage, subConfig);
+							if (croppedInset == null)
+							{
+								_logger.LogError($"Unable to find the image with a key of {key}");
+								throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
+							}
+							var insetBitmap = (Bitmap) SetOpacity(croppedInset, subConfig.Opacity);
+							insetBitmap.MakeTransparent();
+							int x = subConfig.Left;
+							int y = subConfig.Top;
+							g.DrawImage(insetBitmap, new Rectangle(new System.Drawing.Point(x, y), new System.Drawing.Size(subConfig.Width, subConfig.Height)));
+							var parentConfig = $"Module: {subConfig?.Parent?.ModuleName} Filename: {subConfig?.Parent?.FileName} Config: {subConfig?.Parent?.Name}";
+							_logger.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({insetBitmap.Width}, {insetBitmap.Height}) placed at ({x}, {y}) inside of {parentConfig} with an opacity: {subConfig.Opacity}");
+						}
+						currentConfig = subConfig;
+					});
+				}
+			}
+			return newBitmap;
+		}
+
+		/// <summary>
+		/// Sets the Opacity of the Bitmap 
+		/// </summary>
+		/// <param name="src">Source <seealso cref="Bitmap"/></param>
+		/// <param name="opacity">Opacity as a float</param>
+		/// <returns></returns>
+		private static System.Drawing.Image SetOpacity(System.Drawing.Image src, float? opacity)
+		{
+			var bitMap = new Bitmap(src.Width, src.Height);
+			using (var gfx = Graphics.FromImage(bitMap))
+			{
+				var matrix = new ColorMatrix
+				{
+					Matrix33 = opacity ?? 1.0F
+				};
+				using var imageAttributes = new ImageAttributes();
+				imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+				gfx.DrawImage(src, new Rectangle(0, 0, bitMap.Width, bitMap.Height), 0, 0, src.Width, src.Height, GraphicsUnit.Pixel, imageAttributes);
+			}
+
+			return bitMap;
+		}
+
+		/// <summary>
+		/// Loads all of the files for a config and returns a dictionary of the results
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="OutOfMemoryException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		private Dictionary<string, Bitmap> LoadBitmaps()
+		{
+			var imageDictionary = new Dictionary<string, Bitmap>();
+			var fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName);
+			if(!File.Exists(fileSource))
+			{
+				throw new FileNotFoundException($"Unable to find the specified file at {Configuration.FilePath}", Configuration.FileName);
+			}
+			var bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
+			imageDictionary.Add($"{Configuration.ModuleName}-{Configuration.Name}", bitMap);
+			var currentConfig = Configuration;
+			while((currentConfig?.SubConfigurations?.Count ?? 0) > 0)
+			{
+				currentConfig?.SubConfigurations?.ForEach(subConfig =>
+				{
+					fileSource = Path.Combine(subConfig.FilePath, subConfig.FileName);
+					if (!File.Exists(fileSource))
+					{
+						throw new FileNotFoundException($"Unable to find the specified file at {subConfig.FilePath}", subConfig.FileName);
+					}
+					bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
+					var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
+					imageDictionary.Add(key, bitMap);
+					currentConfig = subConfig;
+				});
+			}
+			return imageDictionary;
+		}
+
+
+		/// <summary>
 		/// Loads the configured image either from the test pattern, user's cache or from the original location
 		/// </summary>
 		private void LoadImage()
 		{
-			var imgMain = CreateNewImage();
+			// Load the image dict
+			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{Configuration.ModuleName}");
 
-			if (_isTestPattern)
+			var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}-{Configuration.Left}-{Configuration.Top}-{Configuration.Width}-{Configuration.Height}-{Configuration.Name}-{Configuration.Opacity ?? 1.0F}";
+			if((SubConfigurationName?.Length ?? 0) > 0)
 			{
-				IsWindowLoaded = false;
-				var image = new BitmapImage();
-				using (var mem = new MemoryStream(_imageBytes))
-				{
-					mem.Position = 0;
-					image.BeginInit();
-					image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-					image.CacheOption = BitmapCacheOption.OnLoad;
-					image.UriSource = null;
-					image.StreamSource = mem;
-					image.EndInit();
-				}
-				image.Freeze();
-				imgMain.Source = image;
-				imgMain.Width = Width;
-				imgMain.Height = Height;
-				imgMain.Visibility = Visibility.Visible;
-				IsWindowLoaded = true;
-				return;
+				var subConfig = Configuration.SubConfigurations.FirstOrDefault(sub => sub.ModuleName == Configuration.ModuleName && sub.Name == SubConfigurationName);
+				var subConfigOpacity = subConfig?.Opacity;
+				imagePrefix += $"-{subConfig?.XOffsetStart ?? 0}To{subConfig?.XOffsetFinish ?? 0}_Y-{subConfig?.YOffsetStart ?? 0}To{subConfig?.YOffsetFinish ?? 0}-{subConfig?.Left ?? 0}-{subConfig?.Top ?? 0}-{subConfig?.Width ?? 0}-{subConfig?.Height ?? 0}-{SubConfigurationName}-{subConfigOpacity ?? 1.0F}";
+			}
+			var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
+
+			if (!Directory.Exists(cacheFolder))
+			{
+				_logger.LogWarning($"Creating directory: {cacheFolder}");
+				Directory.CreateDirectory(cacheFolder);
 			}
 
-			try
+			if (!File.Exists(cacheFile))
 			{
-				if (Configuration?.Enabled ?? false)
-				{
-					IsWindowLoaded = false;
-					var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"Vyper Industries\\MFDMF\\cache\\{Configuration.ModuleName}");
-					var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}";
-					var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}_{Configuration.Name}.jpg");
-					if (File.Exists(cacheFile))
-					{
-						BitmapImage bitmap = new BitmapImage();
-						bitmap.BeginInit();
-						bitmap.CacheOption = BitmapCacheOption.OnLoad;
-						bitmap.UriSource = new Uri(cacheFile);
-						bitmap.EndInit();
-						imgMain.Source = bitmap;
-						imgMain.Width = Width;
-						imgMain.Height = Height;
-						imgMain.Visibility = Visibility.Visible;
-					}
-					else
-					{
-						imgMain.Source = GetBitMapSource(Configuration, cacheFolder, cacheFile);
-						imgMain.Width = Width;
-						imgMain.Height = Height;
-						imgMain.Visibility = Visibility.Visible;
-					}
-					IsWindowLoaded = true;
-				}
-				else
-				{
-					_logger.LogWarning($"Configuration {Configuration.Name} for Module {Configuration.ModuleName} is disabled");
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger?.LogError($"Unable to load {Configuration.ToReadableString()}", ex);
-				throw;
-			}
-			finally
-			{
-				if (imgMain != null)
-				{
-					_logger?.LogInformation($"Configuration {Configuration.ToReadableString()} is loaded");
-				}
-				else
-				{
-					_logger?.LogWarning($"Configuration was not loaded -> {Configuration.ToReadableString()}");
-					Close();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Loads the image from the cache or crops it from the source image
-		/// </summary>
-		/// <typeparam name="T">Must be derived from <seealso cref="ConfigurationBaseDefinition"/></typeparam>
-		/// <param name="configSource">The configuration source, derived from <seealso cref="ConfigurationBaseDefinition"/> </param>
-		/// <param name="cacheFolder">Location of the cache of images</param>
-		/// <param name="cacheFile">Full path to the requested file in the cache</param>
-		/// <returns><seealso cref="BitmapSource"/></returns>
-		private BitmapSource GetBitMapSource<T>(T configSource, string cacheFolder, string cacheFile)
-			where T : ConfigurationDefinition
-		{
-			BitmapSource bitmapSource = null;
-
-			if (File.Exists(cacheFile))
-			{
-				_logger.LogInformation($"Cache file found: {cacheFile}");
-				Stream imageStreamSource = new FileStream(cacheFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-				PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-				bitmapSource = decoder.Frames[0];
+				_logger.LogWarning($"Cache file NOT found: {cacheFile}");
+				var imageDictionary = LoadBitmaps();
+				_logger?.LogInformation($"Loaded {imageDictionary.Count} images for {Configuration.ModuleName}-{Configuration.Name}");
+				var imageMain = Superimpose(imageDictionary);
+				imageMain.Save(cacheFile);
+				imageMain.Dispose();
+				_logger.LogInformation($"Saved Cache file: {cacheFile}");
 			}
 			else
 			{
-				if (!Directory.Exists(cacheFolder))
-				{
-					Directory.CreateDirectory(cacheFolder);
-				}
-				var filePath = Path.Combine(configSource.FilePath, configSource.FileName);
-
-				var imgSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
-				var width = (configSource.XOffsetFinish ?? 0) - (configSource.XOffsetStart ?? 0);
-				var height = (configSource.YOffsetFinish ?? 0) - (configSource.YOffsetStart ?? 0);
-				Int32Rect offSet = new Int32Rect(configSource.XOffsetStart ?? 0, configSource.YOffsetStart ?? 0, width, height);
-				BitmapImage src = new BitmapImage();
-				src.BeginInit();
-				src.UriSource = imgSource;
-				src.CacheOption = BitmapCacheOption.OnLoad;
-				src.EndInit();
-				var croppedBitmap = new CroppedBitmap(src, offSet);
-				var noAlphaSource = new FormatConvertedBitmap();
-				noAlphaSource.BeginInit();
-				noAlphaSource.Source = croppedBitmap;
-				noAlphaSource.DestinationFormat = PixelFormats.Bgr24;
-				//noAlphaSource.AlphaThreshold = 0;
-				noAlphaSource.EndInit();
-				SaveImage(noAlphaSource, cacheFolder, cacheFile);
-				bitmapSource = noAlphaSource;
-				return noAlphaSource;
+				_logger?.LogInformation($"Found cache file: {cacheFile}");
 			}
 
-			return bitmapSource;
+			var imgMain = CreateNewImage("imgMain");
+			imgMain.StretchDirection = StretchDirection.Both;
+			imgMain.Stretch = Stretch.Fill;
+			var imgSource = new Uri(cacheFile, UriKind.RelativeOrAbsolute);
+			BitmapImage src = new BitmapImage();
+			src.BeginInit();
+			src.UriSource = imgSource;
+			src.CacheOption = BitmapCacheOption.OnLoad;
+			src.EndInit();
+			imgMain.Source = src;
+			imgMain.Width = Width;
+			imgMain.Height = Height;
+			imgMain.Visibility = Visibility.Visible;
+			IsWindowLoaded = true;
 		}
 
 		#endregion Image Loading
 
 		#region Image saving
-
 
 		/// <summary>
 		/// Saves the Image in the specified format, default format is bmp
@@ -275,7 +338,6 @@ namespace MFDMFApp
 			_logger.LogInformation($"Cropped image saved as {cacheFile}");
 		}
 
-
 		#endregion Image saving
 
 		#region Window events
@@ -287,11 +349,13 @@ namespace MFDMFApp
 		/// <param name="e"></param>
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			var watch = System.Diagnostics.Stopwatch.StartNew();
 			if (InitializeWindow())
 			{
 				LoadImage();
-				_logger?.LogDebug($"Loading the configuration for {Configuration.Name} from Module {Configuration.ModuleName} as {Title} ({Left}, {Top}) for ({Width}, {Height})");
 			}
+			watch.Stop();
+			_logger.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationName}: loaded in {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		/// <summary>
