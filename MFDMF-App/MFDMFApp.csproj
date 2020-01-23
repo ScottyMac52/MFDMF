@@ -32,38 +32,142 @@
     <None Remove="F-14B.json" />
     <None Remove="F-16C.json" />
     <None Remove="F-18C.json" />
+    <None Remove="Modules\Blue Helos\SA-342.json" />
+    <None Remove="Modules\Blue Helos\UH-1.json" />
+    <None Remove="Modules\Blue Jets\C-101EB.json" />
+    <None Remove="Modules\Blue Jets\F-15C.json" />
+    <None Remove="Modules\Blue Jets\F-5E.json" />
+    <None Remove="Modules\Blue Jets\F-86F.json" />
+    <None Remove="Modules\Blue Jets\M-2000C.json" />
+    <None Remove="Modules\Blue Jets\MB339.json" />
+    <None Remove="Modules\Blue Warbirds\Bf-109.json" />
+    <None Remove="Modules\Blue Warbirds\P-51.json" />
+    <None Remove="Modules\Blue Warbirds\Spitfire.json" />
+    <None Remove="Modules\CombinedArms.json" />
+    <None Remove="Modules\Lotac\awacs.json" />
+    <None Remove="Modules\Non DCS\Elite.json" />
+    <None Remove="Modules\Non DCS\Il2.json" />
+    <None Remove="Modules\NS430.json" />
+    <None Remove="Modules\Red Helos\Ka-50.json" />
+    <None Remove="Modules\Red Helos\Mi-8.json" />
+    <None Remove="Modules\Red Jets\JF-17.json" />
+    <None Remove="Modules\Red Jets\L-39.json" />
+    <None Remove="Modules\Red Jets\Mig-15.json" />
+    <None Remove="Modules\Red Jets\Mig-19P.json" />
+    <None Remove="Modules\Red Jets\Mig-21.json" />
+    <None Remove="Modules\Red Jets\Su-25T.json" />
+    <None Remove="Modules\Red Warbirds\Fw-190.json" />
+    <None Remove="Modules\Red Warbirds\I-16.json" />
     <None Remove="TestPattern.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="AJS-37.json">
+    <Content Include="Modules\Blue Helos\SA-342.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="A-10C.json">
+    <Content Include="Modules\Blue Helos\UH-1.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="A-4E.json">
+    <Content Include="Modules\Blue Jets\AJS-37.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\A-10C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\A-4E.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CTSProf.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Modules\Blue Jets\C-101EB.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\F-15C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\F-5E.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\F-86F.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\M-2000C.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\MB339.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Warbirds\P-51.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Warbirds\Spitfire.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\CombinedArms.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Non DCS\Il2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\NS430.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Helos\Ka-50.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Helos\Mi-8.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\JF-17.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\L-39.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\Mig-19P.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\Mig-21.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\Mig-15.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Jets\Su-25T.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Warbirds\Bf-109.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\CTSProf.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="displays.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\F-18C.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="F-18C.json">
+    <Content Include="Modules\Blue Jets\F-14B.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="F-14B.json">
+    <Content Include="Modules\Blue Jets\F-16C.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="F-16C.json">
+    <Content Include="Modules\Lotac\awacs.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestPattern.json">
+    <Content Include="Modules\Non DCS\Elite.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Non DCS\TestPattern.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Warbirds\Fw-190.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Red Warbirds\I-16.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

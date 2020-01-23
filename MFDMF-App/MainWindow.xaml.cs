@@ -106,8 +106,6 @@ namespace MFDMFApp
 							subModule = configSubModule;
 						}
 					});
-
-					_logger?.LogInformation($"Creating {config.ModuleName}-{config.Name} from {config.FileName}");
 					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
 					{
 						Configuration = config,
@@ -361,6 +359,7 @@ namespace MFDMFApp
 					catch(JsonException jsonex)
 					{
 						_logger?.LogError($"Unable to load file {mf}. Exception: {jsonex}");
+						throw;
 					}
 				});
 			}

@@ -1,0 +1,54 @@
+[
+	{
+		"name": "CA",
+		"displayName": "Combined Arms",
+		"fileName": "Combined Arms\\DCS CA MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_CA",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_CA",
+				"filename": "Combined Arms\\DCS CA THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_CA",
+				"enabled": false
+			}
+		]
+	},
+	{
+		"name": "CAHV",
+		"displayName": "Combined Arms Hi Viz",
+		"fileName": "_High Contrast MFDs\\DCS CA MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_CA",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_CA",
+				"filename": "Combined Arms\\DCS CA THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_CA",
+				"enabled": false
+			}
+		]
+	}
+]

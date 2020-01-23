@@ -1,0 +1,31 @@
+[
+	{
+		"name": "Bf-109",
+		"displayName": "Bf-109 K-4 Kurfürst",
+		"fileName": "Bf-109\\DCS Bf109 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Bf-109",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Bf-109",
+				"filename": "Bf-109\\DCS Bf109 THROTTLE.JPG",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Bf-109",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	}
+]

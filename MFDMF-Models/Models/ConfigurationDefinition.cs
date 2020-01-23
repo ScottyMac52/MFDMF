@@ -181,6 +181,12 @@ namespace MFDMF_Models.Models
         [JsonProperty("subConfigDef")]
         public virtual List<ConfigurationDefinition> SubConfigurations { get; set; }
 
+        /// <summary>
+        /// If true then the superimposed bitmap is opaque
+        /// </summary>
+        [JsonProperty("makeOpaque")]
+        public bool? MakeOpaque { get; set; }
+
         #endregion SubConfiguration support
 
         #region Public overrides 

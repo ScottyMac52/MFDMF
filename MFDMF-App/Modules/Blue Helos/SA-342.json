@@ -1,0 +1,86 @@
+[
+	{
+		"name": "SA-342",
+		"displayName": "SA-342 Gazelle",
+		"fileName": "SA-342\\DCS SA342 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_SA-342",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_SA-342",
+				"filename": "SA-342\\DCS SA342 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_SA-342",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_NADIR",
+				"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
+				"enabled": true,
+				"left": 10,
+				"width": 600,
+				"height": 427,
+				"xOffsetStart": 10,
+				"xOffsetFinish": 610,
+				"yOffsetStart": 280,
+				"yOffsetFinish": 707,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "SA-342HV",
+		"displayName": "SA-342 Gazelle Hi Viz",
+		"fileName": "_High Contrast MFDs\\DCS SA342 MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_SA-342",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_SA-342",
+				"filename": "SA-342\\DCS SA342 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_SA-342",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			},
+			{
+				"name": "JOYKEY_NADIR",
+				"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
+				"enabled": true,
+				"left":  10,
+				"width": 600,
+				"height": 427,
+				"xOffsetStart": 10,
+				"xOffsetFinish": 610,
+				"yOffsetStart": 280,
+				"yOffsetFinish": 707,
+				"opacity": 1.0
+			}
+		]
+	}
+]

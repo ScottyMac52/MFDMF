@@ -108,6 +108,15 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HOTAS.
+        /// </summary>
+        internal static string HOTASKEY {
+            get {
+                return ResourceManager.GetString("HOTASKEY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] IndianHead {
@@ -161,6 +170,15 @@ namespace MFDMFApp.Properties {
         internal static string StartingMain {
             get {
                 return ResourceManager.GetString("StartingMain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to THROTTLE.
+        /// </summary>
+        internal static string THROTTLEKEY {
+            get {
+                return ResourceManager.GetString("THROTTLEKEY", resourceCulture);
             }
         }
         

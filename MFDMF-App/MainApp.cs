@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -35,7 +36,8 @@ namespace MFDMFApp
 				services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
 				services.Configure<AppSettings>(options =>
 				{
-					options.ModuleNames = configuration.GetSection("AppSettings:ModuleFiles").Get<List<string>>();
+					var modulesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Modules");
+					options.ModuleNames = Directory.GetFiles(modulesDirectory, "*.json", SearchOption.AllDirectories)?.ToList();
 				});
 				services.AddSingleton(GetStartOptions(args));
 				services.AddSingleton<MainWindow>();

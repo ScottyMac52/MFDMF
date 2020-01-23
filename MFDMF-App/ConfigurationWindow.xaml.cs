@@ -104,7 +104,7 @@ namespace MFDMFApp
 		/// <returns></returns>
 		private System.Windows.Controls.Image CreateNewImage(string imageName)
 		{
-			var controlGrid = this.Content as Grid;
+			var controlGrid = Content as Grid;
 			while(controlGrid.Children.Count > 0)
 			{
 				controlGrid.Children.RemoveAt(0);
@@ -118,34 +118,23 @@ namespace MFDMFApp
 		}
 
 		/// <summary>
-		/// 
+		/// Crops the image to the specified dimensions 
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="config"></param>
 		/// <returns></returns>
-		private Bitmap Crop(Bitmap src, ConfigurationDefinition config)
+		private static Bitmap Crop(Bitmap src, ConfigurationDefinition config)
 		{
 			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
 			var cropRect = new Rectangle(new System.Drawing.Point(config.XOffsetStart ?? 0, config.YOffsetStart ?? 0), imageSize);
-
-			var newBitmap = new Bitmap(cropRect.Width, cropRect.Height);
+			var newBitmap = new Bitmap(config.Width, config.Height);
 			using (var g = Graphics.FromImage(newBitmap))
 			{
 				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
 			}
-
-			if (_settings.SaveCroppedImages ?? false)
-			{
-				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{config.ModuleName}");
-				var imagePrefix = $"{config.Name}-{config.XOffsetStart}-{config.XOffsetFinish}-{config.YOffsetStart}-{config.YOffsetFinish}";
-				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
-				newBitmap.Save(cacheFile);
-			}
 			return newBitmap;
 		}
-
-
-
+			   
 		/// <summary>
 		/// Superimposes one image on top of another 
 		/// </summary>
@@ -192,8 +181,21 @@ namespace MFDMFApp
 								_logger.LogError($"Unable to find the image with a key of {key}");
 								throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 							}
+
+							if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
+							{
+								var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{subConfig.ModuleName}");
+								var imagePrefix = $"{subConfig.Name}-{subConfig.XOffsetStart}-{subConfig.XOffsetFinish}-{subConfig.YOffsetStart}-{subConfig.YOffsetFinish}";
+								var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
+								croppedInset.Save(cacheFile);
+							}
+							
 							var insetBitmap = (Bitmap) SetOpacity(croppedInset, subConfig.Opacity);
-							insetBitmap.MakeTransparent();
+							// Make it transparent for the superimpose as long as MakeOpaque is false
+							if(!(subConfig?.MakeOpaque ?? false))
+							{
+								insetBitmap.MakeTransparent();
+							}
 							int x = subConfig.Left;
 							int y = subConfig.Top;
 							g.DrawImage(insetBitmap, new Rectangle(new System.Drawing.Point(x, y), new System.Drawing.Size(subConfig.Width, subConfig.Height)));
@@ -240,11 +242,20 @@ namespace MFDMFApp
 		private Dictionary<string, Bitmap> LoadBitmaps()
 		{
 			var imageDictionary = new Dictionary<string, Bitmap>();
-			var fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName);
+			var replacementValue = (_settings?.UseCougar ?? false) ? "HC" : "WH";
+			var fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, replacementValue, StringComparison.InvariantCulture));
 			if(!File.Exists(fileSource))
 			{
-				throw new FileNotFoundException($"Unable to find the specified file at {Configuration.FilePath}", Configuration.FileName);
+				if ((_settings?.UseCougar ?? false) == true)
+				{
+					fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY, StringComparison.InvariantCulture));
+				}
+				if (!File.Exists(fileSource))
+				{
+					throw new FileNotFoundException($"Unable to find the specified file at {fileSource}");
+				}
 			}
+			_logger?.LogInformation($"Loading file: {fileSource} for Configuration {Configuration.ModuleName}-{Configuration.Name}");
 			var bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
 			imageDictionary.Add($"{Configuration.ModuleName}-{Configuration.Name}", bitMap);
 			var currentConfig = Configuration;
@@ -257,6 +268,7 @@ namespace MFDMFApp
 					{
 						throw new FileNotFoundException($"Unable to find the specified file at {subConfig.FilePath}", subConfig.FileName);
 					}
+					_logger?.LogInformation($"Loading file: {fileSource} for {subConfig.ToReadableString()}");
 					bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
 					var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
 					imageDictionary.Add(key, bitMap);
@@ -274,8 +286,8 @@ namespace MFDMFApp
 		{
 			// Load the image dict
 			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{Configuration.ModuleName}");
-
-			var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}-{Configuration.Left}-{Configuration.Top}-{Configuration.Width}-{Configuration.Height}-{Configuration.Name}-{Configuration.Opacity ?? 1.0F}";
+			var throttleType = (_settings?.UseCougar ?? false) ? "HC" : "WH";
+			var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}-{Configuration.Left}-{Configuration.Top}-{Configuration.Width}-{Configuration.Height}-{Configuration.Name}-{Configuration.Opacity ?? 1.0F}-{throttleType}";
 			if((SubConfigurationName?.Length ?? 0) > 0)
 			{
 				var subConfig = Configuration.SubConfigurations.FirstOrDefault(sub => sub.ModuleName == Configuration.ModuleName && sub.Name == SubConfigurationName);
@@ -290,14 +302,16 @@ namespace MFDMFApp
 				Directory.CreateDirectory(cacheFolder);
 			}
 
-			if (!File.Exists(cacheFile))
+			if (!File.Exists(cacheFile) || (_settings.TurnOffCache ?? false))
 			{
 				_logger.LogWarning($"Cache file NOT found: {cacheFile}");
 				var imageDictionary = LoadBitmaps();
 				_logger?.LogInformation($"Loaded {imageDictionary.Count} images for {Configuration.ModuleName}-{Configuration.Name}");
-				var imageMain = Superimpose(imageDictionary);
-				imageMain.Save(cacheFile);
-				imageMain.Dispose();
+
+				using(var imageMain = Superimpose(imageDictionary))
+				{
+					imageMain.Save(cacheFile);
+				}
 				_logger.LogInformation($"Saved Cache file: {cacheFile}");
 			}
 			else

@@ -1,11 +1,12 @@
 [
 	{
-		"name": "FA-18C",
-		"displayName": "F-18C Block 20 Hornet 2 MFD",
-		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+		"name": "F-16C",
+		"displayName": "F-16C Block 50 Viper",
+		"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Profile JPGs",
+		"fileName": "F-16C\\DCS F16C MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
+				"name": "LMFD_Viper",
 				"width": 870,
 				"height": 700,
 				"left": 0,
@@ -17,8 +18,8 @@
 				"opacity": 0.7
 			},
 			{
-				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C WH.jpg",
+				"name": "WHKEY_Viper",
+				"fileName": "F-16C\\DCS F16C THROTTLE.JPG",
 				"width": 1200,
 				"height": 1000,
 				"left": 10,
@@ -30,26 +31,13 @@
 				"opacity": 0.75
 			},
 			{
-				"name": "RMFD_Hornet",
+				"name": "RMFD_Viper",
 				"width": 870,
 				"height": 700,
 				"left": 409,
 				"top": 0,
 				"xOffsetStart": 903,
 				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
-			},
-			{
-				"name": "JOYKEY_Hornet",
-				"enabled": false,
-				"width": 400,
-				"height": 400,
-				"left": 20,
-				"top": 10,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
 				"yOffsetStart": 250,
 				"yOffsetFinish": 900,
 				"opacity": 0.7
@@ -57,12 +45,13 @@
 		]
 	},
 	{
-		"name": "FA-18CHV",
-		"displayName": "F-18C Block 20 Hornet 2 MFD Hi Viz ",
-		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+		"name": "F-16CHV",
+		"displayName": "F-16C Block 50 Viper HiViz",
+		"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Profile JPGs",
+		"fileName": "_High Contrast MFDs\\DCS F16C MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
+				"name": "LMFD_Viper",
 				"width": 870,
 				"height": 700,
 				"left": 0,
@@ -74,8 +63,8 @@
 				"opacity": 0.7
 			},
 			{
-				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C WH.jpg",
+				"name": "WHKEY_Viper",
+				"fileName": "F-16C\\DCS F16C THROTTLE.JPG",
 				"width": 1200,
 				"height": 1000,
 				"left": 10,
@@ -87,7 +76,7 @@
 				"opacity": 0.75
 			},
 			{
-				"name": "RMFD_Hornet",
+				"name": "RMFD_Viper",
 				"width": 870,
 				"height": 700,
 				"left": 409,
@@ -97,21 +86,7 @@
 				"yOffsetStart": 250,
 				"yOffsetFinish": 900,
 				"opacity": 0.7
-			},
-			{
-				"name": "JOYKEY_Hornet",
-				"enabled": false,
-				"width": 400,
-				"height": 400,
-				"left": 20,
-				"top": 10,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
 			}
 		]
 	}
-
 ]
