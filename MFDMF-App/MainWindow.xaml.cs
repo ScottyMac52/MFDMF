@@ -1,7 +1,6 @@
 ﻿using MFDMF_Models.Comparer;
 using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
-using MFDMF_Models.Models.TestPattern;
 using MFDMF_Services.Configuration;
 using MFDMF_Services.Displays;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,7 @@ namespace MFDMFApp
 		private readonly StartOptions _startOptions;
 		#endregion IoC Injected fields
 
-		#region private and protected fields and properties
+		#region Private fields
 		/// <summary>
 		/// List of all created <see cref="ConfigurationWindow"/> Windows
 		/// </summary>
@@ -59,7 +58,7 @@ namespace MFDMFApp
 		/// List of the dsiplays for the configuration
 		/// </summary>
 		private List<DisplayDefinition> _displays;
-		#endregion private and protected fields and properties
+		#endregion Private fields
 
 		#region Constructor
 		/// <summary>
@@ -88,6 +87,8 @@ namespace MFDMFApp
 		/// <summary>
 		/// Creates all the windows for the <see cref="ConfigurationDefinition"/> definitions
 		/// </summary>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void CreateWindows()
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -129,13 +130,15 @@ namespace MFDMFApp
 				}
 			});
 			watch.Stop();
-			_logger.LogInformation($"Module {_selectedModule.DisplayName}: SubModule(s): {_subModule} loaded in {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Module {_selectedModule.DisplayName}: SubModule(s): {_subModule} loaded in {watch.ElapsedMilliseconds} milliseconds");
 
 		}
 
 		/// <summary>
 		/// Destroys all active <see cref="ConfigurationWindow"/>
 		/// </summary>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void DestroyWindows()
 		{
 			_windowList.ToList().ForEach(mfd =>
@@ -153,9 +156,10 @@ namespace MFDMFApp
 		/// <summary>
 		/// Sets up the main window
 		/// </summary>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void SetupWindow()
 		{
-			//WindowList = new SortedList<string, AuxWindow>();
 			var moduleList = _modules;
 			moduleList?.Sort(new ModuleDefinitionComparer());
 			_availableModules = moduleList;
@@ -169,6 +173,7 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		private bool GetSelectedDefinition(string moduleName)
 		{
 			if (string.IsNullOrEmpty(moduleName))
@@ -208,6 +213,8 @@ namespace MFDMFApp
 		/// Changes the selected sub-module
 		/// </summary>
 		/// <param name="subModeSpecified"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		public void ChangeSelectedSubModule(string subModeSpecified)
 		{
 			_subModule = subModeSpecified;
@@ -215,6 +222,11 @@ namespace MFDMFApp
 			CreateWindows();
 		}
 
+		/// <summary>
+		/// Event for the module selection change
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			try
@@ -229,6 +241,12 @@ namespace MFDMFApp
 			}
 		}
 
+		/// <summary>
+		/// Processes the selection change of the module
+		/// </summary>
+		/// <param name="moduleName"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void ProcessChangedModule(string moduleName)
 		{
 			if (GetSelectedDefinition(moduleName))
@@ -255,17 +273,36 @@ namespace MFDMFApp
 
 		#region Window events
 
+		/// <summary>
+		/// Window is closed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void Window_Closed(object sender, EventArgs e)
 		{
 			_logger?.LogInformation(Properties.Resources.MainWindowClosed);
 		}
 
+		/// <summary>
+		/// Window is closing so clean up
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			_logger?.LogInformation(Properties.Resources.MainWindowClosing);
 			DestroyWindows();
 		}
 
+		/// <summary>
+		/// Window is loaded and ready to be setup
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -275,13 +312,18 @@ namespace MFDMFApp
 			ReloadConfiguration();
 			SetupWindow();
 			watch.Stop();
-			_logger.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		#endregion Window events
 
 		#region Menu Item processing
 
+		/// <summary>
+		/// User requested to close
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void FileMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			_logger?.LogInformation(Properties.Resources.UserRequestedAppClose);
@@ -293,6 +335,15 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="PlatformNotSupportedException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="System.Security.SecurityException"></exception>
 		private void ClearCache_Click(object sender, RoutedEventArgs e)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -316,7 +367,7 @@ namespace MFDMFApp
 			});
 			CreateWindows();
 			watch.Stop();
-			_logger.LogInformation($"Clear cache took: {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Clear cache took: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 
@@ -339,10 +390,15 @@ namespace MFDMFApp
 		/// <summary>
 		/// Used to always load the configuration
 		/// </summary>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void ReloadConfiguration(bool forceReload = false)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var module = (string)cbModules.SelectedValue;
+			var module = (string)cbModules?.SelectedValue;
 			DestroyWindows();
 			
 			if((_settings.ModuleNames?.Count ?? 0) > 0)
@@ -365,10 +421,10 @@ namespace MFDMFApp
 			}
 			SetupWindow();
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
-			_logger.LogInformation($"Loading module {selectedModule}");
+			_logger?.LogInformation($"Loading module {selectedModule}");
 			ChangeSelectedModule(selectedModule, forceReload);
 			watch.Stop();
-			_logger.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		#endregion Menu Item processing

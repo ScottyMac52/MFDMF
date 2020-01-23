@@ -2,12 +2,10 @@
 using MFDMF_Models.Models;
 using MFDMF_Services.Configuration;
 using MFDMF_Services.Displays;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +25,15 @@ namespace MFDMFApp
 		/// Application Ctor
 		/// </summary>
 		/// <param name="args"></param>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
 		public MainApp(string[] args)
 		{
 			Host = ConfigureApp.Configure((services, configuration) =>
@@ -45,7 +52,7 @@ namespace MFDMFApp
 
 			_loggerFactory = Host.Services.GetRequiredService<ILoggerFactory>();
 			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
-			_logger.LogInformation($"Starting {GetVersionString()}");
+			_logger?.LogInformation($"Starting {GetVersionString()}");
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
 	}
 
@@ -54,6 +61,7 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="args">Startup args passed</param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		protected static StartOptions GetStartOptions(string[] args)
 		{
 			StartOptions startOptions = null;
@@ -72,6 +80,7 @@ namespace MFDMFApp
 		/// Async Startup handler that gets the Singleton <see cref="MainWindow"/> and shows it
 		/// </summary>
 		/// <param name="e"></param>
+		/// <exception cref="InvalidOperationException"></exception>
 		protected override async void OnStartup(StartupEventArgs e)
 		{
 			await (Host?.StartAsync()).ConfigureAwait(true);
@@ -85,6 +94,8 @@ namespace MFDMFApp
 		/// Async Exit handler
 		/// </summary>
 		/// <param name="e"></param>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref=""
 		protected override async void OnExit(ExitEventArgs e)
 		{
 			_logger?.LogInformation($"Shutting down with exit code {e?.ApplicationExitCode ?? 0}");
@@ -104,6 +115,7 @@ namespace MFDMFApp
 		/// Gets the version information from the assembly
 		/// </summary>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		private static string GetVersionString()
 		{
 			var exeAssem = Assembly.GetExecutingAssembly();

@@ -1,0 +1,52 @@
+[
+	{
+		"name": "Main",
+		"width": 2560,
+		"height": 1440,
+		"left": 0,
+		"top": 0
+	},
+	{
+		"name": "LMFD",
+		"width": 400,
+		"height": 400,
+		"left": 2561,
+		"top": 0,
+		"xOffsetStart": 101,
+		"xOffsetFinish": 776,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
+		"name": "WHKEY",
+		"width": 1000,
+		"height": 680,
+		"left": 2961,
+		"top": 0,
+		"xOffsetStart": 0,
+		"xOffsetFinish": 3330,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 2295,
+		"opacity": 1.0
+	},
+	{
+		"name": "JOYKEY",
+		"width": 720,
+		"height": 540,
+		"left": 3962,
+		"top": 0
+	},
+	{
+		"name": "RMFD",
+		"width": 400,
+		"height": 400,
+		"left": 2961,
+		"top": 0,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	}
+]
