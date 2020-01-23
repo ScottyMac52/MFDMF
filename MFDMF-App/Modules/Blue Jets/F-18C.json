@@ -1,0 +1,235 @@
+[
+	{
+		"name": "FA-18C",
+		"displayName": "F-18C Block 20 Hornet 2 MFD",
+		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C MFD3.jpg",
+				"enabled": false,
+				"width": 400,
+				"height": 400,
+				"left": 20,
+				"top": 10,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "FA-18CHV",
+		"displayName": "F-18C Block 20 Hornet 2 MFD Hi Viz ",
+		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_Hornet",
+				"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg",
+				"enabled": false,
+				"width": 400,
+				"height": 400,
+				"left": 20,
+				"top": 10,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "FA-18C3",
+		"displayName": "F-18C Block 20 Hornet 3 MFD",
+		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C MFD3.jpg",
+				"enabled": true,
+				"width": 400,
+				"height": 400,
+				"left": 20,
+				"top": 10,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			}
+		]
+	},
+	{
+		"name": "FA-18CHV3",
+		"displayName": "F-18C Block 20 Hornet 3 MFD Hi Viz ",
+		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 0,
+				"top": 0,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "WHKEY_Hornet",
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10,
+				"xOffsetStart": 0,
+				"xOffsetFinish": 3330,
+				"yOffsetStart": 0,
+				"yOffsetFinish": 2295,
+				"opacity": 1.0
+			},
+			{
+				"name": "RMFD_Hornet",
+				"width": 870,
+				"height": 700,
+				"left": 409,
+				"top": 0,
+				"xOffsetStart": 903,
+				"xOffsetFinish": 1576,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			},
+			{
+				"name": "JOYKEY_Hornet",
+				"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg",
+				"enabled": true,
+				"width": 400,
+				"height": 400,
+				"left": 20,
+				"top": 10,
+				"xOffsetStart": 101,
+				"xOffsetFinish": 776,
+				"yOffsetStart": 250,
+				"yOffsetFinish": 900,
+				"opacity": 1.0
+			}
+		]
+	}
+
+]

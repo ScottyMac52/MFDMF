@@ -1,0 +1,31 @@
+[
+	{
+		"name": "P_TF-51D",
+		"displayName": "P-51D Mustang",
+		"fileName": "P_TF-51D\\DCS P51D MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_P_TF-51D",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_P_TF-51D",
+				"filename": "P_TF-51D\\DCS P51D THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_P_TF-51D",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	}
+]

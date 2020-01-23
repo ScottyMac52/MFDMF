@@ -1,0 +1,60 @@
+[
+	{
+		"name": "Mi-8",
+		"displayName": "Mi-8MTV2 Magnificent Eight",
+		"fileName": "Mi-8\\DCS MI8 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Mi-8",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Mi-8",
+				"filename": "Mi-8\\DCS Mi8 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Mi-8",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	},
+	{
+		"name": "Mi-8HV",
+		"displayName": "Mi-8MTV2 Magnificent Eight Hi Viz",
+		"fileName": "_High Contrast MFDs\\DCS MI8 MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Mi-8",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Mi-8",
+				"filename": "Mi-8\\DCS Mi8 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Mi-8",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	}
+]

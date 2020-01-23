@@ -133,6 +133,9 @@
   <data name="ErrorFileNotFound" xml:space="preserve">
     <value>The file could not be found</value>
   </data>
+  <data name="HOTASKEY" xml:space="preserve">
+    <value>HOTAS</value>
+  </data>
   <data name="IndianHead" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RCA_Indian_Head_test_pattern.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -150,6 +153,9 @@
   </data>
   <data name="StartingMain" xml:space="preserve">
     <value>Starting the main window</value>
+  </data>
+  <data name="THROTTLEKEY" xml:space="preserve">
+    <value>THROTTLE</value>
   </data>
   <data name="TV" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tv-test-patterns-02.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

@@ -1,0 +1,118 @@
+[
+	{
+		"name": "Fw-190A8",
+		"displayName": "Fw-190 A-8 Anton",
+		"fileName": "Fw-190\\DCS Fw190A8 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Fw-190A8",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Fw-190A8",
+				"filename": "Fw-190\\DCS Fw190A8 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Fw-190A8",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	},
+	{
+		"name": "Fw-190A8HV",
+		"displayName": "Fw-190 A-8 Anton Hi Viz",
+		"fileName": "_High Contrast MFDs\\DCS Fw190A8 MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Fw-190A8",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Fw-190A8",
+				"filename": "Fw-190\\DCS Fw190A8 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Fw-190A8",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	},
+	{
+		"name": "Fw-190D9",
+		"displayName": "Fw-190 D-9 Dora",
+		"fileName": "Fw-190\\DCS Fw190D9 MFD.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Fw-190D9",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Fw-190D9",
+				"filename": "Fw-190\\DCS Fw190D9 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Fw-190D9",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	},
+	{
+		"name": "Fw-190D9HV",
+		"displayName": "Fw-190 D-9 Dora Hi Viz",
+		"fileName": "_High Contrast MFDs\\DCS Fw190D9 MFD HiVis.jpg",
+		"configurations": [
+			{
+				"name": "LMFD_Fw-190D9",
+				"enabled": true,
+				"width": 870,
+				"height": 700
+			},
+			{
+				"name": "WHKEY_Fw-190D9",
+				"filename": "Fw-190\\DCS Fw190D9 THROTTLE.jpg",
+				"enabled": true,
+				"width": 1200,
+				"height": 1000,
+				"left": 10,
+				"top": 10
+			},
+			{
+				"name": "RMFD_Fw-190D9",
+				"enabled": true,
+				"width": 870,
+				"height": 700,
+				"left": 409
+			}
+		]
+	}
+]
