@@ -88,6 +88,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
     }
@@ -106,14 +114,6 @@
         {
             "LaunchCondition"
             {
-                "{A06ECF26-33A3-4562-8140-9B0E340D4F24}:_E726672331DE45EDB255A71A3F23C2D3"
-                {
-                "Name" = "8:.NET Framework"
-                "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.6.1"
-                "AllowLaterVersions" = "11:FALSE"
-                "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
-                }
             }
         }
         "File"
@@ -281,6 +281,21 @@
         }
         "Locator"
         {
+            "{39E1837C-0DB9-45A2-89C8-438377A77565}:_A80FD2FCF9F8428C979F8C278E923B4D"
+            {
+            "Name" = "8:Find CTS"
+            "Folder" = "8:[ProgramFilesFolder]"
+            "Depth" = "2:0"
+            "FileName" = "8:CTS.EXE"
+            "MinVesion" = "8:"
+            "MaxVersion" = "8:"
+            "MinSize" = "8:"
+            "MaxSize" = "8:"
+            "MinDate" = "8:"
+            "MaxDate" = "8:"
+            "Languages" = "8:"
+            "Property" = "8:CTSPRESENT"
+            }
         }
         "MsiBootstrapper"
         {

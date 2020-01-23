@@ -9,6 +9,13 @@ namespace MFDMF_Models.Comparer
     /// </summary>
     public class ModuleDefinitionComparer : IComparer<IModuleDefinition>
     {
+        private readonly ModComparisonType _modComparisonType;
+
+        public ModuleDefinitionComparer(ModComparisonType modComparisonType = ModComparisonType.Name)
+        {
+            _modComparisonType = modComparisonType;
+        }
+
         /// <summary>
         /// Main method
         /// </summary>
@@ -17,7 +24,14 @@ namespace MFDMF_Models.Comparer
         /// <returns></returns>
         public int Compare(IModuleDefinition x, IModuleDefinition y)
         {
-            return x.DisplayName.CompareTo(y.DisplayName);
+            if(_modComparisonType == ModComparisonType.DisplayName)
+            {
+                return x.DisplayName?.CompareTo(y?.DisplayName) ?? 0;
+            }
+            else
+            {
+                return x.ModuleName?.CompareTo(y?.ModuleName) ?? 0;
+            }
         }
     }
 }

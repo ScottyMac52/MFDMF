@@ -44,6 +44,17 @@ namespace MFDMF_Services.Configuration
         /// </summary>
         /// <param name="jsonFile"></param>
         /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="PathTooLongException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
         public List<ModuleDefinition> LoadModulesConfigurationFile(string jsonFile)
         {
             try
@@ -64,14 +75,17 @@ namespace MFDMF_Services.Configuration
             }
         }
 
-        #endregion Public methods
+		#endregion Public methods
 
-        /// <summary>
-        /// Make sure the Hierarchy is setup
-        /// </summary>
-        /// <param name="modules"></param>
-        /// <returns></returns>
-        private List<ModuleDefinition> PreProcessModules(List<ModuleDefinition> modules)
+		#region Private helpers
+		/// <summary>
+		/// Make sure the Hierarchy is setup
+		/// </summary>
+		/// <param name="modules"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		private List<ModuleDefinition> PreProcessModules(List<ModuleDefinition> modules)
         {
             modules?.ForEach(arg =>
             {
@@ -109,4 +123,5 @@ namespace MFDMF_Services.Configuration
             return modules;
         }
     }
+    #endregion Private helpers
 }

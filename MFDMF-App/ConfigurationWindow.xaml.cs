@@ -85,7 +85,7 @@ namespace MFDMFApp
 			Left = (_displayForConfig?.Left ?? 0) + (Configuration?.Left ?? 0);
 			Top = (_displayForConfig?.Top ?? 0) + (Configuration?.Top ?? 0);
 
-			_logger.LogInformation($"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {_displayForConfig?.ToReadableString() ?? "Scratch"}");
+			_logger?.LogInformation($"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {_displayForConfig?.ToReadableString() ?? "Scratch"}");
 
 			if (_settings.ShowTooltips ?? false)
 			{
@@ -123,6 +123,8 @@ namespace MFDMFApp
 		/// <param name="src"></param>
 		/// <param name="config"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="Exception"></exception>
 		private static Bitmap Crop(Bitmap src, ConfigurationDefinition config)
 		{
 			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
@@ -140,6 +142,9 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="imageDictionary"></param>
 		/// <returns></returns>
+		/// <exception cref="System.Runtime.InteropServices.ExternalException"></exception>
+		/// <exception cref="PlatformNotSupportedException"></exception>
+		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="InvalidOperationException"></exception>
 		/// <exception cref="Exception"></exception>
@@ -155,11 +160,11 @@ namespace MFDMFApp
 				newBitmap = (Bitmap) SetOpacity(cropped, Configuration.Opacity);
 			}
 
-			_logger.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
+			_logger?.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
 
 			if (newBitmap == null)
 			{
-				_logger.LogError($"Unable to find the image with a key of {key}");
+				_logger?.LogError($"Unable to find the image with a key of {key}");
 				throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 			}
 			using(var g = Graphics.FromImage(newBitmap))
@@ -178,14 +183,14 @@ namespace MFDMFApp
 							using var croppedInset = Crop(insetImage, subConfig);
 							if (croppedInset == null)
 							{
-								_logger.LogError($"Unable to find the image with a key of {key}");
+								_logger?.LogError($"Unable to find the image with a key of {key}");
 								throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 							}
 
 							if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
 							{
 								var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{subConfig.ModuleName}");
-								var imagePrefix = $"{subConfig.Name}-{subConfig.XOffsetStart}-{subConfig.XOffsetFinish}-{subConfig.YOffsetStart}-{subConfig.YOffsetFinish}";
+								var imagePrefix = $"{subConfig?.Name}-{subConfig?.XOffsetStart ?? 0}-{subConfig?.XOffsetFinish ?? 0}-{subConfig?.YOffsetStart ?? 0}-{subConfig?.YOffsetFinish ?? 0}";
 								var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
 								croppedInset.Save(cacheFile);
 							}
@@ -198,9 +203,9 @@ namespace MFDMFApp
 							}
 							int x = subConfig.Left;
 							int y = subConfig.Top;
-							g.DrawImage(insetBitmap, new Rectangle(new System.Drawing.Point(x, y), new System.Drawing.Size(subConfig.Width, subConfig.Height)));
+							g.DrawImage(insetBitmap, new Rectangle(new System.Drawing.Point(x, y), new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
 							var parentConfig = $"Module: {subConfig?.Parent?.ModuleName} Filename: {subConfig?.Parent?.FileName} Config: {subConfig?.Parent?.Name}";
-							_logger.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({insetBitmap.Width}, {insetBitmap.Height}) placed at ({x}, {y}) inside of {parentConfig} with an opacity: {subConfig.Opacity}");
+							_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({insetBitmap.Width}, {insetBitmap.Height}) placed at ({x}, {y}) inside of {parentConfig} with an opacity: {subConfig?.Opacity ?? 1.0F}");
 						}
 						currentConfig = subConfig;
 					});
@@ -215,6 +220,8 @@ namespace MFDMFApp
 		/// <param name="src">Source <seealso cref="Bitmap"/></param>
 		/// <param name="opacity">Opacity as a float</param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="Exception"></exception>
 		private static System.Drawing.Image SetOpacity(System.Drawing.Image src, float? opacity)
 		{
 			var bitMap = new Bitmap(src.Width, src.Height);
@@ -238,6 +245,8 @@ namespace MFDMFApp
 		/// <returns></returns>
 		/// <exception cref="FileNotFoundException"></exception>
 		/// <exception cref="OutOfMemoryException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		private Dictionary<string, Bitmap> LoadBitmaps()
 		{
@@ -282,6 +291,17 @@ namespace MFDMFApp
 		/// <summary>
 		/// Loads the configured image either from the test pattern, user's cache or from the original location
 		/// </summary>
+		/// <exception cref="System.Runtime.InteropServices.ExternalException"></exception>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="OutOfMemoryException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		private void LoadImage()
 		{
 			// Load the image dict
@@ -298,13 +318,13 @@ namespace MFDMFApp
 
 			if (!Directory.Exists(cacheFolder))
 			{
-				_logger.LogWarning($"Creating directory: {cacheFolder}");
+				_logger?.LogWarning($"Creating directory: {cacheFolder}");
 				Directory.CreateDirectory(cacheFolder);
 			}
 
 			if (!File.Exists(cacheFile) || (_settings.TurnOffCache ?? false))
 			{
-				_logger.LogWarning($"Cache file NOT found: {cacheFile}");
+				_logger?.LogWarning($"Cache file NOT found: {cacheFile}");
 				var imageDictionary = LoadBitmaps();
 				_logger?.LogInformation($"Loaded {imageDictionary.Count} images for {Configuration.ModuleName}-{Configuration.Name}");
 
@@ -312,7 +332,7 @@ namespace MFDMFApp
 				{
 					imageMain.Save(cacheFile);
 				}
-				_logger.LogInformation($"Saved Cache file: {cacheFile}");
+				_logger?.LogInformation($"Saved Cache file: {cacheFile}");
 			}
 			else
 			{
@@ -345,11 +365,18 @@ namespace MFDMFApp
 		/// <param name="retResult"><seealso cref="BitmapSource"/></param>
 		/// <param name="cacheFolder"></param>
 		/// <param name="cacheFile"></param>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		protected virtual void SaveImage(BitmapSource retResult, string cacheFolder, string cacheFile)
 		{
 			Directory.CreateDirectory(cacheFolder);
 			retResult?.SaveToJpg(cacheFile);
-			_logger.LogInformation($"Cropped image saved as {cacheFile}");
+			_logger?.LogInformation($"Cropped image saved as {cacheFile}");
 		}
 
 		#endregion Image saving
@@ -369,7 +396,7 @@ namespace MFDMFApp
 				LoadImage();
 			}
 			watch.Stop();
-			_logger.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationName}: loaded in {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationName}: loaded in {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		/// <summary>
