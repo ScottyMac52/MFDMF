@@ -15,6 +15,30 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_2077E89DCDB14926AC66978A26FE1398"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_511C0ED4FBDE49B0BC1669F1213F5B45"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_580D6E0AA2AC4408B56C25EA074145A3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A7159684AE51449088B07956E0C8C81A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B2236B7504304DC9A211DD2371E68435"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -22,6 +46,12 @@
         "Entry"
         {
         "MsmKey" = "8:_BA4B99E08E91424B97FD033DE48F16C9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CFE7E39FFC5F441BB5032B4D4276F0B5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -118,6 +148,86 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2077E89DCDB14926AC66978A26FE1398"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\convergence-fine-1024x768.gif"
+            "TargetName" = "8:convergence-fine-1024x768.gif"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_511C0ED4FBDE49B0BC1669F1213F5B45"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\tv-test-patterns-02.jpg"
+            "TargetName" = "8:tv-test-patterns-02.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_580D6E0AA2AC4408B56C25EA074145A3"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\RCA_Indian_Head_test_pattern.jpg"
+            "TargetName" = "8:RCA_Indian_Head_test_pattern.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7159684AE51449088B07956E0C8C81A"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\43764010-tv-color-test-pattern-test-card-vector.jpg"
+            "TargetName" = "8:43764010-tv-color-test-pattern-test-card-vector.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2236B7504304DC9A211DD2371E68435"
             {
             "SourcePath" = "8:..\\..\\MFDisplay\\MFDisplay\\Images\\VyperIndustries.png"
@@ -144,6 +254,26 @@
             "TargetName" = "8:mfd_xkl_icon.ico"
             "Tag" = "8:"
             "Folder" = "8:_7FCB61EBE1E14F5F9BB45E9312EFFC0D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFE7E39FFC5F441BB5032B4D4276F0B5"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\maxresdefault.jpg"
+            "TargetName" = "8:maxresdefault.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -224,6 +354,17 @@
                             "Property" = "8:_89DFABFE18C24BCB9678FD846F4D53E2"
                                 "Folders"
                                 {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_15DC9A5E827040F990087E8682A2D73D"
+                                    {
+                                    "Name" = "8:TestPattern"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_BF63A06F5E4E44A889F5971FCB052E97"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_A9A6D596105E403A8C9B9F718BC4058D"
                                     {
                                     "Name" = "8:Logs"
@@ -307,7 +448,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MFDMF"
         "ProductCode" = "8:{219D2F90-276C-4F1B-AB9F-E05A599DDD73}"
-        "PackageCode" = "8:{54DB5406-E2D7-4796-AE15-BB7469F373EB}"
+        "PackageCode" = "8:{FA75880F-7C82-4323-8CD7-7101F24E89BE}"
         "UpgradeCode" = "8:{10A36A70-4527-422C-9715-54AE7A24ECC8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
