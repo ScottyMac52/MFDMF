@@ -18,7 +18,7 @@ namespace XUnitTestProject_MFDMF.Mocks
         public int ConfigurationCount { get; set; }
         public int SubConfigurationCount { get; set; }
 
-        public List<ModuleDefinition> LoadModulesConfigurationFile(string jsonFile)
+        public List<IModuleDefinition> LoadModulesConfigurationFile(string jsonFile, List<IDisplayDefinition> displays)
         {
             return GetTestData(BasePath, FileName, BaseName, ModuleCount, ConfigurationCount, SubConfigurationCount);
         }
@@ -33,9 +33,10 @@ namespace XUnitTestProject_MFDMF.Mocks
         /// <param name="configurationCount"></param>
         /// <param name="subConfigurationCount"></param>
         /// <returns></returns>
-        public List<ModuleDefinition> GetTestData(string basePath, string fileName, string baseName, int moduleCount, int configurationCount, int subConfigurationCount)
+        public List<IModuleDefinition> GetTestData(string basePath, string fileName, string baseName, int moduleCount, int configurationCount, int subConfigurationCount)
         {
-            var moduleDefintions = new List<ModuleDefinition>();
+
+            var moduleDefintions = new List<IModuleDefinition>();
 
             for (int x = 1; x <= moduleCount; x++)
             {

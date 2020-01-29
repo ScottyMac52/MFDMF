@@ -5,26 +5,14 @@
 		"fileName": "UH-1\\DCS UH1 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_UH-1",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_UH-1"
 			},
 			{
 				"name": "WHKEY_UH-1",
-				"filename": "UH-1\\DCS UH1 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "UH-1\\DCS UH1 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_UH-1",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_UH-1"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS UH1 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_UH-1",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_UH-1"
 			},
 			{
 				"name": "WHKEY_UH-1",
-				"filename": "UH-1\\DCS UH1 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "UH-1\\DCS UH1 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_UH-1",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_UH-1"
 			}
 		]
 	}

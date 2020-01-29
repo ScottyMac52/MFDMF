@@ -1,4 +1,5 @@
-﻿using MFDMF_Models.Models;
+﻿using MFDMF_Models.Interfaces;
+using MFDMF_Models.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -42,13 +43,15 @@ namespace MFDMF_Services.Displays
 		/// Loads the display configuration for from the file specified in <see cref="AppSettings"/> property DisplayConfigurationFile
 		/// </summary>
 		/// <returns></returns>
-		public List<DisplayDefinition> LoadDisplays()
+		public List<IDisplayDefinition> LoadDisplays()
 		{
+			var returnList = new List<IDisplayDefinition>();
 			var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), _settings.DisplayConfigurationFile);
 			_logger?.LogInformation($"Loading configuration from {jsonFile}");
 			var fileContent = File.ReadAllText(jsonFile);
-			var displayList = JsonConvert.DeserializeObject<List<DisplayDefinition>>(fileContent); 
-			return displayList;
+			var displayList = JsonConvert.DeserializeObject<List<DisplayDefinition>>(fileContent);
+			returnList.AddRange(displayList);
+			return returnList;
 		}
 
 		#endregion Public methods

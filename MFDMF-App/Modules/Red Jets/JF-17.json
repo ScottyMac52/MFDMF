@@ -5,20 +5,11 @@
 		"fileName": "JF-17\\DCS JF17 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_JF-17",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_JF-17"
 			},
 			{
 				"name": "WHKEY_JF-17",
 				"filename": "JF-17\\DCS JF17 THROTTLE.jpg",
-				"opacity": 1.0,
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
 				"subConfigDef": [
 					{
 						"name": "F-18WH",
@@ -67,11 +58,7 @@
 				"opacity": 1.0
 			},
 			{
-				"name": "RMFD_JF-17",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_JF-17"
 			}
 		]
 	},
@@ -81,19 +68,11 @@
 		"fileName": "_High Contrast MFDs\\DCS JF17 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_JF-17",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_JF-17"
 			},
 			{
 				"name": "WHKEY_JF-17",
 				"filename": "JF-17\\DCS JF17 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
 				"subConfigDef": [
 					{
 						"name": "F-18WH",
@@ -142,11 +121,7 @@
 				"opacity": 1.0
 			},
 			{
-				"name": "RMFD_JF-17",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_JF-17"
 			}
 		]
 	}

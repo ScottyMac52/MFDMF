@@ -1,8 +1,10 @@
-﻿using MFDMF_Models.Interfaces;
+﻿using MFDMF_Models.Extensions;
+using MFDMF_Models.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace MFDMF_Models.Models
@@ -104,7 +106,7 @@ namespace MFDMF_Models.Models
         /// The parent of this configuration
         /// </summary>
         [JsonIgnore()]
-        public ConfigurationDefinition Parent { get; set; }
+        public IConfigurationDefinition Parent { get; set; }
 
         /// <summary>
         /// Name of the Configuration
@@ -149,29 +151,35 @@ namespace MFDMF_Models.Models
 
         #endregion Image cropping properties IOffsetGeometry
 
-        #region Basic Image Properties Left, Top, Width, Height and Opacity
+        #region Basic Image Properties Center, Left, Top, Width, Height and Opacity
+
+        /// <summary>
+        /// If true then the coordinates are set to center the configuration to it's Parent
+        /// </summary>
+        [JsonProperty("center")]
+        public bool? Center { get; set; }
         /// <summary>
         /// Width of the displayed image
         /// </summary>
         [JsonProperty("width")]
-        public int Width { get; set; }
+        public int? Width { get; set; }
         /// <summary>
         /// The Height of the displayed image
         /// </summary>
         [JsonProperty("height")]
-        public int Height { get; set; }
+        public int? Height { get; set; }
         /// <summary>
         /// Left coordinate of the displayed image
         /// </summary>
         [JsonProperty("left")]
-        public int Left { get; set; }
+        public int? Left { get; set; }
         /// <summary>
         /// Top coordinate of the displayed image
         /// </summary>
         [JsonProperty("top")]
-        public int Top { get; set; }
+        public int? Top { get; set; }
 
-        #endregion Basic Image Properties Left, Top, Width, Height and Opacity
+        #endregion Basic Image Properties Center, Left, Top, Width, Height and Opacity
 
         #region SubConfiguration support
 
@@ -187,7 +195,45 @@ namespace MFDMF_Models.Models
         [JsonProperty("makeOpaque")]
         public bool? MakeOpaque { get; set; }
 
-        #endregion SubConfiguration support
+		#endregion SubConfiguration support
+
+		#region Public methods
+
+        /// <summary>
+        /// Centers the current Configuration to it's Parent
+        /// </summary>
+        public void SetCenterToParent()
+        {
+            var point = GetCenterTo(Parent);
+            Left = point.X;
+            Top = point.Y;
+        }
+
+        /// <summary>
+        /// Centers the current Configuration inside the specified Configuration
+        /// </summary>
+        /// <param name="configurationDefinition"></param>
+        public Point GetCenterTo(IDisplayGeometry displayGeometry)
+        {
+            var size = new Size(Width ?? 0, Height ?? 0);
+            var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height  ?? 0));
+            return new Point(centerPoint.X, centerPoint.Y);
+        }
+
+        /// <summary>
+        /// Recursive processing of the <see cref="IConfigurationDefinition"/> for a Module
+        /// </summary>
+        /// <param name="configurationDefinition"></param>
+        public static void WalkConfigurattionDefinitionsWithAction(IConfigurationDefinition configurationDefinition, Action<IConfigurationDefinition> actionToInvoke)
+        {
+            configurationDefinition?.SubConfigurations?.ForEach(subConfig =>
+            {
+                actionToInvoke?.Invoke(subConfig);
+                WalkConfigurattionDefinitionsWithAction(subConfig, actionToInvoke);
+            });
+        }
+
+        #endregion Public methods
 
         #region Public overrides 
 
@@ -226,8 +272,15 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public virtual string ToReadableString()
         {
-            var fileName = Path.Combine(FilePath,FileName);
-            return $"ImageSource: {fileName} Found: {File.Exists(fileName)} Cropped from: ({XOffsetStart ?? 0},{YOffsetStart ?? 0}) to ({(XOffsetFinish ?? 0) - (XOffsetStart ?? 0)}, {(YOffsetFinish ?? 0) - (YOffsetStart ?? 0)}) for {Name} at ({Left}, {Top}) for ({Width}, {Height}) ";
+            Point point;
+
+            var fileName = string.IsNullOrEmpty(FileName) || string.IsNullOrEmpty(FilePath) ? "None" : Path.Combine(FilePath,FileName);
+            point = new Point(Left ?? 0, Top ?? 0);
+            if(Center ?? false)
+            {
+                point = GetCenterTo(Parent);
+            }
+           return $"ImageSource: {fileName} Cropped from: ({XOffsetStart ?? 0},{YOffsetStart ?? 0}) to ({(XOffsetFinish ?? 0) - (XOffsetStart ?? 0)}, {(YOffsetFinish ?? 0) - (YOffsetStart ?? 0)}) for {Name} at ({point.X}, {point.Y}) for ({Width}, {Height}) ";
         }
 
         public virtual string ToJson()

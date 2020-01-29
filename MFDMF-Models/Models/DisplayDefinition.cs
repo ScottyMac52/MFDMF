@@ -1,7 +1,9 @@
-﻿using MFDMF_Models.Interfaces;
+﻿using MFDMF_Models.Extensions;
+using MFDMF_Models.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Drawing;
 
 namespace MFDMF_Models.Models
 {
@@ -10,7 +12,7 @@ namespace MFDMF_Models.Models
 	/// </summary>
 	/// <remarks>The <see cref="ConfigurationDefinition"/> objects can use coordinates relative to the display configuration by prepending their name with the name of the display</remarks>
 	[JsonObject("displays")]
-	public class DisplayDefinition : IDisplayGeometry, IReadableObject, INameObject, IOffsetGeometry
+	public class DisplayDefinition : IDisplayDefinition
 	{
 		#region Constants
 
@@ -78,13 +80,16 @@ namespace MFDMF_Models.Models
 		[JsonProperty("name")]
 		public string Name { get; set; }
 		[JsonProperty("width")]
-		public int Width { get; set; }
+		public int? Width { get; set; }
 		[JsonProperty("height")]
-		public int Height { get; set; }
+		public int? Height { get; set; }
 		[JsonProperty("left")]
-		public int Left { get; set; }
+		public int? Left { get; set; }
 		[JsonProperty("top")]
-		public int Top { get; set; }
+		public int? Top { get; set; }
+
+		[JsonProperty("image")]
+		public ImageGeometry ImageGeometry { get; set; }
 
 		#endregion Display Definitin properties Name, Left, Top, Width, Height
 
@@ -123,6 +128,18 @@ namespace MFDMF_Models.Models
 
 		#endregion Image cropping properties IOffsetGeometry
 
+		/// <summary>
+		/// Centers the current Configuration inside the specified Configuration
+		/// </summary>
+		/// <param name="configurationDefinition"></param>
+		public Point GetCenterTo(IDisplayGeometry displayGeometry)
+		{
+			var size = new Size(Width ?? 0, Height ?? 0);
+			var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0));
+			return new Point(centerPoint.X, centerPoint.Y);
+		}
+
+
 		#region Public overrides 
 
 		/// <summary>
@@ -146,10 +163,10 @@ namespace MFDMF_Models.Models
 			{
 				var hashCode = HASH_START;
 				hashCode += (Name?.GetHashCode() ?? 0) * HASH_NUM;
-				hashCode += Left * HASH_NUM;
-				hashCode += Top * HASH_NUM;
-				hashCode += Width * HASH_NUM;
-				hashCode += Height * HASH_NUM;
+				hashCode += (Left ?? 0) * HASH_NUM;
+				hashCode += (Top ?? 0) * HASH_NUM;
+				hashCode += (Width ?? 0) * HASH_NUM;
+				hashCode += (Height ?? 0) * HASH_NUM;
 				return hashCode;
 			}
 		}
@@ -186,7 +203,7 @@ namespace MFDMF_Models.Models
 		/// <returns></returns>
 		public string ToReadableString()
 		{
-			return $"Display: {Name} at ({Left}, {Top}) for ({Width}, {Height})";
+			return $"{Name} ({Left}, {Top}) ({Width}, {Height})";
 		}
 
 		#endregion Public overrides 

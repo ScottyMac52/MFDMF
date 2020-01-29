@@ -8,11 +8,18 @@ namespace MFDMF_Models.Interfaces
 		/// <summary>
 		/// The parent to this configuration
 		/// </summary>
-		ConfigurationDefinition Parent { get; set; }
+		IConfigurationDefinition Parent { get; set; }
+
+		List<ConfigurationDefinition> SubConfigurations { get; set; }
 
 		/// <summary>
 		/// If true then the superimposed bitmaps are solid 
 		/// </summary>
 		bool? MakeOpaque { get; set; }
+
+		/// <summary>
+		/// If true then the configuration is centered to it's parent
+		/// </summary>
+		bool? Center { get; set; }
 	}
 }

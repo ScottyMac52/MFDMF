@@ -11,19 +11,19 @@ namespace MFDMF_Models.Comparer
 			int result = x.Name.CompareTo(y.Name);
 			if(result == 0)
 			{
-				result = x.Left.CompareTo(y.Left);
+				result = x?.Left?.CompareTo(y?.Left ?? 0) ?? 0;
 			}
 			if (result == 0)
 			{
-				result = x.Top.CompareTo(y.Top);
+				result = x?.Top?.CompareTo(y?.Top ?? 0) ?? 0;
 			}
 			if (result == 0)
 			{
-				result = x.Width.CompareTo(y.Width);
+				result = x?.Width?.CompareTo(y?.Width ?? 0) ?? 0;
 			}
 			if (result == 0)
 			{
-				result = x.Height.CompareTo(y.Height);
+				result = x?.Height?.CompareTo(y?.Height ?? 0) ?? 0;
 			}
 
 			return result;

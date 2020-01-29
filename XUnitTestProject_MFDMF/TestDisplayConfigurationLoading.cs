@@ -1,4 +1,5 @@
-﻿using MFDMF_Models.Models;
+﻿using MFDMF_Models.Interfaces;
+using MFDMF_Models.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace XUnitTestProject_MFDMF
 {
 	public class TestDisplayConfigurationLoading : BaseTesting
 	{
-		private List<DisplayDefinition> _displayList;
+		private List<IDisplayDefinition> _displayList;
 
 		public TestDisplayConfigurationLoading()
 		{
-			_displayList = new List<DisplayDefinition>()
+			_displayList = new List<IDisplayDefinition>()
 				{
 					new DisplayDefinition()
 					{
@@ -165,7 +166,7 @@ namespace XUnitTestProject_MFDMF
 		}
 
 
-		private bool AssertAreEqual(List<DisplayDefinition> disp1, List<DisplayDefinition> disp2)
+		private bool AssertAreEqual(List<IDisplayDefinition> disp1, List<DisplayDefinition> disp2)
 		{
 			bool result = false;
 			var listProcessed = new List<string>();

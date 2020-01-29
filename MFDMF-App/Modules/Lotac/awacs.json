@@ -5,19 +5,11 @@
 		"fileName": "AWACS\\DCS AWACS MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_AWACS",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_AWACS"
 			},
 			{
 				"name": "WHKEY_AWACS",
-				"filename": "AWACS\\DCS AWACS THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "AWACS\\DCS AWACS THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_AWACS",
@@ -31,19 +23,11 @@
 		"fileName": "_High Contrast MFDs\\DCS AWACS MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_AWACS",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_AWACS"
 			},
 			{
 				"name": "WHKEY_AWACS",
-				"filename": "AWACS\\DCS AWACS THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "AWACS\\DCS AWACS THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_AWACS",

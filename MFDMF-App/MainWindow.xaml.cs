@@ -35,10 +35,6 @@ namespace MFDMFApp
 		/// </summary>
 		private SortedList<string, ConfigurationWindow> _windowList;
 		/// <summary>
-		/// The list of available modules
-		/// </summary>
-		private List<ModuleDefinition> _availableModules;
-		/// <summary>
 		/// Currently selected Module
 		/// </summary>
 		private IModuleDefinition _selectedModule;
@@ -53,11 +49,11 @@ namespace MFDMFApp
 		/// <summary>
 		/// The list of modules that are currently loaded
 		/// </summary>
-		private List<ModuleDefinition> _modules;
+		private List<IModuleDefinition> _modules;
 		/// <summary>
 		/// List of the dsiplays for the configuration
 		/// </summary>
-		private List<DisplayDefinition> _displays;
+		private List<IDisplayDefinition> _displays;
 		#endregion Private fields
 
 		#region Constructor
@@ -78,7 +74,7 @@ namespace MFDMFApp
 			_logger = _loggerFactory.CreateLogger<MainWindow>();
 			_windowList = new SortedList<string, ConfigurationWindow>();
 			_startOptions = (StartOptions) ((MainApp)Application.Current).Host.Services.GetService(typeof(StartOptions));
-			_modules = new List<ModuleDefinition>();
+			_modules = new List<IModuleDefinition>();
 		}
 		#endregion Constructor
 		
@@ -110,7 +106,6 @@ namespace MFDMFApp
 					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
 					{
 						Configuration = config,
-						FilePath = config.FilePath,
 						SubConfigurationName = subModule
 					};
 					configWindow.Show();
@@ -162,30 +157,12 @@ namespace MFDMFApp
 		{
 			var moduleList = _modules;
 			moduleList?.Sort(new ModuleDefinitionComparer());
-			_availableModules = moduleList;
 			cbModules.ItemsSource = moduleList;
 			cbModules.DisplayMemberPath = "DisplayName";
 			cbModules.SelectedValuePath = "ModuleName";
 		}
 
-		/// <summary>
-		/// Gets the specified Definition
-		/// </summary>
-		/// <param name="moduleName"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"></exception>
-		private bool GetSelectedDefinition(string moduleName)
-		{
-			if (string.IsNullOrEmpty(moduleName))
-			{
-				return false;
-			}
-			_logger?.LogInformation($"Configuration requested for {moduleName}");
-			_selectedModule = _availableModules.FirstOrDefault(am => am.ModuleName == moduleName);
-			return _selectedModule != null;
-		}
-
-
+	
 		/// <summary>
 		/// Used to change the selected module 
 		/// </summary>
@@ -208,20 +185,7 @@ namespace MFDMFApp
 				throw new ArgumentOutOfRangeException(nameof(moduleName));
 			}
 		}
-
-		/// <summary>
-		/// Changes the selected sub-module
-		/// </summary>
-		/// <param name="subModeSpecified"></param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		public void ChangeSelectedSubModule(string subModeSpecified)
-		{
-			_subModule = subModeSpecified;
-			DestroyWindows();
-			CreateWindows();
-		}
-
+		
 		/// <summary>
 		/// Event for the module selection change
 		/// </summary>
@@ -231,9 +195,9 @@ namespace MFDMFApp
 		{
 			try
 			{
-				var selectedModule = e.AddedItems.Count > 0 ? (ModuleDefinition)e.AddedItems[0] : e.RemovedItems.Count > 0 ? (ModuleDefinition)e.RemovedItems[0] : null;
-				_logger?.LogInformation($"Module selected {selectedModule.ToReadableString()}");
-				ProcessChangedModule(selectedModule.ModuleName);
+				_selectedModule = e.AddedItems.Count > 0 ? (ModuleDefinition)e.AddedItems[0] : e.RemovedItems.Count > 0 ? (ModuleDefinition)e.RemovedItems[0] : null;
+				_logger?.LogInformation($"Module selected {_selectedModule?.ToReadableString()}");
+				ProcessChangedModule(_selectedModule);
 			}
 			catch (IndexOutOfRangeException ioorx)
 			{
@@ -244,29 +208,21 @@ namespace MFDMFApp
 		/// <summary>
 		/// Processes the selection change of the module
 		/// </summary>
-		/// <param name="moduleName"></param>
+		/// <param name="module"></param>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="InvalidOperationException"></exception>
-		private void ProcessChangedModule(string moduleName)
+		private void ProcessChangedModule(IModuleDefinition module)
 		{
-			if (GetSelectedDefinition(moduleName))
+			DestroyWindows();
+			try
 			{
-				DestroyWindows();
-				try
-				{
-					CreateWindows();
-					_logger?.LogInformation($"Module loaded {moduleName}");
-				}
-				catch (IndexOutOfRangeException ioorx)
-				{
-					_logger?.LogError($"Not able to determine selected module {ioorx}");
-				}
+				CreateWindows();
+				_logger?.LogInformation($"Module loaded {module}");
 			}
-			else
+			catch (IndexOutOfRangeException ioorx)
 			{
-				_logger?.LogError($"{moduleName} does not exist as a module in the current configuration");
+				_logger?.LogError($"Not able to determine selected module {ioorx}");
 			}
-
 		}
 
 		#endregion Modules and SubModule processing
@@ -365,9 +321,9 @@ namespace MFDMFApp
 					throw;
 				}
 			});
-			CreateWindows();
 			watch.Stop();
 			_logger?.LogInformation($"Clear cache took: {watch.ElapsedMilliseconds} milliseconds");
+			ReloadConfiguration(true);
 		}
 
 
@@ -400,8 +356,8 @@ namespace MFDMFApp
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			var module = (string)cbModules?.SelectedValue;
 			DestroyWindows();
-			
-			if((_settings.ModuleNames?.Count ?? 0) > 0)
+
+			if ((_settings.ModuleNames?.Count ?? 0) > 0)
 			{
 				_modules?.Clear();
 				_settings.ModuleNames.ForEach(mf =>
@@ -409,7 +365,7 @@ namespace MFDMFApp
 					try
 					{
 						var fileToLoad = Path.Combine(Directory.GetCurrentDirectory(), mf);
-						var modulesToAdd = _loadingService.LoadModulesConfigurationFile(fileToLoad);
+						var modulesToAdd = _loadingService.LoadModulesConfigurationFile(fileToLoad, _displays);
 						_modules?.AddRange(modulesToAdd);
 					}
 					catch(JsonException jsonex)

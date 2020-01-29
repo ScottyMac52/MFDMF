@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -54,7 +55,7 @@ namespace MFDMFApp
 			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
 			_logger?.LogInformation($"Starting {GetVersionString()}");
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
-	}
+		}
 
 		/// <summary>
 		/// Loads the start options 

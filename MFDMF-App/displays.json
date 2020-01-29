@@ -16,7 +16,13 @@
 		"xOffsetFinish": 776,
 		"yOffsetStart": 250,
 		"yOffsetFinish": 900,
-		"opacity": 1.0
+		"opacity": 1.0,
+		"image": {
+			"Width": 870,
+			"Height": 700,
+			"Left": 0,
+			"Top": 0
+		}
 	},
 	{
 		"name": "WHKEY",
@@ -28,6 +34,18 @@
 		"xOffsetFinish": 3330,
 		"yOffsetStart": 0,
 		"yOffsetFinish": 2295,
+		"opacity": 1.0
+	},
+	{
+		"name": "TestPattern",
+		"width": 1200,
+		"height": 1080,
+		"left": 2561,
+		"top": 0,
+		"xOffsetStart": 0,
+		"xOffsetFinish": 1024,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 768,
 		"opacity": 1.0
 	},
 	{
@@ -47,6 +65,24 @@
 		"xOffsetFinish": 1576,
 		"yOffsetStart": 250,
 		"yOffsetFinish": 900,
-		"opacity": 1.0
+		"opacity": 1.0,
+		"image": {
+			"Width": 870,
+			"Height": 700,
+			"Left": 409,
+			"top": 0
+		}
+	},
+	{
+		"name": "Flir",
+		"xOffsetStart": 0,
+		"xOffsetFinish": 380,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 440,
+		"image": {
+			"top": -50,
+			"width": 380,
+			"height": 440
+		}
 	}
 ]

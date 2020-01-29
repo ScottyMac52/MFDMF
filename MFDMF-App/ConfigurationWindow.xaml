@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MFDMFApp"
         mc:Ignorable="d"
-        Title="ConfigurationWindow" BorderThickness="0" Topmost="True" ResizeMode="NoResize" WindowStyle="None" ShowInTaskbar="False" Opacity="0" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" Closed="Window_Closed" >
+        Title="ConfigurationWindow" BorderThickness="0" Topmost="True" ResizeMode="NoResize" WindowStyle="None" ShowInTaskbar="False" Opacity="0" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" Closed="Window_Closed">
     <Grid>
     </Grid>
 </Window>

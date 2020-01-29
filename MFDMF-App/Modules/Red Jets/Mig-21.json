@@ -5,26 +5,14 @@
 		"fileName": "Mig-21\\DCS Mig21 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-21",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-21"
 			},
 			{
 				"name": "WHKEY_Mig-21",
-				"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-21",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-21"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS Mig21 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-21",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-21"
 			},
 			{
 				"name": "WHKEY_Mig-21",
-				"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-21",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-21"
 			}
 		]
 	}

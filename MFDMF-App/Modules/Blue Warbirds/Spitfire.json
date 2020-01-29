@@ -5,26 +5,14 @@
 		"fileName": "Spitfire_LF_MkIX\\DCS SpitLFIX MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Spitfire_LF_MkIX",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Spitfire_LF_MkIX"
 			},
 			{
 				"name": "WHKEY_Spitfire_LF_MkIX",
-				"filename": "Spitfire_LF_MkIX\\DCS SpitLFIX THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Spitfire_LF_MkIX\\DCS SpitLFIX THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Spitfire_LF_MkIX",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Spitfire_LF_MkIX"
 			}
 		]
 	}

@@ -6,41 +6,14 @@
 		"fileName": "F-16C\\DCS F16C MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Viper",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"name": "LMFD_Viper"
 			},
 			{
 				"name": "WHKEY_Viper",
-				"fileName": "F-16C\\DCS F16C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 0.75
+				"fileName": "F-16C\\DCS F16C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Viper",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"name": "RMFD_Viper"
 			}
 		]
 	},
@@ -51,41 +24,14 @@
 		"fileName": "_High Contrast MFDs\\DCS F16C MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Viper",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"name": "LMFD_Viper"
 			},
 			{
 				"name": "WHKEY_Viper",
-				"fileName": "F-16C\\DCS F16C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 0.75
+				"fileName": "F-16C\\DCS F16C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Viper",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"name": "RMFD_Viper"
 			}
 		]
 	}

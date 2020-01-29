@@ -1,5 +1,5 @@
-﻿using MFDMF_Models.Models;
-using MFDMFApp.Extensions;
+﻿using MFDMF_Models.Interfaces;
+using MFDMF_Models.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -23,17 +26,12 @@ namespace MFDMFApp
 
 		private readonly ILogger _logger;
 		private readonly AppSettings _settings;
-		private readonly List<DisplayDefinition> _displayDefinitions;
-		private DisplayDefinition _displayForConfig;
+		private readonly List<IDisplayDefinition> _displayDefinitions;
 
 		/// <summary>
 		/// The configuration for this Window
 		/// </summary>
-		public ConfigurationDefinition Configuration { get; set; }
-		/// <summary>
-		/// Path where the image file(s) for this Configuration may be found
-		/// </summary>
-		public object FilePath { get; set; }
+		public IConfigurationDefinition Configuration { get; set; }
 		/// <summary>
 		/// Name of the selected subConfiguration
 		/// </summary>
@@ -53,7 +51,7 @@ namespace MFDMFApp
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> used to create the <see cref="ILogger"/></param>
 		/// <param name="displayDefinitions">Loaded display definitions <see cref="List{T}"/> of <see cref="DisplayDefinition"/></param>
 		/// <param name="settings">The <see cref="AppSettings"/> for the application</param>
-		public ConfigurationWindow(ILoggerFactory loggerFactory, List<DisplayDefinition> displayDefinitions, AppSettings settings)
+		public ConfigurationWindow(ILoggerFactory loggerFactory, List<IDisplayDefinition> displayDefinitions, AppSettings settings)
 		{
 			_settings = settings;
 			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
@@ -72,24 +70,19 @@ namespace MFDMFApp
 		private bool InitializeWindow()
 		{
 			// See if there is a Display that matches the name 
-			_displayForConfig = _displayDefinitions?.FirstOrDefault(dd => dd.Name == Configuration?.Name || (Configuration?.Name?.StartsWith(dd.Name, StringComparison.CurrentCulture) ?? false));
+			var displayForConfig = _displayDefinitions?.FirstOrDefault(dd => dd.Name == Configuration?.Name || (Configuration?.Name?.StartsWith(dd.Name, StringComparison.CurrentCulture) ?? false));
 			Title = Configuration?.Name;
 			ResizeMode = ResizeMode.NoResize;
 			Width = Configuration?.Width ?? 0;
 			Height = Configuration?.Height ?? 0;
-			Opacity = Configuration?.Opacity ?? _displayForConfig?.Opacity ?? 1.0F;
-			Configuration.XOffsetStart ??= _displayForConfig?.XOffsetStart;
-			Configuration.XOffsetFinish ??= _displayForConfig?.XOffsetFinish;
-			Configuration.YOffsetStart ??= _displayForConfig?.YOffsetStart;
-			Configuration.YOffsetFinish ??= _displayForConfig?.YOffsetFinish;
-			Left = (_displayForConfig?.Left ?? 0) + (Configuration?.Left ?? 0);
-			Top = (_displayForConfig?.Top ?? 0) + (Configuration?.Top ?? 0);
-
-			_logger?.LogInformation($"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {_displayForConfig?.ToReadableString() ?? "Scratch"}");
-
+			Left = Configuration?.Left ?? 0;
+			Top = Configuration?.Top ?? 0;
+			Opacity = Configuration?.Opacity ?? 1.0F;
+			var status = $"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {displayForConfig?.ToReadableString() ?? "Scratch"}";
+			_logger?.LogInformation(status);
 			if (_settings.ShowTooltips ?? false)
 			{
-				ToolTip = new ToolTip() { Content = $"ToolTip - {Title} ({Left}, {Top}) for ({Width}, {Height}) from {_displayForConfig?.Name ?? "Scratch"} Opa: {Opacity}" };
+				ToolTip = status;
 			}
 			return true;
 		}
@@ -125,11 +118,11 @@ namespace MFDMFApp
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="Exception"></exception>
-		private static Bitmap Crop(Bitmap src, ConfigurationDefinition config)
+		private static Bitmap Crop(Bitmap src, IConfigurationDefinition config)
 		{
 			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
 			var cropRect = new Rectangle(new System.Drawing.Point(config.XOffsetStart ?? 0, config.YOffsetStart ?? 0), imageSize);
-			var newBitmap = new Bitmap(config.Width, config.Height);
+			var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0);
 			using (var g = Graphics.FromImage(newBitmap))
 			{
 				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
@@ -152,67 +145,74 @@ namespace MFDMFApp
 		{
 			// Based oon the current configuration we need to pull the main image
 			Bitmap newBitmap;
-			var key = $"{Configuration.ModuleName}-{Configuration.Name}";
+			Bitmap croppedInsetBitmap;
+			var config = Configuration;
+			var key = $"{config.ModuleName}-{config.Name}";
 			var mainImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-
-			using (var cropped = Crop(mainImage, Configuration))
-			{
-				newBitmap = (Bitmap) SetOpacity(cropped, Configuration.Opacity);
-			}
-
-			_logger?.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
-
+			newBitmap = ProcessBitmap(config, key, mainImage);
 			if (newBitmap == null)
 			{
 				_logger?.LogError($"Unable to find the image with a key of {key}");
 				throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 			}
-			using(var g = Graphics.FromImage(newBitmap))
+			using (var g = Graphics.FromImage(newBitmap))
 			{
 				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 
-				var currentConfig = Configuration;
-				while ((currentConfig?.SubConfigurations?.Count ?? 0) > 0)
-				{
-					currentConfig?.SubConfigurations?.ForEach(subConfig =>
-					{
-						if ((subConfig.Enabled  ?? false && !(subConfig.UseAsSwitch ?? false)) || ((subConfig.UseAsSwitch ?? false) && (SubConfigurationName?.Equals(subConfig.Name, StringComparison.InvariantCultureIgnoreCase) ?? false)))
-						{
-							key = $"{subConfig.ModuleName}-{subConfig?.Parent?.Name}-{subConfig.Name}";
-							var insetImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-							using var croppedInset = Crop(insetImage, subConfig);
-							if (croppedInset == null)
-							{
-								_logger?.LogError($"Unable to find the image with a key of {key}");
-								throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
-							}
+				var currentConfig = config;
 
-							if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
-							{
-								var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{subConfig.ModuleName}");
-								var imagePrefix = $"{subConfig?.Name}-{subConfig?.XOffsetStart ?? 0}-{subConfig?.XOffsetFinish ?? 0}-{subConfig?.YOffsetStart ?? 0}-{subConfig?.YOffsetFinish ?? 0}";
-								var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
-								croppedInset.Save(cacheFile);
-							}
-							
-							var insetBitmap = (Bitmap) SetOpacity(croppedInset, subConfig.Opacity);
-							// Make it transparent for the superimpose as long as MakeOpaque is false
-							if(!(subConfig?.MakeOpaque ?? false))
-							{
-								insetBitmap.MakeTransparent();
-							}
-							int x = subConfig.Left;
-							int y = subConfig.Top;
-							g.DrawImage(insetBitmap, new Rectangle(new System.Drawing.Point(x, y), new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
-							var parentConfig = $"Module: {subConfig?.Parent?.ModuleName} Filename: {subConfig?.Parent?.FileName} Config: {subConfig?.Parent?.Name}";
-							_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({insetBitmap.Width}, {insetBitmap.Height}) placed at ({x}, {y}) inside of {parentConfig} with an opacity: {subConfig?.Opacity ?? 1.0F}");
+				ConfigurationDefinition.WalkConfigurattionDefinitionsWithAction(currentConfig, (subConfig) => {
+
+					if ((subConfig.Enabled ?? false && !(subConfig.UseAsSwitch ?? false)) || ((subConfig.UseAsSwitch ?? false) && (SubConfigurationName?.Equals(subConfig.Name, StringComparison.InvariantCultureIgnoreCase) ?? false)))
+					{
+						key = $"{subConfig.ModuleName}-{currentConfig?.Name}-{subConfig.Name}";
+						var insetImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
+						croppedInsetBitmap = ProcessBitmap(subConfig, key, insetImage);
+						if (croppedInsetBitmap == null)
+						{
+							_logger?.LogError($"Unable to find the image with a key of {key}");
+							throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 						}
-						currentConfig = subConfig;
-					});
-				}
+						var origin = new System.Drawing.Point(subConfig?.Left ?? 0, subConfig?.Top ?? 0);
+						g.DrawImage(croppedInsetBitmap, new Rectangle(origin, new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
+						var parentConfig = $"Module: {subConfig?.Parent?.ModuleName} Filename: {subConfig?.Parent?.FileName} Config: {subConfig?.Parent?.Name}";
+						_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({croppedInsetBitmap.Width}, {croppedInsetBitmap.Height}) placed at ({origin.X}, {origin.Y}) inside of {parentConfig} with an opacity: {subConfig?.Opacity ?? 1.0F}");
+					}
+				});
 			}
 			return newBitmap;
 		}
+
+		/// <summary>
+		/// Process the Bitmap
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="key"></param>
+		/// <param name="mainImage"></param>
+		/// <returns></returns>
+		private Bitmap ProcessBitmap(IConfigurationDefinition config, string key, Bitmap mainImage)
+		{
+			Bitmap newBitmap;
+			using (var cropped = Crop(mainImage, config))
+			{
+				newBitmap = (Bitmap)SetOpacity(cropped, config.Opacity ?? 1.0F);
+				if (!(config?.MakeOpaque ?? false))
+				{
+					newBitmap.MakeTransparent();
+				}
+			}
+
+			if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
+			{
+				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{config.ModuleName}");
+				var imagePrefix = $"{config?.Name}-{config?.XOffsetStart ?? 0}-{config?.XOffsetFinish ?? 0}-{config?.YOffsetStart ?? 0}-{config?.YOffsetFinish ?? 0}";
+				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}-Main.jpg");
+				newBitmap.Save(cacheFile);
+			}
+			_logger?.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
+			return newBitmap;
+		}
+
 
 		/// <summary>
 		/// Sets the Opacity of the Bitmap 
@@ -252,12 +252,13 @@ namespace MFDMFApp
 		{
 			var imageDictionary = new Dictionary<string, Bitmap>();
 			var replacementValue = (_settings?.UseCougar ?? false) ? "HC" : "WH";
-			var fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, replacementValue, StringComparison.InvariantCulture));
+			var filePath = Configuration.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(Configuration.FilePath) : Configuration.FilePath;
+			var fileSource = Path.Combine(filePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, replacementValue, StringComparison.InvariantCulture));
 			if(!File.Exists(fileSource))
 			{
 				if ((_settings?.UseCougar ?? false) == true)
 				{
-					fileSource = Path.Combine(Configuration.FilePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY, StringComparison.InvariantCulture));
+					fileSource = Path.Combine(filePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY, StringComparison.InvariantCulture));
 				}
 				if (!File.Exists(fileSource))
 				{
@@ -268,22 +269,21 @@ namespace MFDMFApp
 			var bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
 			imageDictionary.Add($"{Configuration.ModuleName}-{Configuration.Name}", bitMap);
 			var currentConfig = Configuration;
-			while((currentConfig?.SubConfigurations?.Count ?? 0) > 0)
+
+			ConfigurationDefinition.WalkConfigurattionDefinitionsWithAction(currentConfig, (subConfig) =>
 			{
-				currentConfig?.SubConfigurations?.ForEach(subConfig =>
+				filePath = subConfig.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(subConfig.FilePath) : subConfig.FilePath;
+				fileSource = Path.Combine(filePath, subConfig.FileName);
+				if (!File.Exists(fileSource))
 				{
-					fileSource = Path.Combine(subConfig.FilePath, subConfig.FileName);
-					if (!File.Exists(fileSource))
-					{
-						throw new FileNotFoundException($"Unable to find the specified file at {subConfig.FilePath}", subConfig.FileName);
-					}
-					_logger?.LogInformation($"Loading file: {fileSource} for {subConfig.ToReadableString()}");
-					bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
-					var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
-					imageDictionary.Add(key, bitMap);
-					currentConfig = subConfig;
-				});
-			}
+					throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
+				}
+				_logger?.LogInformation($"Loading file: {fileSource} for {subConfig.ToReadableString()}");
+				bitMap = (Bitmap)System.Drawing.Image.FromFile(fileSource);
+				var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
+				imageDictionary.Add(key, bitMap);
+			});
+
 			return imageDictionary;
 		}
 
@@ -357,30 +357,6 @@ namespace MFDMFApp
 
 		#endregion Image Loading
 
-		#region Image saving
-
-		/// <summary>
-		/// Saves the Image in the specified format, default format is bmp
-		/// </summary>
-		/// <param name="retResult"><seealso cref="BitmapSource"/></param>
-		/// <param name="cacheFolder"></param>
-		/// <param name="cacheFile"></param>
-		/// <exception cref="IOException"></exception>
-		/// <exception cref="UnauthorizedAccessException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="PathTooLongException"></exception>
-		/// <exception cref="DirectoryNotFoundException"></exception>
-		/// <exception cref="NotSupportedException"></exception>
-		protected virtual void SaveImage(BitmapSource retResult, string cacheFolder, string cacheFile)
-		{
-			Directory.CreateDirectory(cacheFolder);
-			retResult?.SaveToJpg(cacheFile);
-			_logger?.LogInformation($"Cropped image saved as {cacheFile}");
-		}
-
-		#endregion Image saving
-
 		#region Window events
 
 		/// <summary>
@@ -388,6 +364,17 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
+		/// <exception cref="System.Runtime.InteropServices.ExternalException"></exception>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="OutOfMemoryException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -421,6 +408,27 @@ namespace MFDMFApp
 		}
 
 		#endregion Window events
+
+		#region Mouse events
+
+		protected override void OnMouseDown(MouseButtonEventArgs e)
+		{
+			var mousePos = System.Windows.Forms.Control.MousePosition;
+			var currentRect = new Rectangle(mousePos.X, mousePos.Y, 1, 1);
+			var screen = GetScreen(this);
+			var currentDisplay = _displayDefinitions?.FirstOrDefault(dd => currentRect.IntersectsWith(new Rectangle(dd?.Left ?? 0, dd?.Top ?? 0, dd?.Width ?? 0, dd?.Height ?? 0)));
+			var clientLeft = mousePos.X - (currentDisplay?.Left ?? 0);
+			var clientTop = mousePos.Y - (currentDisplay?.Top ?? 0);
+			System.Windows.MessageBox.Show($"({mousePos.X}, {mousePos.Y}) ({clientLeft}, {clientTop}) in {currentDisplay?.ToReadableString() ?? "None"} on Screen {screen?.DeviceName ?? "None"}", $"{Configuration.Name}", MessageBoxButton.OK, MessageBoxImage.Information);
+			base.OnMouseDown(e);
+		}
+
+		#endregion Mouse events
+
+		private static Screen GetScreen(Window window)
+		{
+			return Screen.FromHandle(new WindowInteropHelper(window).Handle);
+		}
 
 	}
 }

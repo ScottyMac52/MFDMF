@@ -5,26 +5,14 @@
 		"fileName": "Ka-50\\DCS BS2 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Ka-50",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Ka-50"
 			},
 			{
 				"name": "WHKEY_Ka-50",
-				"filename": "Ka-50\\DCS BS2 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Ka-50\\DCS BS2 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Ka-50",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Ka-50"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS Ka50 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Ka-50",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Ka-50"
 			},
 			{
 				"name": "WHKEY_Ka-50",
-				"filename": "Ka-50\\DCS BS2 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Ka-50\\DCS BS2 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Ka-50",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Ka-50"
 			}
 		]
 	}

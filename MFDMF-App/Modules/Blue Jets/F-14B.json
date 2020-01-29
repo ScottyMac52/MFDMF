@@ -7,40 +7,16 @@
 		"configurations": [
 			{
 				"name": "LMFD_Tomcat",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"enabled": true
 			},
 			{
 				"name": "WHKEY_Tomcat",
 				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 0.75
+				"enabled": true
 			},
 			{
 				"name": "RMFD_Tomcat",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 0.7
+				"enabled": true
 			}
 		]
 	},
@@ -51,41 +27,14 @@
 		"fileName": "_High Contrast MFDs\\DCS F14Plt MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Tomcat",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "LMFD_Tomcat"
 			},
 			{
 				"name": "WHKEY_Tomcat",
-				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0 
+				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Tomcat",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "RMFD_Tomcat"
 			}
 		]
 	},
@@ -97,147 +46,98 @@
 		"configurations": [
 			{
 				"name": "LMFD_TomcatRio",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0,
-				"enabled": true,
+				"useAsSwitch": true,
+				"makeOpaque": true,
 				"subConfigDef": [
 					{
 						"name": "BIT",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 50,
 						"xOffsetFinish": 260,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "SPL",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 325,
 						"xOffsetFinish": 535,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "NAV",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 590,
 						"xOffsetFinish": 800,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "TAC",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 860,
 						"xOffsetFinish": 1070,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "DL",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 1125,
 						"xOffsetFinish": 1335,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "TGT",
 						"fileName": "F-14\\F14 CAP Drum.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 1380,
 						"xOffsetFinish": 1590,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					}
 				]
 			},
 			{
 				"name": "WHKEY_TomcatRio",
-				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 0.75
+				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_TomcatRio",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0,
+				"enabled": true,
+				"useAsSwitch": true,
+				"makeOpaque": true,
 				"subConfigDef": [
 					{
 						"name": "Flir",
 						"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR.png",
-						"width": 380,
-						"height": 440,
-						"left": 145,
-						"top": 65,
-						"xOffsetStart": 0,
-						"xOffsetFinish": 380,
-						"yOffsetStart": 0,
-						"yOffsetFinish": 440,
 						"enabled": false,
-						"useAsSwitch": true
+						"center": true
 					}
 				]
 			}
@@ -251,148 +151,98 @@
 		"configurations": [
 			{
 				"name": "LMFD_TomcatRio",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0,
-				"enabled": true,
+				"useAsSwitch": true,
+				"makeOpaque": true,
 				"subConfigDef": [
 					{
 						"name": "BIT",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 50,
 						"xOffsetFinish": 260,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "SPL",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 325,
 						"xOffsetFinish": 535,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "NAV",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 590,
 						"xOffsetFinish": 800,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "TAC",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 860,
 						"xOffsetFinish": 1070,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "DL",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 1125,
 						"xOffsetFinish": 1335,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					},
 					{
 						"name": "TGT",
 						"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
-						"opacity": 1.0,
 						"width": 210,
-						"height": 429,
-						"left": 225,
-						"top": 110,
+						"height": 469,
+						"center": true,
 						"xOffsetStart": 1380,
 						"xOffsetFinish": 1590,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false,
-						"useAsSwitch": true
+						"enabled": false
 					}
 				]
 			},
 			{
 				"name": "WHKEY_TomcatRio",
-				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0
+				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_TomcatRio",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0,
+				"enabled": true,
+				"useAsSwitch": true,
+				"makeOpaque": true,
 				"subConfigDef": [
 					{
 						"name": "Flir",
 						"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR_HiVis.png",
-						"width": 380,
-						"height": 440,
-						"left": 145,
-						"top": 65,
-						"opacity": 1.0,
-						"xOffsetStart": 0,
-						"xOffsetFinish": 380,
-						"yOffsetStart": 0,
-						"yOffsetFinish": 440,
 						"enabled": false,
-						"useAsSwitch": true
+						"center": true
 					}
 				]
 			}

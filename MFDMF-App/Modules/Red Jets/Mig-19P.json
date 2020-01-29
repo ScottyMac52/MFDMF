@@ -5,26 +5,14 @@
 		"fileName": "Mig-19\\DCS Mig19 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-19",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-19"
 			},
 			{
 				"name": "WHKEY_Mig-19",
-				"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-19",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-19"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS Mig19 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-19",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-19"
 			},
 			{
 				"name": "WHKEY_Mig-19",
-				"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-19",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-19"
 			}
 		]
 	}

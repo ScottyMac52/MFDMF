@@ -5,41 +5,14 @@
 		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "LMFD_Hornet"
 			},
 			{
 				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "RMFD_Hornet"
 			},
 			{
 				"name": "JOYKEY_Hornet",
@@ -63,41 +36,14 @@
 		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "LMFD_Hornet"
 			},
 			{
 				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "RMFD_Hornet"
 			},
 			{
 				"name": "JOYKEY_Hornet",
@@ -121,41 +67,14 @@
 		"fileName": "FA-18C\\DCS FA18C MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "LMFD_Hornet"
 			},
 			{
 				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "RMFD_Hornet"
 			},
 			{
 				"name": "JOYKEY_Hornet",
@@ -179,41 +98,14 @@
 		"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 0,
-				"top": 0,
-				"xOffsetStart": 101,
-				"xOffsetFinish": 776,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "LMFD_Hornet"
 			},
 			{
 				"name": "WHKEY_Hornet",
-				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 3330,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 2295,
-				"opacity": 1.0
+				"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_Hornet",
-				"width": 870,
-				"height": 700,
-				"left": 409,
-				"top": 0,
-				"xOffsetStart": 903,
-				"xOffsetFinish": 1576,
-				"yOffsetStart": 250,
-				"yOffsetFinish": 900,
-				"opacity": 1.0
+				"name": "RMFD_Hornet"
 			},
 			{
 				"name": "JOYKEY_Hornet",

@@ -1,3 +1,4 @@
+using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
 using MFDMF_Services.Configuration;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace XUnitTestProject_MFDMF
             };
 
             // ACT
-            var testData = loadingService.LoadModulesConfigurationFile(testDataPath);
+            var testData = loadingService.LoadModulesConfigurationFile(testDataPath, null);
 
             // ASSERT
             Validate(baseFileName, baseName, testDataPath, testData, 20, 20, 0);
@@ -43,7 +44,7 @@ namespace XUnitTestProject_MFDMF
         /// <param name="moduleCount"></param>
         /// <param name="configCount"></param>
         /// <param name="subConfigCount"></param>
-        private void Validate(string baseFileName, string baseName, string testDataPath, List<ModuleDefinition> testModulesDef, int moduleCount, int configCount, int subConfigCount)
+        private void Validate(string baseFileName, string baseName, string testDataPath, List<IModuleDefinition> testModulesDef, int moduleCount, int configCount, int subConfigCount)
         {
             var moduleCounter = 0;
             var configurationCounter = 0;

@@ -5,26 +5,14 @@
 		"fileName": "Mig-15\\DCS Mig15 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-15",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-15"
 			},
 			{
 				"name": "WHKEY_Mig-15",
-				"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-15",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-15"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS Mig15 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Mig-15",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Mig-15"
 			},
 			{
 				"name": "WHKEY_Mig-15",
-				"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Mig-15",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Mig-15"
 			}
 		]
 	}
