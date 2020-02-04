@@ -54,7 +54,7 @@ namespace MFDMFApp
 			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
 			_logger?.LogInformation($"Starting {GetVersionString()}");
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
-	}
+		}
 
 		/// <summary>
 		/// Loads the start options 

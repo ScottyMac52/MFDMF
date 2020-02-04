@@ -31,7 +31,7 @@ namespace MFDMF_Models.Models
 
         #endregion Ctor
 
-        #region Module Definition properties Parent, ModuleName, DisplayName, FileName, Configurations
+        #region Module Definition properties
 
         /// <summary>
         /// Name of the Module
@@ -64,7 +64,7 @@ namespace MFDMF_Models.Models
         /// </summary>
         public List<ConfigurationDefinition> Configurations { get; set; }
 
-		#endregion Module Definition properties Parent, ModuleName, DisplayName, FileName, Configurations
+		#endregion Module Definition properties 
 
         #region Public overrides 
 

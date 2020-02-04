@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MFDMFApp"
         mc:Ignorable="d"
-        Title="Multi-Function Display Mgnt App" Topmost="True" Loaded="Window_Loaded" MaxHeight="150" MaxWidth="400" Closing="Window_Closing" ResizeMode="CanMinimize" Cursor="Arrow" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Height="115.048">
+        Title="Multi-Function Display Mgnt App" Topmost="True" Loaded="Window_Loaded" MaxHeight="150" MaxWidth="400" Closing="Window_Closing" ResizeMode="CanMinimize" Cursor="Arrow" Closed="Window_Closed" WindowStartupLocation="Manual" Height="115.048">
     <StackPanel VerticalAlignment="Top" Width="auto" Height="auto">
         <Menu DockPanel.Dock="Top" Margin="0,0,0,0" Height="22">
             <MenuItem Header="_File">

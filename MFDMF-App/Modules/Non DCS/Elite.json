@@ -5,19 +5,11 @@
 		"fileName": "Elite Dangerous\\EliteD MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Elite",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Elite"
 			},
 			{
 				"name": "WHKEY_Elite",
-				"filename": "Elite Dangerous\\EliteD THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Elite Dangerous\\EliteD THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_Elite",
@@ -31,19 +23,11 @@
 		"fileName": "_High Contrast MFDs\\EliteD MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Elite",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Elite"
 			},
 			{
 				"name": "WHKEY_Elite",
-				"filename": "Elite Dangerous\\EliteD THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "Elite Dangerous\\EliteD THROTTLE.JPG"
 			},
 			{
 				"name": "RMFD_Elite",

@@ -5,26 +5,14 @@
 		"fileName": "FC3_Su25T\\DCS FC3 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Su-25T",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Su-25T"
 			},
 			{
 				"name": "WHKEY_Su-25T",
-				"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Su-25T",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Su-25T"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS FC3 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Su-25T",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_Su-25T"
 			},
 			{
 				"name": "WHKEY_Su-25T",
-				"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_Su-25T",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_Su-25T"
 			}
 		]
 	}

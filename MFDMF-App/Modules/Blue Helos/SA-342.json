@@ -5,30 +5,19 @@
 		"fileName": "SA-342\\DCS SA342 MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_SA-342",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_SA-342"
 			},
 			{
 				"name": "WHKEY_SA-342",
-				"filename": "SA-342\\DCS SA342 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "SA-342\\DCS SA342 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_SA-342",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_SA-342"
 			},
 			{
 				"name": "JOYKEY_NADIR",
 				"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
+				"makeOpaque": true,
 				"enabled": true,
 				"left": 10,
 				"width": 600,
@@ -47,32 +36,21 @@
 		"fileName": "_High Contrast MFDs\\DCS SA342 MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_SA-342",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_SA-342"
 			},
 			{
 				"name": "WHKEY_SA-342",
-				"filename": "SA-342\\DCS SA342 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "SA-342\\DCS SA342 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_SA-342",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_SA-342"
 			},
 			{
 				"name": "JOYKEY_NADIR",
 				"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
+				"makeOpaque": true,
 				"enabled": true,
-				"left":  10,
+				"left": 10,
 				"width": 600,
 				"height": 427,
 				"xOffsetStart": 10,

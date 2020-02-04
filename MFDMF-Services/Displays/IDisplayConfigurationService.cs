@@ -1,12 +1,10 @@
-﻿using MFDMF_Models.Models;
-using System;
+﻿using MFDMF_Models.Interfaces;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MFDMF_Services.Displays
 {
 	public interface IDisplayConfigurationService
 	{
-		List<DisplayDefinition> LoadDisplays();
+		List<IDisplayDefinition> LoadDisplays();
 }
 }

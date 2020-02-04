@@ -5,26 +5,14 @@
 		"fileName": "M-2000C\\DCS M2000 MFD THROTTLE.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_M-2000C",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_M-2000C"
 			},
 			{
 				"name": "WHKEY_M-2000C",
-				"filename": "M-2000C\\DCS M2000 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "M-2000C\\DCS M2000 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_M-2000C",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_M-2000C"
 			},
 			{
 				"name": "JOYKEY_INS",
@@ -72,26 +60,14 @@
 		"fileName": "_High Contrast MFDs\\DCS M2000 MFD THROTTLE HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_M-2000C",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_M-2000C"
 			},
 			{
 				"name": "WHKEY_M-2000C",
-				"filename": "M-2000C\\DCS M2000 THROTTLE.jpg",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "M-2000C\\DCS M2000 THROTTLE.jpg"
 			},
 			{
-				"name": "RMFD_M-2000C",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_M-2000C"
 			},
 			{
 				"name": "JOYKEY_INS",
@@ -131,7 +107,6 @@
 				"yOffsetFinish": 544,
 				"opacity": 1.0
 			}
-
 		]
 	}
 ]

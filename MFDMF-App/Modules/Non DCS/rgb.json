@@ -1,0 +1,63 @@
+[
+	{
+		"name": "TestPattern_RGB",
+		"displayName": "RGB TestPattern",
+		"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+		"configurations": [
+			{
+				"name": "WHKEY",
+				"enabled": false
+			},
+			{
+				"name": "TestPattern_RGB",
+				"fileName": "convergence-fine-1024x768.gif",
+				"enabled": true,
+				"width": 500,
+				"height": 500,
+				"opacity": 0.75,
+				"makeOpaque": false,
+				"subConfigDef": [
+					{
+						"name": "Red",
+						"fileName": "red.png",
+						"center": true,
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 400,
+						"height": 400
+					},
+					{
+						"name": "Green",
+						"fileName": "green.png",
+						"enabled": false,
+						"center": true,
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 300,
+						"height": 300
+					},
+					{
+						"name": "Blue",
+						"fileName": "blue.png",
+						"center": true,
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 200,
+						"height": 200,
+						"subConfigDef": [
+							{
+								"name": "insideRed",
+								"fileName": "red.png",
+								"center": true,
+								"makeOpaque": true,
+								"opacity": 1.0,
+								"width": 50,
+								"height": 50
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

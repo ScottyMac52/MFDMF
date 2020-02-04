@@ -5,26 +5,14 @@
 		"fileName": "F-5E\\DCS F5E MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_F-5E",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_F-5E"
 			},
 			{
 				"name": "WHKEY_F-5E",
-				"filename": "F-5E\\DCS F5E THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "F-5E\\DCS F5E THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_F-5E",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_F-5E"
 			}
 		]
 	},
@@ -34,26 +22,14 @@
 		"fileName": "_High Contrast MFDs\\DCS F5E MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_F-5E",
-				"enabled": true,
-				"width": 870,
-				"height": 700
+				"name": "LMFD_F-5E"
 			},
 			{
 				"name": "WHKEY_F-5E",
-				"filename": "F-5E\\DCS F5E THROTTLE.JPG",
-				"enabled": true,
-				"width": 1200,
-				"height": 1000,
-				"left": 10,
-				"top": 10
+				"filename": "F-5E\\DCS F5E THROTTLE.JPG"
 			},
 			{
-				"name": "RMFD_F-5E",
-				"enabled": true,
-				"width": 870,
-				"height": 700,
-				"left": 409
+				"name": "RMFD_F-5E"
 			}
 		]
 	}

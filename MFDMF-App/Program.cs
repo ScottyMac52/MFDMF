@@ -7,10 +7,10 @@ namespace MFDMFApp
 	/// <summary>
 	/// Main entry
 	/// </summary>
-	public static class Program
+	class Program
 	{
 		[STAThread()]
-		public static int Main(string[] args)
+		static int Main(string[] args)
 		{
 			var runningInstance = RunningInstance();
 			runningInstance?.Kill();

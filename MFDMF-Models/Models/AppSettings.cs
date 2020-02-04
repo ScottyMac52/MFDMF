@@ -10,7 +10,10 @@ namespace MFDMF_Models.Models
 		public bool? SaveCroppedImages { get; set; }
 		public string DefaultConfiguration { get; set; }
 		public string FilePath { get; set; }
+		public string FileSpec { get; set; }
 		public List<string> ModuleNames { get; set; }
 		public bool? TurnOffCache { get; set; }
+		public bool? ShowRulers { get; set; }
+		public int? RulerSize { get; set; }
 	}
 }

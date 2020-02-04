@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_23E57681A6F844EFBD42638F3930337B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_511C0ED4FBDE49B0BC1669F1213F5B45"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,6 +34,12 @@
         "Entry"
         {
         "MsmKey" = "8:_580D6E0AA2AC4408B56C25EA074145A3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9D45E507D73841DA9AC87E8BB7E4656F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,12 +57,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BA4B99E08E91424B97FD033DE48F16C9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CFE7E39FFC5F441BB5032B4D4276F0B5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -58,6 +64,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D40C0B95CF45451486426DC5DF9E0C40"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E6ED1321F1EA416D94383C002796BF7B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -168,6 +180,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_23E57681A6F844EFBD42638F3930337B"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\blue.png"
+            "TargetName" = "8:blue.png"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_511C0ED4FBDE49B0BC1669F1213F5B45"
             {
             "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\tv-test-patterns-02.jpg"
@@ -192,6 +224,26 @@
             {
             "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\RCA_Indian_Head_test_pattern.jpg"
             "TargetName" = "8:RCA_Indian_Head_test_pattern.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D45E507D73841DA9AC87E8BB7E4656F"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\red.png"
+            "TargetName" = "8:red.png"
             "Tag" = "8:"
             "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
             "Condition" = "8:"
@@ -248,12 +300,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA4B99E08E91424B97FD033DE48F16C9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFE7E39FFC5F441BB5032B4D4276F0B5"
             {
-            "SourcePath" = "8:D:\\MASS STORAGE\\Downloads\\mfd_xkl_icon.ico"
-            "TargetName" = "8:mfd_xkl_icon.ico"
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\maxresdefault.jpg"
+            "TargetName" = "8:maxresdefault.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_7FCB61EBE1E14F5F9BB45E9312EFFC0D"
+            "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -268,10 +320,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CFE7E39FFC5F441BB5032B4D4276F0B5"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6ED1321F1EA416D94383C002796BF7B"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\maxresdefault.jpg"
-            "TargetName" = "8:maxresdefault.jpg"
+            "SourcePath" = "8:..\\..\\..\\..\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns\\green.png"
+            "TargetName" = "8:green.png"
             "Tag" = "8:"
             "Folder" = "8:_15DC9A5E827040F990087E8682A2D73D"
             "Condition" = "8:"
@@ -356,33 +408,11 @@
                                 {
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_15DC9A5E827040F990087E8682A2D73D"
                                     {
-                                    "Name" = "8:TestPattern"
+                                    "Name" = "8:TestPatterns"
                                     "AlwaysCreate" = "11:FALSE"
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_BF63A06F5E4E44A889F5971FCB052E97"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A9A6D596105E403A8C9B9F718BC4058D"
-                                    {
-                                    "Name" = "8:Logs"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_67F981B5688B4C68B9AED2577D7D3881"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_CE540DC6687C48A2BD44F4886291C47D"
-                                    {
-                                    "Name" = "8:cache"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_4747C7B6886547C9AFB7FD0B396AA134"
                                         "Folders"
                                         {
                                         }
@@ -448,7 +478,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MFDMF"
         "ProductCode" = "8:{219D2F90-276C-4F1B-AB9F-E05A599DDD73}"
-        "PackageCode" = "8:{FA75880F-7C82-4323-8CD7-7101F24E89BE}"
+        "PackageCode" = "8:{BA9CF387-F599-403E-A43F-FCB7F49E9997}"
         "UpgradeCode" = "8:{10A36A70-4527-422C-9715-54AE7A24ECC8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -465,7 +495,7 @@
         "Keywords" = "8:MFD, CTS"
         "ARPCOMMENTS" = "8:MFDMF - Multi-Function Display Management "
         "ARPURLINFOABOUT" = "8:https://github.com/ScottyMac52/MFDMF"
-        "ARPPRODUCTICON" = "8:_BA4B99E08E91424B97FD033DE48F16C9"
+        "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -579,7 +609,7 @@
             "Target" = "8:_D40C0B95CF45451486426DC5DF9E0C40"
             "Folder" = "8:_777E20FDB8484A7B981F3B731E7C41D5"
             "WorkingFolder" = "8:_7FCB61EBE1E14F5F9BB45E9312EFFC0D"
-            "Icon" = "8:_BA4B99E08E91424B97FD033DE48F16C9"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8B164927605E40EEBB392B8D7F5A2BB4"
@@ -593,7 +623,7 @@
             "Target" = "8:_D40C0B95CF45451486426DC5DF9E0C40"
             "Folder" = "8:_3C4466A8075B4AF08A007EB1F11CD074"
             "WorkingFolder" = "8:_7FCB61EBE1E14F5F9BB45E9312EFFC0D"
-            "Icon" = "8:_BA4B99E08E91424B97FD033DE48F16C9"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
