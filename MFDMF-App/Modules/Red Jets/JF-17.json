@@ -23,7 +23,7 @@
 						"xOffsetFinish": 1286,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 1340,
-						"enabled": false,
+						"enabled": true,
 						"useAsSwitch": false,
 						"makeOpaque": true
 					},
@@ -86,7 +86,7 @@
 						"xOffsetFinish": 1286,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 1340,
-						"enabled": false,
+						"enabled": true,
 						"useAsSwitch": false,
 						"makeOpaque": true
 					},

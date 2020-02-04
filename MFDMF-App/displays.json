@@ -2,27 +2,19 @@
 	{
 		"name": "Main",
 		"width": 2560,
-		"height": 1440,
-		"left": 0,
-		"top": 0
+		"height": 1440
 	},
 	{
 		"name": "LMFD",
-		"width": 1280,
-		"height": 720,
+		"width": 870,
+		"height": 700,
 		"left": -1280,
 		"top": 0,
 		"xOffsetStart": 101,
 		"xOffsetFinish": 776,
 		"yOffsetStart": 250,
 		"yOffsetFinish": 900,
-		"opacity": 1.0,
-		"image": {
-			"Width": 870,
-			"Height": 700,
-			"Left": 0,
-			"Top": 0
-		}
+		"opacity": 1.0
 	},
 	{
 		"name": "WHKEY",
@@ -31,8 +23,8 @@
 		"left": 2561,
 		"top": 0,
 		"xOffsetStart": 0,
-		"xOffsetFinish": 3330,
 		"yOffsetStart": 0,
+		"xOffsetFinish": 3330,
 		"yOffsetFinish": 2295,
 		"opacity": 1.0
 	},
@@ -41,10 +33,9 @@
 		"width": 1200,
 		"height": 1080,
 		"left": 2561,
-		"top": 0,
 		"xOffsetStart": 0,
-		"xOffsetFinish": 1024,
 		"yOffsetStart": 0,
+		"xOffsetFinish": 1024,
 		"yOffsetFinish": 768,
 		"opacity": 1.0
 	},
@@ -57,32 +48,21 @@
 	},
 	{
 		"name": "RMFD",
-		"width": 1280,
-		"height": 720,
-		"left": 4481,
-		"top": 0,
+		"width": 870,
+		"height": 700,
+		"left": 4890,
 		"xOffsetStart": 903,
 		"xOffsetFinish": 1576,
 		"yOffsetStart": 250,
 		"yOffsetFinish": 900,
-		"opacity": 1.0,
-		"image": {
-			"Width": 870,
-			"Height": 700,
-			"Left": 409,
-			"top": 0
-		}
+		"opacity": 1.0
 	},
 	{
 		"name": "Flir",
-		"xOffsetStart": 0,
-		"xOffsetFinish": 380,
-		"yOffsetStart": 0,
-		"yOffsetFinish": 440,
-		"image": {
-			"top": -50,
-			"width": 380,
-			"height": 440
+		"offsets": {
+			"top": -45,
+			"width": -490,
+			"height": -260
 		}
 	}
 ]

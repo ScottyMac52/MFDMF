@@ -12,91 +12,49 @@
 				"name": "TestPattern_RGB",
 				"fileName": "convergence-fine-1024x768.gif",
 				"enabled": true,
-				"width": 1080,
-				"height": 1080,
-				"opacity": 1.0,
-				"makeOpaque": true,
+				"width": 500,
+				"height": 500,
+				"opacity": 0.75,
+				"makeOpaque": false,
 				"subConfigDef": [
 					{
 						"name": "Red",
 						"fileName": "red.png",
 						"center": true,
-						"width": 1024,
-						"height": 768
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 400,
+						"height": 400
 					},
 					{
 						"name": "Green",
 						"fileName": "green.png",
+						"enabled": false,
 						"center": true,
-						"width": 800,
-						"height": 600
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 300,
+						"height": 300
 					},
 					{
 						"name": "Blue",
 						"fileName": "blue.png",
 						"center": true,
-						"width": 640,
-						"height": 480
-					}
-				]
-			}
-		]
-	},
-	{
-		"name": "TestPattern_Switch",
-		"displayName": "Test Pattern with 3 switches",
-		"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
-		"configurations": [
-			{
-				"name": "WHKEY_Switch",
-				"fileName": "convergence-fine-1024x768.gif",
-				"enabled": true,
-				"width": 1080,
-				"height": 1080,
-				"xOffsetStart": 0,
-				"xOffsetFinish": 1024,
-				"yOffsetStart": 0,
-				"yOffsetFinish": 768,
-				"makeOpaque": true,
-				"subConfigDef": [
-					{
-						"name": "Red",
-						"fileName": "red.png",
-						"width": 800,
-						"height": 600,
-						"xOffsetStart": 0,
-						"xOffsetFinish": 1024,
-						"yOffsetStart": 0,
-						"yOffsetFinish": 768,
-						"enabled": false,
-						"useAsSwitch": true,
-						"center": true
-					},
-					{
-						"name": "Green",
-						"fileName": "green.png",
-						"width": 800,
-						"height": 600,
-						"xOffsetStart": 0,
-						"xOffsetFinish": 1024,
-						"yOffsetStart": 0,
-						"yOffsetFinish": 768,
-						"enabled": false,
-						"useAsSwitch": true,
-						"center": true
-					},
-					{
-						"name": "Blue",
-						"fileName": "blue.png",
-						"width": 800,
-						"height": 600,
-						"xOffsetStart": 0,
-						"xOffsetFinish": 1024,
-						"yOffsetStart": 0,
-						"yOffsetFinish": 768,
-						"enabled": false,
-						"useAsSwitch": true,
-						"center": true
+						"makeOpaque": true,
+						"opacity": 1.0,
+						"width": 200,
+						"height": 200,
+						"subConfigDef": [
+							{
+								"name": "insideRed",
+								"fileName": "red.png",
+								"center": true,
+								"makeOpaque": true,
+								"opacity": 1.0,
+								"width": 50,
+								"height": 50
+							}
+						]
 					}
 				]
 			}

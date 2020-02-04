@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace MFDMF_Models.Models
 {
@@ -18,7 +19,7 @@ namespace MFDMF_Models.Models
         #region Constants
 
         private const int HASH_START = 17;
-        private const int HASH_NUM = 19;
+        private const int HASH_NUM = 23;
 
         #endregion Constants
 
@@ -64,7 +65,7 @@ namespace MFDMF_Models.Models
         /// Logger
         /// </summary>
         [JsonIgnore()]
-        public ILogger Logger { get; internal set; }
+        public ILogger Logger { get; set; }
 
         #endregion Utilities 
 
@@ -114,6 +115,15 @@ namespace MFDMF_Models.Models
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Throttle type specified in the configuration
+        /// </summary>
+        [JsonIgnore()]
+        public string ThrottleType { get; set; }
+
+        [JsonIgnore()]
+        public string RulerName { get; set; }
+        
         #endregion Identifying properties
 
         #region Image cropping properties IOffsetGeometry
@@ -178,6 +188,11 @@ namespace MFDMF_Models.Models
         /// </summary>
         [JsonProperty("top")]
         public int? Top { get; set; }
+        /// <summary>
+        /// If true then the superimposed bitmap is opaque
+        /// </summary>
+        [JsonProperty("makeOpaque")]
+        public bool? MakeOpaque { get; set; }
 
         #endregion Basic Image Properties Center, Left, Top, Width, Height and Opacity
 
@@ -189,28 +204,12 @@ namespace MFDMF_Models.Models
         [JsonProperty("subConfigDef")]
         public virtual List<ConfigurationDefinition> SubConfigurations { get; set; }
 
-        /// <summary>
-        /// If true then the superimposed bitmap is opaque
-        /// </summary>
-        [JsonProperty("makeOpaque")]
-        public bool? MakeOpaque { get; set; }
-
 		#endregion SubConfiguration support
 
 		#region Public methods
 
         /// <summary>
-        /// Centers the current Configuration to it's Parent
-        /// </summary>
-        public void SetCenterToParent()
-        {
-            var point = GetCenterTo(Parent);
-            Left = point.X;
-            Top = point.Y;
-        }
-
-        /// <summary>
-        /// Centers the current Configuration inside the specified Configuration
+        /// Gets the center coordinates for the current Configuration inside the specified Configuration
         /// </summary>
         /// <param name="configurationDefinition"></param>
         public Point GetCenterTo(IDisplayGeometry displayGeometry)
@@ -221,15 +220,47 @@ namespace MFDMF_Models.Models
         }
 
         /// <summary>
+        /// Checks to see if the selected Configuration has been selected via their configuration or the command line options
+        /// </summary>
+        /// <param name="specifiedSubConfigs"></param>
+        /// <returns></returns>
+        public bool CheckForActiveSelectedSubConfiguration(List<string> specifiedSubConfigs)
+        {
+            var useAsStatic = ((UseAsSwitch ?? false) == false) && (Enabled ?? false);
+            var useAsSwitch = (UseAsSwitch ?? false);
+            var selected = specifiedSubConfigs?.Any(ss => (Name?.Contains(ss, StringComparison.InvariantCultureIgnoreCase) == true)) ?? false;
+            return useAsStatic || (useAsSwitch && selected);
+        }
+
+        /// <summary>
+        /// Gets the image prefix for the configuration
+        /// </summary>
+        /// <param name="selectedSubMods"></param>
+        /// <returns></returns>
+        public string GetImagePrefix(List<string> selectedSubMods)
+        {
+            int hashCode = GetHashCode();
+            ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(this, (subConfig) =>
+            {
+                if(subConfig.CheckForActiveSelectedSubConfiguration(selectedSubMods))
+                {
+                    hashCode += subConfig.GetHashCode();
+                }
+            });
+
+            return $"{ModuleName}-{Name}-{hashCode}";
+        }
+
+        /// <summary>
         /// Recursive processing of the <see cref="IConfigurationDefinition"/> for a Module
         /// </summary>
         /// <param name="configurationDefinition"></param>
-        public static void WalkConfigurattionDefinitionsWithAction(IConfigurationDefinition configurationDefinition, Action<IConfigurationDefinition> actionToInvoke)
+        public static void WalkConfigurationDefinitionsWithAction(IConfigurationDefinition configurationDefinition, Action<IConfigurationDefinition> actionToInvoke)
         {
             configurationDefinition?.SubConfigurations?.ForEach(subConfig =>
             {
                 actionToInvoke?.Invoke(subConfig);
-                WalkConfigurattionDefinitionsWithAction(subConfig, actionToInvoke);
+                WalkConfigurationDefinitionsWithAction(subConfig, actionToInvoke);
             });
         }
 
@@ -243,26 +274,39 @@ namespace MFDMF_Models.Models
             return GetHashCode().Equals(config2?.GetHashCode() ?? 0);
         }
 
+        private int? GetStringCode(string source)
+        {
+            int? x = HASH_START;
+            source?.ToList().ForEach((ch) =>
+            {
+                x += ch;
+            });
+            return x;
+        }
+
+    
         public override int GetHashCode()
         {
             var hashCode = HASH_START;
-            hashCode += Name.GetHashCode() * HASH_NUM;
-            hashCode += FilePath.GetHashCode() * HASH_NUM;
-            hashCode += FileName.GetHashCode() * HASH_NUM;
-            hashCode += ModuleName.GetHashCode() * HASH_NUM;
-            hashCode += Height.GetHashCode() * HASH_NUM;
-            hashCode += Left.GetHashCode() * HASH_NUM;
-            hashCode += Top.GetHashCode() * HASH_NUM;
+            hashCode += (Center?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Enabled?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (Opacity?.GetHashCode() ?? 0 ) * HASH_NUM;
-            hashCode += (XOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(FileName) ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(FilePath) ?? 0) * HASH_NUM;
+            hashCode += (Height?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (Left?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (MakeOpaque?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(ModuleName) ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(Name) ?? 0) * HASH_NUM;
+            hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(RulerName) ?? 0) * HASH_NUM;
+            hashCode += (GetStringCode(ThrottleType) ?? 0) * HASH_NUM;
+            hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (UseAsSwitch?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (Width?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (XOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (YOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (XOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (YOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
-            SubConfigurations?.ForEach(subConfig =>
-            {
-                hashCode += subConfig.GetHashCode();
-            });
+            hashCode += (YOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
             return hashCode;
         }
 
@@ -272,15 +316,21 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public virtual string ToReadableString()
         {
-            Point point;
-
-            var fileName = string.IsNullOrEmpty(FileName) || string.IsNullOrEmpty(FilePath) ? "None" : Path.Combine(FilePath,FileName);
-            point = new Point(Left ?? 0, Top ?? 0);
-            if(Center ?? false)
+            string fileName;
+            if(!string.IsNullOrEmpty(FileName))
             {
-                point = GetCenterTo(Parent);
+                var fi = new FileInfo(FileName);
+                fileName = fi.Name.Replace(fi.Extension, "");
             }
-           return $"ImageSource: {fileName} Cropped from: ({XOffsetStart ?? 0},{YOffsetStart ?? 0}) to ({(XOffsetFinish ?? 0) - (XOffsetStart ?? 0)}, {(YOffsetFinish ?? 0) - (YOffsetStart ?? 0)}) for {Name} at ({point.X}, {point.Y}) for ({Width}, {Height}) ";
+            else
+            {
+                fileName = "None";
+            }
+            var position = $"{Left ?? 0}-{Top ?? 0}-{Width ?? 0}-{Height ?? 0}";
+            var offsetCoord = $"{(XOffsetStart ?? 0)}-{(YOffsetStart ?? 0)}";
+            var offSetSize = $"{(XOffsetFinish ?? 0)-(XOffsetStart ?? 0)}-{(YOffsetFinish ?? 0)-(YOffsetStart ?? 0)}";
+            var imagePrefix = $"{Parent?.Name ?? ""}-{fileName}-{Name}-{offsetCoord}-{offSetSize}-{position}-{Opacity ?? 1.0F}-{MakeOpaque ?? false}-{Center ?? false}-{ThrottleType}-{RulerName}";
+            return imagePrefix;
         }
 
         public virtual string ToJson()

@@ -88,7 +88,7 @@ namespace MFDMF_Models.Models
 		[JsonProperty("top")]
 		public int? Top { get; set; }
 
-		[JsonProperty("image")]
+		[JsonProperty("offsets")]
 		public ImageGeometry ImageGeometry { get; set; }
 
 		#endregion Display Definitin properties Name, Left, Top, Width, Height
@@ -125,6 +125,9 @@ namespace MFDMF_Models.Models
 		/// </summary>
 		[JsonProperty("yOffsetFinish")]
 		public int? YOffsetFinish { get; set; }
+		
+		[JsonIgnore()]
+		public bool? Center { get; set; }
 
 		#endregion Image cropping properties IOffsetGeometry
 
@@ -203,7 +206,7 @@ namespace MFDMF_Models.Models
 		/// <returns></returns>
 		public string ToReadableString()
 		{
-			return $"{Name} ({Left}, {Top}) ({Width}, {Height})";
+			return $"{Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0})";
 		}
 
 		#endregion Public overrides 

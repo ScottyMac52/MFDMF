@@ -21,6 +21,8 @@ namespace MFDMF_Models.Interfaces
         /// </summary>
         int? Top { get; set; }
 
+        bool? Center { get; set; }
+
         /// <summary>
         /// Gets the center coordinates for the current display inside the specified display
         /// </summary>

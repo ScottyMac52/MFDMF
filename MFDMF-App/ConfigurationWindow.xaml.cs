@@ -33,13 +33,16 @@ namespace MFDMFApp
 		/// </summary>
 		public IConfigurationDefinition Configuration { get; set; }
 		/// <summary>
-		/// Name of the selected subConfiguration
+		/// Name of the selected subConfigurations
 		/// </summary>
-		public string SubConfigurationName { get; set; }
+		public string SubConfigurationNames { get; set; }
 		/// <summary>
 		/// Is the Window loaded?
 		/// </summary>
 		public bool IsWindowLoaded { get; protected set; }
+
+		private List<string> _selectedSubs => SubConfigurationNames?.Split('|')?.ToList();
+
 
 		#endregion fields and properties
 
@@ -118,16 +121,38 @@ namespace MFDMFApp
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="Exception"></exception>
-		private static Bitmap Crop(Bitmap src, IConfigurationDefinition config)
+		private Bitmap Crop(Bitmap src, IConfigurationDefinition config)
 		{
+			var error = false;
 			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
 			var cropRect = new Rectangle(new System.Drawing.Point(config.XOffsetStart ?? 0, config.YOffsetStart ?? 0), imageSize);
-			var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0);
-			using (var g = Graphics.FromImage(newBitmap))
+
+			if((config?.Width ??  0) < 0)
 			{
-				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
+				_logger?.LogError($"Width cannot be less than zero for config {config?.ToReadableString()}");
+				error = true;
 			}
-			return newBitmap;
+
+			if ((config?.Height ?? 0) < 0)
+			{
+				_logger?.LogError($"Height cannot be less than zero for config {config?.ToReadableString()}");
+				error = true;
+			}
+
+			if (!error)
+			{
+
+				var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0);
+				using (var g = Graphics.FromImage(newBitmap))
+				{
+					g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
+				}
+				return newBitmap;
+			}
+			else
+			{
+				throw new ArgumentException($"Unable to Crop bitmap for {config.ToReadableString()}. Pleasse check the log.");
+			}
 		}
 			   
 		/// <summary>
@@ -144,12 +169,10 @@ namespace MFDMFApp
 		private Bitmap Superimpose(Dictionary<string, Bitmap> imageDictionary)
 		{
 			// Based oon the current configuration we need to pull the main image
-			Bitmap newBitmap;
-			Bitmap croppedInsetBitmap;
-			var config = Configuration;
-			var key = $"{config.ModuleName}-{config.Name}";
+			var currentConfig = Configuration;
+			var key = $"{currentConfig.ModuleName}-{currentConfig.Name}";
 			var mainImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-			newBitmap = ProcessBitmap(config, key, mainImage);
+			var newBitmap = ProcessBitmap(currentConfig, key, mainImage);
 			if (newBitmap == null)
 			{
 				_logger?.LogError($"Unable to find the image with a key of {key}");
@@ -159,28 +182,87 @@ namespace MFDMFApp
 			{
 				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 
-				var currentConfig = config;
-
-				ConfigurationDefinition.WalkConfigurattionDefinitionsWithAction(currentConfig, (subConfig) => {
-
-					if ((subConfig.Enabled ?? false && !(subConfig.UseAsSwitch ?? false)) || ((subConfig.UseAsSwitch ?? false) && (SubConfigurationName?.Equals(subConfig.Name, StringComparison.InvariantCultureIgnoreCase) ?? false)))
+				ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (config) =>
+				{
+					// See if the Coonfiguration is selected
+					if (CheckForConfiguration(config, _selectedSubs))
 					{
-						key = $"{subConfig.ModuleName}-{currentConfig?.Name}-{subConfig.Name}";
+						key = $"{currentConfig.ModuleName}-{currentConfig?.Name}-{config.Name}";
 						var insetImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-						croppedInsetBitmap = ProcessBitmap(subConfig, key, insetImage);
+						var croppedInsetBitmap = ProcessBitmap(config, key, insetImage);
 						if (croppedInsetBitmap == null)
 						{
 							_logger?.LogError($"Unable to find the image with a key of {key}");
 							throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
 						}
-						var origin = new System.Drawing.Point(subConfig?.Left ?? 0, subConfig?.Top ?? 0);
-						g.DrawImage(croppedInsetBitmap, new Rectangle(origin, new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
-						var parentConfig = $"Module: {subConfig?.Parent?.ModuleName} Filename: {subConfig?.Parent?.FileName} Config: {subConfig?.Parent?.Name}";
-						_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({croppedInsetBitmap.Width}, {croppedInsetBitmap.Height}) placed at ({origin.X}, {origin.Y}) inside of {parentConfig} with an opacity: {subConfig?.Opacity ?? 1.0F}");
+						var origin = new System.Drawing.Point(config?.Left ?? 0, config?.Top ?? 0);
+						g.DrawImage(croppedInsetBitmap, new Rectangle(origin, new System.Drawing.Size(config?.Width ?? 0, config?.Height ?? 0)));
+						var parentConfig = $"Module: {config?.Parent?.ModuleName} Filename: {config?.Parent?.FileName} Config: {config?.Parent?.Name}";
+						_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({croppedInsetBitmap.Width}, {croppedInsetBitmap.Height}) placed at ({origin.X}, {origin.Y}) inside of {parentConfig} with an opacity: {config?.Opacity ?? 1.0F}");
 					}
 				});
+
+				if (_settings.ShowRulers ?? false)
+				{
+					_logger?.LogInformation($"Drawing rulers on {currentConfig.ToReadableString()} at {_settings?.RulerSize ?? 0} pixels");
+					CreateRulers(currentConfig, g);
+				}
 			}
 			return newBitmap;
+		}
+
+		/// <summary>
+		/// Checks to see if the current configuration is statically selected or selected via command line logic
+		/// </summary>
+		/// <param name="sc"></param>
+		/// <param name="specifiedSubConfigs"></param>
+		/// <returns></returns>
+		private static bool CheckForConfiguration(IConfigurationDefinition sc, List<string> specifiedSubConfigs)
+		{
+			return (sc?.CheckForActiveSelectedSubConfiguration(specifiedSubConfigs) ?? false) == true;
+		}
+
+
+		private void CreateRulers(IConfigurationDefinition config, Graphics g)
+		{
+			var xCenter = (config.Width ?? 0) / 2;
+			var yCenter = (config.Height ?? 0) / 2;
+
+			g.DrawLine(Pens.Red, new System.Drawing.Point(0, yCenter), new System.Drawing.Point(config.Width ?? 0, yCenter));
+
+			for (int x = 0; x < (config.Width ?? 0); x++)
+			{
+				if (x % (_settings.RulerSize ?? 0) == 0)
+				{
+					var startPoint = new System.Drawing.Point(x, yCenter - 10);
+					var endPoint = new System.Drawing.Point(x, yCenter + 10);
+					g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+				}
+
+				if (x % 100 == 0)
+				{
+					var textPoint = new PointF(x - 10, (float) yCenter + 10);
+					g.DrawString($"{x}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+				}
+			}
+
+			g.DrawLine(Pens.Red, new System.Drawing.Point(xCenter, 0), new System.Drawing.Point(xCenter, config.Height ?? 0));
+
+			for (int y = 0; y < (config.Height ?? 0); y++)
+			{
+				if (y % (_settings.RulerSize ?? 0) == 0)
+				{
+					var startPoint = new System.Drawing.Point(xCenter - 10, y);
+					var endPoint = new System.Drawing.Point(xCenter + 10, y);
+					g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+				}
+
+				if(y % 100 == 0)
+				{
+					var textPoint = new PointF(xCenter + 10, y-5);
+					g.DrawString($"{y}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+				}
+			}
 		}
 
 		/// <summary>
@@ -205,8 +287,8 @@ namespace MFDMFApp
 			if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
 			{
 				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{config.ModuleName}");
-				var imagePrefix = $"{config?.Name}-{config?.XOffsetStart ?? 0}-{config?.XOffsetFinish ?? 0}-{config?.YOffsetStart ?? 0}-{config?.YOffsetFinish ?? 0}";
-				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}-Main.jpg");
+				var imagePrefix = config.ToReadableString();
+				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}-Crop.jpg");
 				newBitmap.Save(cacheFile);
 			}
 			_logger?.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
@@ -270,7 +352,7 @@ namespace MFDMFApp
 			imageDictionary.Add($"{Configuration.ModuleName}-{Configuration.Name}", bitMap);
 			var currentConfig = Configuration;
 
-			ConfigurationDefinition.WalkConfigurattionDefinitionsWithAction(currentConfig, (subConfig) =>
+			ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>
 			{
 				filePath = subConfig.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(subConfig.FilePath) : subConfig.FilePath;
 				fileSource = Path.Combine(filePath, subConfig.FileName);
@@ -306,15 +388,7 @@ namespace MFDMFApp
 		{
 			// Load the image dict
 			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{Configuration.ModuleName}");
-			var throttleType = (_settings?.UseCougar ?? false) ? "HC" : "WH";
-			var imagePrefix = $"X-{Configuration.XOffsetStart}To{Configuration.XOffsetFinish}_Y-{Configuration.YOffsetStart}To{Configuration.YOffsetFinish}-{Configuration.Left}-{Configuration.Top}-{Configuration.Width}-{Configuration.Height}-{Configuration.Name}-{Configuration.Opacity ?? 1.0F}-{throttleType}";
-			if((SubConfigurationName?.Length ?? 0) > 0)
-			{
-				var subConfig = Configuration.SubConfigurations.FirstOrDefault(sub => sub.ModuleName == Configuration.ModuleName && sub.Name == SubConfigurationName);
-				var subConfigOpacity = subConfig?.Opacity;
-				imagePrefix += $"-{subConfig?.XOffsetStart ?? 0}To{subConfig?.XOffsetFinish ?? 0}_Y-{subConfig?.YOffsetStart ?? 0}To{subConfig?.YOffsetFinish ?? 0}-{subConfig?.Left ?? 0}-{subConfig?.Top ?? 0}-{subConfig?.Width ?? 0}-{subConfig?.Height ?? 0}-{SubConfigurationName}-{subConfigOpacity ?? 1.0F}";
-			}
-			var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}.jpg");
+			var cacheFile = Path.Combine(cacheFolder, $"{Configuration.GetImagePrefix(_selectedSubs)}-{Left}-{Top}-{Width}-{Height}.jpg");
 
 			if (!Directory.Exists(cacheFolder))
 			{
@@ -383,7 +457,7 @@ namespace MFDMFApp
 				LoadImage();
 			}
 			watch.Stop();
-			_logger?.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationName}: loaded in {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationNames}: loaded in {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		/// <summary>

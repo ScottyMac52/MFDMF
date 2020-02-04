@@ -2,7 +2,7 @@
   "profiles": {
     "MFDMFApp": {
       "commandName": "Project",
-      "commandLineArgs": "-m \"TestPattern_Switch\" -s \"Red\""
+      "commandLineArgs": "-m \"F-14RHV\" -s \"BIT|F-18WH|Flir\""
     }
   }
 }

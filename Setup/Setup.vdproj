@@ -417,28 +417,6 @@
                                         {
                                         }
                                     }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A9A6D596105E403A8C9B9F718BC4058D"
-                                    {
-                                    "Name" = "8:Logs"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_67F981B5688B4C68B9AED2577D7D3881"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_CE540DC6687C48A2BD44F4886291C47D"
-                                    {
-                                    "Name" = "8:cache"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_4747C7B6886547C9AFB7FD0B396AA134"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
                                 }
                             }
                         }

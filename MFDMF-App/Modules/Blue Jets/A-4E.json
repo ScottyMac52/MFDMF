@@ -15,22 +15,5 @@
 				"name": "RMFD_Skyhawk"
 			}
 		]
-	},
-	{
-		"name": "A-4EHV",
-		"displayName": "A-4E Skyhawk HiViz",
-		"fileName": "_High Contrast MFDs\\DCS A4E MFD HiVis.jpg",
-		"configurations": [
-			{
-				"name": "LMFD_Skyhawk"
-			},
-			{
-				"name": "WHKEY_Skyhawk",
-				"fileName": "A-4E\\DCS A4E THROTTLE.JPG"
-			},
-			{
-				"name": "RMFD_Skyhawk"
-			}
-		]
 	}
 ]

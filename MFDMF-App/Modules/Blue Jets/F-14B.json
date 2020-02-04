@@ -6,16 +6,49 @@
 		"fileName": "F-14\\DCS F14Plt MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Tomcat",
+				"name": "LMFD_TomcatPILOT",
 				"enabled": true
 			},
 			{
-				"name": "WHKEY_Tomcat",
+				"name": "WHKEY_TomcatPILOT",
 				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
-				"enabled": true
+				"subConfigDef": [
+					{
+						"name": "F-18WH",
+						"fileName": "F-14\\DCS F14Plt WHH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					},
+					{
+						"name": "F-18HC",
+						"fileName": "F-14\\DCS F14Plt HCH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					}
+				]
 			},
 			{
-				"name": "RMFD_Tomcat",
+				"name": "RMFD_TomcatPILOT",
 				"enabled": true
 			}
 		]
@@ -27,14 +60,48 @@
 		"fileName": "_High Contrast MFDs\\DCS F14Plt MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_Tomcat"
+				"name": "LMFD_TomcatPILOT"
 			},
 			{
-				"name": "WHKEY_Tomcat",
-				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG"
-			},
+				"name": "WHKEY_TomcatPILOT",
+				"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
+				"subConfigDef": [
+					{
+						"name": "F-18WH",
+						"fileName": "F-14\\DCS F14Plt WHH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					},
+					{
+						"name": "F-18HC",
+						"fileName": "F-14\\DCS F14Plt HCH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					}
+				]
+			},			
 			{
-				"name": "RMFD_Tomcat"
+				"name": "RMFD_TomcatPILOT"
 			}
 		]
 	},
@@ -45,7 +112,7 @@
 		"fileName": "F-14\\DCS F14RIO MFD.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_TomcatRio",
+				"name": "LMFD_TomcatRIO",
 				"useAsSwitch": true,
 				"makeOpaque": true,
 				"subConfigDef": [
@@ -59,7 +126,25 @@
 						"xOffsetFinish": 260,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "BIT_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "red.png",
+								"width": 100,
+								"height": 30,
+								"left": 135,
+								"top": 630,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": false,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "SPL",
@@ -71,7 +156,25 @@
 						"xOffsetFinish": 535,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "SPL_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 135,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "NAV",
@@ -83,7 +186,25 @@
 						"xOffsetFinish": 800,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "NAV_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 260,
+								"top": 635,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "TAC",
@@ -95,7 +216,25 @@
 						"xOffsetFinish": 1070,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "TAC_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "green.png",
+								"width": 100,
+								"height": 50,
+								"left": 380,
+								"top": 615,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "DL",
@@ -107,7 +246,25 @@
 						"xOffsetFinish": 1335,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "DL_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 505,
+								"top": 635,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "TGT",
@@ -119,25 +276,81 @@
 						"xOffsetFinish": 1590,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "TGT_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "green.png",
+								"width": 100,
+								"height": 50,
+								"left": 625,
+								"top": 615,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					}
 				]
 			},
 			{
-				"name": "WHKEY_TomcatRio",
-				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG"
+				"name": "WHKEY_TomcatRIO",
+				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
+				"subConfigDef": [
+					{
+						"name": "F-18WH",
+						"fileName": "F-14\\DCS F14RIO WHH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					},
+					{
+						"name": "F-18HC",
+						"fileName": "F-14\\DCS F14RIO HCH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					}
+				]
 			},
 			{
-				"name": "RMFD_TomcatRio",
+				"name": "RMFD_TomcatRIO",
 				"enabled": true,
-				"useAsSwitch": true,
 				"makeOpaque": true,
 				"subConfigDef": [
 					{
 						"name": "Flir",
 						"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR.png",
 						"enabled": false,
-						"center": true
+						"useAsSwitch": true,
+						"center": true,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 380,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 440
 					}
 				]
 			}
@@ -150,7 +363,7 @@
 		"fileName": "_High Contrast MFDs\\DCS F14RIO MFD HiVis.jpg",
 		"configurations": [
 			{
-				"name": "LMFD_TomcatRio",
+				"name": "LMFD_TomcatRIO",
 				"useAsSwitch": true,
 				"makeOpaque": true,
 				"subConfigDef": [
@@ -164,7 +377,25 @@
 						"xOffsetFinish": 260,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "BIT_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "red.png",
+								"width": 100,
+								"height": 30,
+								"left": 135,
+								"top": 630,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": false,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "SPL",
@@ -176,7 +407,25 @@
 						"xOffsetFinish": 535,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "SPL_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 135,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "NAV",
@@ -188,7 +437,25 @@
 						"xOffsetFinish": 800,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "NAV_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 260,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "TAC",
@@ -200,7 +467,25 @@
 						"xOffsetFinish": 1070,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "TAC_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "green.png",
+								"width": 100,
+								"height": 35,
+								"left": 380,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "DL",
@@ -212,7 +497,25 @@
 						"xOffsetFinish": 1335,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "DL_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "blue.png",
+								"width": 100,
+								"height": 30,
+								"left": 505,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					},
 					{
 						"name": "TGT",
@@ -224,16 +527,68 @@
 						"xOffsetFinish": 1590,
 						"yOffsetStart": 1,
 						"yOffsetFinish": 430,
-						"enabled": false
+						"subConfigDef": [
+							{
+								"name": "TGT_Selected",
+								"filePath": "%AppData%\\Vyper Industries\\MFDMF\\TestPatterns",
+								"fileName": "green.png",
+								"width": 100,
+								"height": 30,
+								"left": 625,
+								"top": 605,
+								"enabled": false,
+								"useAsSwitch": true,
+								"makeOpaque": true,
+								"opacity": 0.35,
+								"xOffsetStart": 0,
+								"xOffsetFinish": 100,
+								"yOffsetStart": 0,
+								"yOffsetFinish": 20
+							}
+						]
 					}
 				]
 			},
 			{
-				"name": "WHKEY_TomcatRio",
-				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG"
+				"name": "WHKEY_TomcatRIO",
+				"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
+				"subConfigDef": [
+					{
+						"name": "F-18WH",
+						"fileName": "F-14\\DCS F14RIO WHH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					},
+					{
+						"name": "F-18HC",
+						"fileName": "F-14\\DCS F14RIO HCH.jpg",
+						"opacity": 1.0,
+						"width": 650,
+						"height": 800,
+						"left": 550,
+						"top": 100,
+						"xOffsetStart": 1,
+						"xOffsetFinish": 1286,
+						"yOffsetStart": 1,
+						"yOffsetFinish": 1340,
+						"enabled": false,
+						"useAsSwitch": true,
+						"makeOpaque": true
+					}
+				]
 			},
 			{
-				"name": "RMFD_TomcatRio",
+				"name": "RMFD_TomcatRIO",
 				"enabled": true,
 				"useAsSwitch": true,
 				"makeOpaque": true,
@@ -242,7 +597,12 @@
 						"name": "Flir",
 						"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR_HiVis.png",
 						"enabled": false,
-						"center": true
+						"useAsSwitch": true,
+						"center": true,
+						"xOffsetStart": 0,
+						"xOffsetFinish": 380,
+						"yOffsetStart": 0,
+						"yOffsetFinish": 440
 					}
 				]
 			}

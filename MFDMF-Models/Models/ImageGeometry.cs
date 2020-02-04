@@ -1,10 +1,7 @@
 ﻿using MFDMF_Models.Extensions;
 using MFDMF_Models.Interfaces;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace MFDMF_Models.Models
 {
@@ -21,6 +18,8 @@ namespace MFDMF_Models.Models
 		public int? Left { get; set; }
 		[JsonProperty("top")]
 		public int? Top { get; set; }
+		[JsonIgnore()]
+		public bool? Center { get; set; }
 
 		public Point GetCenterTo(IDisplayGeometry displayGeometry)
 		{

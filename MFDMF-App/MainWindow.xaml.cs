@@ -93,20 +93,10 @@ namespace MFDMFApp
 			{
 				if (config?.Enabled ?? false)
 				{
-					var subModule = "";
-					// see if this configuration has a sub configuration that has been requested
-					_subModule?.Split("|")?.ToList()?.ForEach(subMod =>
-					{
-						var configSubModule = config?.SubConfigurations?.FirstOrDefault(sub => sub.Name == subMod)?.Name;
-						if(!string.IsNullOrEmpty(configSubModule))
-						{
-							subModule = configSubModule;
-						}
-					});
 					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
 					{
 						Configuration = config,
-						SubConfigurationName = subModule
+						SubConfigurationNames = _subModule
 					};
 					configWindow.Show();
 					if (configWindow.IsWindowLoaded)
@@ -262,9 +252,6 @@ namespace MFDMFApp
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
-			_displays = _displayConfigurationService.LoadDisplays();
-			_module = _startOptions?.ModuleName;
-			_subModule = _startOptions?.SubModuleName;
 			ReloadConfiguration();
 			SetupWindow();
 			watch.Stop();
@@ -354,6 +341,9 @@ namespace MFDMFApp
 		private void ReloadConfiguration(bool forceReload = false)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
+			_displays = _displayConfigurationService.LoadDisplays();
+			_module = _startOptions?.ModuleName;
+			_subModule = _startOptions?.SubModuleName;
 			var module = (string)cbModules?.SelectedValue;
 			DestroyWindows();
 
@@ -378,7 +368,10 @@ namespace MFDMFApp
 			SetupWindow();
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
 			_logger?.LogInformation($"Loading module {selectedModule}");
-			ChangeSelectedModule(selectedModule, forceReload);
+			if (!string.IsNullOrEmpty(selectedModule))
+			{
+				ChangeSelectedModule(selectedModule, forceReload);
+			}
 			watch.Stop();
 			_logger?.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
 		}
