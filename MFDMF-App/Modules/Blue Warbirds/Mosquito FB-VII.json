@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mosquito_FB_MkVI",
+			"displayName": "Mosquito FB Mk VI",
+			"fileName": "Mosquito_FB_MkVI\\DCS MosFBVI MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mosquito_FB_MkVI"
+				},
+				{
+					"name": "WHKEY_Mosquito_FB_MkVI",
+					"filename": "Mosquito_FB_MkVI\\DCS MosFBVI THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mosquito_FB_MkVI"
+				}
+			]
+		},
+		{
+			"name": "Mosquito_FB_MkVIHV",
+			"displayName": "Mosquito FB Mk VI HiViz",
+			"fileName": "_High Contrast MFDs\\DCS MosFBVI MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mosquito_FB_MkVI"
+				},
+				{
+					"name": "WHKEY_Mosquito_FB_MkVI",
+					"filename": "Mosquito_FB_MkVI\\DCS MosFBVI THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mosquito_FB_MkVI"
+				}
+			]
+		}
+	]
+}

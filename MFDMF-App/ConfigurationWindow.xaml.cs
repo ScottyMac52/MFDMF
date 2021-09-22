@@ -1,22 +1,24 @@
-﻿using MFDMF_Models.Interfaces;
-using MFDMF_Models.Models;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
-namespace MFDMFApp
+﻿namespace MFDMFApp
 {
+	using MFDMF_Models;
+	using MFDMF_Models.Interfaces;
+	using MFDMF_Models.Models;
+	using MFDMF_Services;
+	using Microsoft.Extensions.Logging;
+	using System;
+	using System.Collections.Generic;
+	using System.Drawing;
+	using System.Drawing.Imaging;
+	using System.IO;
+	using System.Linq;
+	using System.Windows;
+	using System.Windows.Controls;
+	using System.Windows.Forms;
+	using System.Windows.Input;
+	using System.Windows.Interop;
+	using System.Windows.Media;
+	using System.Windows.Media.Imaging;
+
 	/// <summary>
 	/// Interaction logic for ConfigurationWindow.xaml
 	/// </summary>
@@ -26,7 +28,8 @@ namespace MFDMFApp
 
 		private readonly ILogger _logger;
 		private readonly AppSettings _settings;
-		private readonly List<IDisplayDefinition> _displayDefinitions;
+		private readonly IEnumerable<IDisplayDefinition> _displayDefinitions;
+		private readonly IConfigurationProvider _configurationProvider;
 
 		/// <summary>
 		/// The configuration for this Window
@@ -43,6 +46,28 @@ namespace MFDMFApp
 
 		private List<string> _selectedSubs => SubConfigurationNames?.Split('|')?.ToList();
 
+		public IModuleDefinition ModuleDefinition { get; }
+		
+		public Dictionary<string, ImageDefinition> ImageDictionary { get; private set; }
+
+		#region Folder definitions
+
+		/// <summary>
+		/// AppData 
+		/// </summary>
+		public static string AppDataFolder => MainApp.AppDataFolder;
+		
+		/// <summary>
+		/// Saved games
+		/// </summary>
+		public static string SavedGamesFolder => MainApp.SavedGamesFolder;
+
+		/// <summary>
+		/// Cache folder for current Module
+		/// </summary>
+		public string CacheFolder => Path.Combine(AppDataFolder, Properties.Resources.BaseDataDirectory, "cache", Configuration.ModuleName);
+
+		#endregion Folder definitions
 
 		#endregion fields and properties
 
@@ -51,14 +76,19 @@ namespace MFDMFApp
 		/// <summary>
 		/// Ctor
 		/// </summary>
+		/// <param name="module"></param>
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> used to create the <see cref="ILogger"/></param>
-		/// <param name="displayDefinitions">Loaded display definitions <see cref="List{T}"/> of <see cref="DisplayDefinition"/></param>
 		/// <param name="settings">The <see cref="AppSettings"/> for the application</param>
-		public ConfigurationWindow(ILoggerFactory loggerFactory, List<IDisplayDefinition> displayDefinitions, AppSettings settings)
+		/// <param name="configurationProvider"></param>
+		public ConfigurationWindow(IModuleDefinition module, IConfigurationDefinition configurationDefinition, ILoggerFactory loggerFactory, AppSettings settings, IConfigurationProvider configurationProvider)
 		{
+			ModuleDefinition = module;
 			_settings = settings;
 			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
-			_displayDefinitions = displayDefinitions;
+			Configuration = configurationDefinition;
+			_configurationProvider = configurationProvider;
+			ImageDictionary = _configurationProvider.LoadConfigurationImages(module, configurationDefinition, Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY);
+			_displayDefinitions = _configurationProvider.DisplayDefinitions;
 			InitializeComponent();
 		}
 
@@ -76,10 +106,10 @@ namespace MFDMFApp
 			var displayForConfig = _displayDefinitions?.FirstOrDefault(dd => dd.Name == Configuration?.Name || (Configuration?.Name?.StartsWith(dd.Name, StringComparison.CurrentCulture) ?? false));
 			Title = Configuration?.Name;
 			ResizeMode = ResizeMode.NoResize;
-			Width = Configuration?.Width ?? 0;
-			Height = Configuration?.Height ?? 0;
-			Left = Configuration?.Left ?? 0;
-			Top = Configuration?.Top ?? 0;
+			Width = Configuration?.Width ?? displayForConfig.Width ?? 0;
+			Height = Configuration?.Height ?? displayForConfig.Height ?? 0;
+			Left = Configuration?.Left ?? displayForConfig.Left ?? 0;
+			Top = Configuration?.Top ?? displayForConfig.Top ?? 0;
 			Opacity = Configuration?.Opacity ?? 1.0F;
 			var status = $"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {displayForConfig?.ToReadableString() ?? "Scratch"}";
 			_logger?.LogInformation(status);
@@ -118,31 +148,20 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="config"></param>
+		/// <param name="saveOriginal"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="Exception"></exception>
-		private Bitmap Crop(Bitmap src, IConfigurationDefinition config)
+		private Bitmap Crop(Bitmap src, IConfigurationDefinition config, bool saveOriginal = true)
 		{
-			var error = false;
-			var imageSize = new System.Drawing.Size((config.XOffsetFinish ?? 0) - (config.XOffsetStart ?? 0), (config.YOffsetFinish ?? 0) - (config.YOffsetStart ?? 0));
-			var cropRect = new Rectangle(new System.Drawing.Point(config.XOffsetStart ?? 0, config.YOffsetStart ?? 0), imageSize);
-
-			if((config?.Width ??  0) < 0)
+			if (config.IsValid)
 			{
-				_logger?.LogError($"Width cannot be less than zero for config {config?.ToReadableString()}");
-				error = true;
-			}
-
-			if ((config?.Height ?? 0) < 0)
-			{
-				_logger?.LogError($"Height cannot be less than zero for config {config?.ToReadableString()}");
-				error = true;
-			}
-
-			if (!error)
-			{
-
-				var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0);
+				if (saveOriginal)
+				{
+					SaveOriginalImageIfRequired(src);
+				}
+				var cropRect = new Rectangle(config.CroppingStart, new System.Drawing.Size(config.CroppedWidth, config.CroppedHeight));
+				var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 				using (var g = Graphics.FromImage(newBitmap))
 				{
 					g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
@@ -151,77 +170,91 @@ namespace MFDMFApp
 			}
 			else
 			{
-				throw new ArgumentException($"Unable to Crop bitmap for {config.ToReadableString()}. Pleasse check the log.");
+				throw new ArgumentException($"Unable to Crop bitmap for {config.ToReadableString()}. The configuration is not valid.");
 			}
 		}
-			   
-		/// <summary>
-		/// Superimposes one image on top of another 
-		/// </summary>
-		/// <param name="imageDictionary"></param>
-		/// <returns></returns>
-		/// <exception cref="System.Runtime.InteropServices.ExternalException"></exception>
-		/// <exception cref="PlatformNotSupportedException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		/// <exception cref="Exception"></exception>
-		private Bitmap Superimpose(Dictionary<string, Bitmap> imageDictionary)
+
+		private void SaveOriginalImageIfRequired(Bitmap src)
 		{
-			// Based oon the current configuration we need to pull the main image
-			var currentConfig = Configuration;
-			var key = $"{currentConfig.ModuleName}-{currentConfig.Name}";
-			var mainImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-			var newBitmap = ProcessBitmap(currentConfig, key, mainImage);
-			if (newBitmap == null)
+			if (_settings?.SaveCroppedImages ?? false)
 			{
-				_logger?.LogError($"Unable to find the image with a key of {key}");
-				throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
-			}
-			using (var g = Graphics.FromImage(newBitmap))
-			{
-				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-
-				ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (config) =>
+				using (var originalBitmap = new Bitmap(src.Width, src.Height))
 				{
-					// See if the Coonfiguration is selected
-					if (CheckForConfiguration(config, _selectedSubs))
+					using (var gg = Graphics.FromImage(originalBitmap))
 					{
-						key = $"{currentConfig.ModuleName}-{currentConfig?.Name}-{config.Name}";
-						var insetImage = imageDictionary.FirstOrDefault(id => id.Key == key).Value;
-						var croppedInsetBitmap = ProcessBitmap(config, key, insetImage);
-						if (croppedInsetBitmap == null)
-						{
-							_logger?.LogError($"Unable to find the image with a key of {key}");
-							throw new ArgumentNullException(nameof(imageDictionary), $"Image with key: {key} was not found");
-						}
-						var origin = new System.Drawing.Point(config?.Left ?? 0, config?.Top ?? 0);
-						g.DrawImage(croppedInsetBitmap, new Rectangle(origin, new System.Drawing.Size(config?.Width ?? 0, config?.Height ?? 0)));
-						var parentConfig = $"Module: {config?.Parent?.ModuleName} Filename: {config?.Parent?.FileName} Config: {config?.Parent?.Name}";
-						_logger?.LogInformation($"Configuration: {key} Image ({insetImage.Width}, {insetImage.Height}) Cropped to ({croppedInsetBitmap.Width}, {croppedInsetBitmap.Height}) placed at ({origin.X}, {origin.Y}) inside of {parentConfig} with an opacity: {config?.Opacity ?? 1.0F}");
+						gg.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+						gg.DrawImage(src, new Rectangle() { X = 0, Width = src.Width, Height = src.Height });
+						CreateCroppingRectangle(Configuration, gg);
+						_logger.LogInformation($"Using appFolder: {AppDataFolder}");
+						var cacheFile = Path.Combine(CacheFolder, $"{Configuration.Name}-Original.png");
+						originalBitmap.Save(cacheFile);
 					}
-				});
-
-				if (_settings.ShowRulers ?? false)
-				{
-					_logger?.LogInformation($"Drawing rulers on {currentConfig.ToReadableString()} at {_settings?.RulerSize ?? 0} pixels");
-					CreateRulers(currentConfig, g);
 				}
 			}
-			return newBitmap;
 		}
 
 		/// <summary>
 		/// Checks to see if the current configuration is statically selected or selected via command line logic
 		/// </summary>
 		/// <param name="sc"></param>
-		/// <param name="specifiedSubConfigs"></param>
 		/// <returns></returns>
-		private static bool CheckForConfiguration(IConfigurationDefinition sc, List<string> specifiedSubConfigs)
+		private bool CheckForConfiguration(IConfigurationDefinition sc)
 		{
-			return (sc?.CheckForActiveSelectedSubConfiguration(specifiedSubConfigs) ?? false) == true;
+			return (sc?.CheckForActiveSelectedSubConfiguration(_selectedSubs) ?? false) == true;
 		}
 
+		private void CreateCroppingRectangle(IConfigurationDefinition config, Graphics g)
+		{
+			g.DrawRectangle(Pens.Red, config.CroppingArea);
+		}
+
+		/*
+		private void SaveFileAsKneeboardRef(string path, IConfigurationDefinition config)
+		{
+			if (_settings.CreateKneeboard ?? false)
+			{
+				using var img = Crop((Bitmap)System.Drawing.Image.FromFile(path), config, false);
+				ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(config, (subConfig) =>
+				{
+					// See if the Coonfiguration is selected
+					if (CheckForConfiguration(subConfig))
+					{
+						var key = $"{config.ModuleName}-{config?.Name}-{subConfig.Name}";
+						var insetImage = ImageDictionary.FirstOrDefault(id => id.Key == key).Value;
+						using var cropped = Crop(insetImage, subConfig, false);
+						using var g = Graphics.FromImage(img);
+						g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+						var origin = new System.Drawing.Point(subConfig?.Left ?? 0, subConfig?.Top ?? 0);
+						g.DrawImage(cropped, new Rectangle(origin, new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
+					}
+				});
+
+				if (string.IsNullOrEmpty(ModuleDefinition.DCSName))
+				{
+					_logger.LogWarning($"Configuration {ModuleDefinition.DisplayName} doesn't have a kneeboard tag");
+					return;
+				}
+				var kneeBoardPath = Path.Combine(SavedGamesFolder, _settings.DcsSavedGamesPath, "Kneeboard", ModuleDefinition.DCSName);
+				var kneeBoardFile = Path.Combine(kneeBoardPath, $"{ModuleDefinition.DCSName}-{config.Name}.png");
+				if (!Directory.Exists(kneeBoardPath))
+				{
+					Directory.CreateDirectory(kneeBoardPath);
+					_logger.LogInformation($"Creating {kneeBoardPath}");
+				}
+				if (!File.Exists(kneeBoardFile))
+				{
+					using var kneeBoardBitmap = new Bitmap(768, 1024, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+					using (var gk = Graphics.FromImage(kneeBoardBitmap))
+					{
+						var cropRect = config.CroppingArea;
+						gk.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+						gk.DrawImage(img, new Rectangle(0, 0, kneeBoardBitmap.Width, kneeBoardBitmap.Height), new Rectangle(new System.Drawing.Point(0, 0), new System.Drawing.Size(img.Width, img.Height)), GraphicsUnit.Pixel);
+					}
+					kneeBoardBitmap.Save(kneeBoardFile);
+				}
+			}
+		}
+		*/
 
 		private void CreateRulers(IConfigurationDefinition config, Graphics g)
 		{
@@ -266,111 +299,6 @@ namespace MFDMFApp
 		}
 
 		/// <summary>
-		/// Process the Bitmap
-		/// </summary>
-		/// <param name="config"></param>
-		/// <param name="key"></param>
-		/// <param name="mainImage"></param>
-		/// <returns></returns>
-		private Bitmap ProcessBitmap(IConfigurationDefinition config, string key, Bitmap mainImage)
-		{
-			Bitmap newBitmap;
-			using (var cropped = Crop(mainImage, config))
-			{
-				newBitmap = (Bitmap)SetOpacity(cropped, config.Opacity ?? 1.0F);
-				if (!(config?.MakeOpaque ?? false))
-				{
-					newBitmap.MakeTransparent();
-				}
-			}
-
-			if ((_settings.SaveCroppedImages ?? false) && !(_settings.TurnOffCache ?? false))
-			{
-				var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{config.ModuleName}");
-				var imagePrefix = config.ToReadableString();
-				var cacheFile = Path.Combine(cacheFolder, $"{imagePrefix}-Crop.jpg");
-				newBitmap.Save(cacheFile);
-			}
-			_logger?.LogInformation($"Configuration: {key} Image ({mainImage.Width}, {mainImage.Height}) Cropped to ({newBitmap.Width}, {newBitmap.Height})");
-			return newBitmap;
-		}
-
-
-		/// <summary>
-		/// Sets the Opacity of the Bitmap 
-		/// </summary>
-		/// <param name="src">Source <seealso cref="Bitmap"/></param>
-		/// <param name="opacity">Opacity as a float</param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="Exception"></exception>
-		private static System.Drawing.Image SetOpacity(System.Drawing.Image src, float? opacity)
-		{
-			var bitMap = new Bitmap(src.Width, src.Height);
-			using (var gfx = Graphics.FromImage(bitMap))
-			{
-				var matrix = new ColorMatrix
-				{
-					Matrix33 = opacity ?? 1.0F
-				};
-				using var imageAttributes = new ImageAttributes();
-				imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-				gfx.DrawImage(src, new Rectangle(0, 0, bitMap.Width, bitMap.Height), 0, 0, src.Width, src.Height, GraphicsUnit.Pixel, imageAttributes);
-			}
-
-			return bitMap;
-		}
-
-		/// <summary>
-		/// Loads all of the files for a config and returns a dictionary of the results
-		/// </summary>
-		/// <returns></returns>
-		/// <exception cref="FileNotFoundException"></exception>
-		/// <exception cref="OutOfMemoryException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		private Dictionary<string, Bitmap> LoadBitmaps()
-		{
-			var imageDictionary = new Dictionary<string, Bitmap>();
-			var replacementValue = (_settings?.UseCougar ?? false) ? "HC" : "WH";
-			var filePath = Configuration.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(Configuration.FilePath) : Configuration.FilePath;
-			var fileSource = Path.Combine(filePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, replacementValue, StringComparison.InvariantCulture));
-			if(!File.Exists(fileSource))
-			{
-				if ((_settings?.UseCougar ?? false) == true)
-				{
-					fileSource = Path.Combine(filePath, Configuration.FileName.Replace(Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY, StringComparison.InvariantCulture));
-				}
-				if (!File.Exists(fileSource))
-				{
-					throw new FileNotFoundException($"Unable to find the specified file at {fileSource}");
-				}
-			}
-			_logger?.LogInformation($"Loading file: {fileSource} for Configuration {Configuration.ModuleName}-{Configuration.Name}");
-			var bitMap = (Bitmap) System.Drawing.Image.FromFile(fileSource);
-			imageDictionary.Add($"{Configuration.ModuleName}-{Configuration.Name}", bitMap);
-			var currentConfig = Configuration;
-
-			ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>
-			{
-				filePath = subConfig.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(subConfig.FilePath) : subConfig.FilePath;
-				fileSource = Path.Combine(filePath, subConfig.FileName);
-				if (!File.Exists(fileSource))
-				{
-					throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
-				}
-				_logger?.LogInformation($"Loading file: {fileSource} for {subConfig.ToReadableString()}");
-				bitMap = (Bitmap)System.Drawing.Image.FromFile(fileSource);
-				var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
-				imageDictionary.Add(key, bitMap);
-			});
-
-			return imageDictionary;
-		}
-
-
-		/// <summary>
 		/// Loads the configured image either from the test pattern, user's cache or from the original location
 		/// </summary>
 		/// <exception cref="System.Runtime.InteropServices.ExternalException"></exception>
@@ -384,35 +312,8 @@ namespace MFDMFApp
 		/// <exception cref="PathTooLongException"></exception>
 		/// <exception cref="DirectoryNotFoundException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		private void LoadImage()
+		private void LoadImage(string cacheFile)
 		{
-			// Load the image dict
-			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\{Configuration.ModuleName}");
-			var cacheFile = Path.Combine(cacheFolder, $"{Configuration.GetImagePrefix(_selectedSubs)}-{Left}-{Top}-{Width}-{Height}.jpg");
-
-			if (!Directory.Exists(cacheFolder))
-			{
-				_logger?.LogWarning($"Creating directory: {cacheFolder}");
-				Directory.CreateDirectory(cacheFolder);
-			}
-
-			if (!File.Exists(cacheFile) || (_settings.TurnOffCache ?? false))
-			{
-				_logger?.LogWarning($"Cache file NOT found: {cacheFile}");
-				var imageDictionary = LoadBitmaps();
-				_logger?.LogInformation($"Loaded {imageDictionary.Count} images for {Configuration.ModuleName}-{Configuration.Name}");
-
-				using(var imageMain = Superimpose(imageDictionary))
-				{
-					imageMain.Save(cacheFile);
-				}
-				_logger?.LogInformation($"Saved Cache file: {cacheFile}");
-			}
-			else
-			{
-				_logger?.LogInformation($"Found cache file: {cacheFile}");
-			}
-
 			var imgMain = CreateNewImage("imgMain");
 			imgMain.StretchDirection = StretchDirection.Both;
 			imgMain.Stretch = Stretch.Fill;
@@ -452,12 +353,22 @@ namespace MFDMFApp
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var key = $"{Configuration.ModuleName}-{Configuration.Name}";
 			if (InitializeWindow())
 			{
-				LoadImage();
+				ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(Configuration, (config) =>
+				{
+					// See if the Configuration is selected
+					if (CheckForConfiguration(config))
+					{
+						key = $"{Configuration.ModuleName}-{Configuration?.Name}-{config.Name}";
+					}
+				});
+				var selectedImage = ImageDictionary[key];
+				LoadImage(selectedImage.CacheFile);
 			}
 			watch.Stop();
-			_logger?.LogInformation($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationNames}: loaded in {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogWarning($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationNames}: loaded in {watch.ElapsedMilliseconds} milliseconds");
 		}
 
 		/// <summary>

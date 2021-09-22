@@ -1,11 +1,11 @@
-﻿using MFDMF_Models.Interfaces;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace MFDMF_Models.Models
+﻿namespace MFDMF_Models.Models
 {
+    using MFDMF_Models.Interfaces;
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     [JsonObject("module")]
     public class ModuleDefinition : IModuleDefinition
     {
@@ -64,15 +64,27 @@ namespace MFDMF_Models.Models
         /// </summary>
         public List<ConfigurationDefinition> Configurations { get; set; }
 
-		#endregion Module Definition properties 
-
-        #region Public overrides 
+        [JsonIgnore]
+        /// <summary>
+        /// Named category for the Module
+        /// </summary>
+		public string Category { get; set; }
 
         /// <summary>
-        /// Get the human readable string of the object
+        /// What DCS calls this module 
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        [JsonProperty("tag")]
+        public string DCSName { get; set; }
+
+		#endregion Module Definition properties 
+
+		#region Public overrides 
+
+		/// <summary>
+		/// Get the human readable string of the object
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
         {
             return ToReadableString();
         }

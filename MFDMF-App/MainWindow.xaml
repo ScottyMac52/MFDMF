@@ -13,7 +13,11 @@
             </MenuItem>
             <MenuItem Header="Utility">
                 <MenuItem Header="_Clear Cache" CommandParameter="Cache" Click="ClearCache_Click"/>
+                <MenuItem Name="mnuReloadAllCache"  Header="Reload _All Cache" CommandParameter="Cache" Click="ReloadAllCache_Click"/>
+                <MenuItem Name="mnuEditConfiguration" Header="_Edit Configuration" IsEnabled="True" CommandParameter="Edit" Click="EditConfiguration_Click"/>
+                <MenuItem Name="mnuShowModuleList"  Header="_Module List" IsEnabled="True" CommandParameter="Modules" Click="Modules_Click"/>
                 <MenuItem Header="_Reload Configuration" CommandParameter="Reload" Click="ReloadConfiguration_Click"/>
+                <MenuItem Name="mnuUnloadModule" Header="_Unload Module" IsEnabled="False" CommandParameter="Unload" Click="UnLoadModule_Click"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" CommandParameter="About" Click="HelpMenuItem_Click"/>

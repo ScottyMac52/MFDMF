@@ -1,9 +1,10 @@
-﻿using MFDMF_Models.Models;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-
-namespace MFDMF_Models.Interfaces
+﻿namespace MFDMF_Models.Interfaces
 {
+	using MFDMF_Models.Models;
+	using Microsoft.Extensions.Logging;
+	using System.Collections.Generic;
+	using System.Drawing;
+
 	public interface IConfigurationDefinition : IReadableObject, IImagePath, INameObject, IModuleName, IDisplayGeometry, IOffsetGeometry
 	{
 		ILogger Logger { get; set; }
@@ -18,17 +19,20 @@ namespace MFDMF_Models.Interfaces
 		/// </summary>
 		string ThrottleType { get; set; }
 
+		/// <summary>
+		/// The name of the ruler
+		/// </summary>
 		string RulerName { get; set; }
 
 		/// <summary>
 		/// List of sub configurations
 		/// </summary>
 		List<ConfigurationDefinition> SubConfigurations { get; set; }
-
+	
 		/// <summary>
-		/// If true then the superimposed bitmaps are solid 
+		/// Determines if the configuration is valid
 		/// </summary>
-		bool? MakeOpaque { get; set; }
+		bool IsValid { get; }
 
 		bool CheckForActiveSelectedSubConfiguration(List<string> specifiedSubConfigs);
 

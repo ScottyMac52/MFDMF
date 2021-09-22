@@ -1,15 +1,14 @@
 ﻿using MFDMF_Models.Comparer;
 using MFDMF_Models.Interfaces;
 using MFDMF_Models.Models;
-using MFDMF_Services.Configuration;
-using MFDMF_Services.Displays;
+using MFDMF_Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,13 +19,13 @@ namespace MFDMFApp
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private const string UnableToLoad = "Unable to load the configuration!";
 		#region IoC Injected fields
 		private readonly AppSettings _settings;
-		private readonly IConfigurationLoadingService _loadingService;
-		private readonly IDisplayConfigurationService _displayConfigurationService;
 		private readonly ILoggerFactory _loggerFactory;
 		private readonly ILogger<MainWindow> _logger;
 		private readonly StartOptions _startOptions;
+		private readonly IConfigurationProvider _configurationProvider;
 		#endregion IoC Injected fields
 
 		#region Private fields
@@ -47,34 +46,35 @@ namespace MFDMFApp
 		/// </summary>
 		private string _subModule;
 		/// <summary>
-		/// The list of modules that are currently loaded
+		/// Is the current module valid?
 		/// </summary>
-		private List<IModuleDefinition> _modules;
+		public bool IsValid { get; private set; }
 		/// <summary>
-		/// List of the dsiplays for the configuration
+		/// 
 		/// </summary>
-		private List<IDisplayDefinition> _displays;
+		public static string ThrottleKey => Properties.Resources.THROTTLEKEY;
+		/// <summary>
+		/// 
+		/// </summary>
+		public static string HotasKey => Properties.Resources.HOTASKEY;
 		#endregion Private fields
 
 		#region Constructor
 		/// <summary>
 		/// Ctor
 		/// </summary>
-		/// <param name="loadingService"><see cref="IConfigurationLoadingService"/> loaded via Dependency Injection</param>
-		/// <param name="displayConfigurationService"><see cref="IDisplayConfigurationService"/> loaded via Dependency Injection</param>
 		/// <param name="settings"><see cref="AppSettings"/> loaded via Dependency Injection</param>
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> logging factory loaded via Dependency Injection</param>
-		public MainWindow(IConfigurationLoadingService loadingService, IDisplayConfigurationService displayConfigurationService, IOptions<AppSettings> settings, ILoggerFactory loggerFactory)
+		/// <param name="configurationProvider"></param>
+		public MainWindow(IOptions<AppSettings> settings, ILoggerFactory loggerFactory, IConfigurationProvider configurationProvider)
 		{
 			InitializeComponent();
 			_settings = settings?.Value;
-			_loadingService = loadingService;
-			_displayConfigurationService = displayConfigurationService;
 			_loggerFactory = loggerFactory;
+			_configurationProvider = configurationProvider;
 			_logger = _loggerFactory.CreateLogger<MainWindow>();
 			_windowList = new SortedList<string, ConfigurationWindow>();
 			_startOptions = (StartOptions) ((MainApp)Application.Current).Host.Services.GetService(typeof(StartOptions));
-			_modules = new List<IModuleDefinition>();
 		}
 		#endregion Constructor
 		
@@ -88,14 +88,13 @@ namespace MFDMFApp
 		private void CreateWindows()
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
-			_logger?.LogDebug($"Creating configuration {_selectedModule?.DisplayName}");
+			_logger?.LogWarning($"Creating configuration {_selectedModule?.DisplayName}");
 			_selectedModule?.Configurations?.ForEach(config =>
 			{
 				if (config?.Enabled ?? false)
 				{
-					var configWindow = new ConfigurationWindow(_loggerFactory, _displays, _settings)
+					var configWindow = new ConfigurationWindow(_selectedModule, config, _loggerFactory, _settings, _configurationProvider)
 					{
-						Configuration = config,
 						SubConfigurationNames = _subModule
 					};
 					configWindow.Show();
@@ -115,7 +114,7 @@ namespace MFDMFApp
 				}
 			});
 			watch.Stop();
-			_logger?.LogInformation($"Module {_selectedModule.DisplayName}: SubModule(s): {_subModule} loaded in {watch.ElapsedMilliseconds} milliseconds");
+			_logger?.LogWarning($"Module {_selectedModule?.DisplayName ?? "None"}: SubModule(s): {_subModule} loaded in {watch.ElapsedMilliseconds} milliseconds");
 
 		}
 
@@ -145,7 +144,7 @@ namespace MFDMFApp
 		/// <exception cref="InvalidOperationException"></exception>
 		private void SetupWindow()
 		{
-			var moduleList = _modules;
+			var moduleList = _settings.ModuleItems.ToList();
 			moduleList?.Sort(new ModuleDefinitionComparer());
 			cbModules.ItemsSource = moduleList;
 			cbModules.DisplayMemberPath = "DisplayName";
@@ -171,11 +170,18 @@ namespace MFDMFApp
 
 			if(cbModules.SelectedIndex == -1)
 			{
-				_logger?.LogError($"Unable to find a configuration name {moduleName}");
+				IsValid = false;
+				_logger?.LogError($"Unable to find a configuration named {moduleName}");
 				throw new ArgumentOutOfRangeException(nameof(moduleName));
 			}
+			else
+			{
+				IsValid = true;
+			}
+
+			UpdateMenu();
 		}
-		
+
 		/// <summary>
 		/// Event for the module selection change
 		/// </summary>
@@ -185,29 +191,18 @@ namespace MFDMFApp
 		{
 			try
 			{
-				_selectedModule = e.AddedItems.Count > 0 ? (ModuleDefinition)e.AddedItems[0] : e.RemovedItems.Count > 0 ? (ModuleDefinition)e.RemovedItems[0] : null;
+				DestroyWindows();
+				if (e.AddedItems.Count == 0)
+				{
+					_selectedModule = null;
+				}
+				else
+				{
+					_selectedModule = (ModuleDefinition)e.AddedItems[0];
+					CreateWindows();
+				}
 				_logger?.LogInformation($"Module selected {_selectedModule?.ToReadableString()}");
-				ProcessChangedModule(_selectedModule);
-			}
-			catch (IndexOutOfRangeException ioorx)
-			{
-				_logger?.LogError($"Not able to determine selected module {ioorx}");
-			}
-		}
-
-		/// <summary>
-		/// Processes the selection change of the module
-		/// </summary>
-		/// <param name="module"></param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		private void ProcessChangedModule(IModuleDefinition module)
-		{
-			DestroyWindows();
-			try
-			{
-				CreateWindows();
-				_logger?.LogInformation($"Module loaded {module}");
+				UpdateMenu();
 			}
 			catch (IndexOutOfRangeException ioorx)
 			{
@@ -251,11 +246,20 @@ namespace MFDMFApp
 		/// <exception cref="InvalidOperationException"></exception>
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			ReloadConfiguration();
-			SetupWindow();
-			watch.Stop();
-			_logger?.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
+			try
+			{
+				var watch = System.Diagnostics.Stopwatch.StartNew();
+				ReloadConfiguration();
+				watch.Stop();
+				_logger?.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
+			}
+			catch(Exception ex)
+			{
+				string errorMessage = $"{UnableToLoad}, Specified module may not be loaded. FileSpec: {_settings.FileSpec} FilePath: {_settings.FilePath} Request Module: {_module}";
+				_logger?.LogError(ex,errorMessage);
+				MessageBox.Show(errorMessage, "Error Loading!", MessageBoxButton.OK, MessageBoxImage.Hand);
+				Close();
+			}
 		}
 
 		#endregion Window events
@@ -292,27 +296,42 @@ namespace MFDMFApp
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			_logger?.LogInformation(Properties.Resources.UserRequestedCacheClear);
 			DestroyWindows();
-			var cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $"{Properties.Resources.BaseDataDirectory}cache\\");
-			var cacheParent = new DirectoryInfo(cacheFolder);
-			var dirs = cacheParent.EnumerateDirectories().ToList();
-			dirs.ForEach(dir =>
+			var appDataFolder = MainApp.AppDataFolder;
+			_logger.LogInformation($"Using appFolder: {appDataFolder}");
+			var cacheFolder = Path.Combine(appDataFolder, Properties.Resources.BaseDataDirectory, "cache");
+			if (Directory.Exists(cacheFolder))
 			{
-				try
+				var cacheParent = new DirectoryInfo(cacheFolder);
+				var dirs = cacheParent.EnumerateDirectories().ToList();
+				dirs.ForEach(dir =>
 				{
-					dir.Delete(true);
-					_logger?.LogInformation($"Deleted cache at {dir.FullName}");
-				}
-				catch (Exception ex)
-				{
-					_logger?.LogError($"Unable to delete cache file: {dir.FullName}, Exception: {ex}");
-					throw;
-				}
-			});
+					try
+					{
+						dir.Delete(true);
+						_logger?.LogInformation($"Deleted cache at {dir.FullName}");
+					}
+					catch (Exception ex)
+					{
+						_logger?.LogError($"Unable to delete cache file: {dir.FullName}, Exception: {ex}");
+						throw;
+					}
+				});
+			}
 			watch.Stop();
 			_logger?.LogInformation($"Clear cache took: {watch.ElapsedMilliseconds} milliseconds");
 			ReloadConfiguration(true);
 		}
+		private void EditConfiguration_Click(object sender, RoutedEventArgs e)
+		{
+			var newEditConfig = new Configuration(_settings);
+			newEditConfig.ShowDialog();
+		}
 
+		private void Modules_Click(object sender, RoutedEventArgs e)
+		{
+			var modulesList = new Modules(_settings);
+			modulesList.ShowDialog();
+		}
 
 		private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
 		{
@@ -341,39 +360,41 @@ namespace MFDMFApp
 		private void ReloadConfiguration(bool forceReload = false)
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
-			_displays = _displayConfigurationService.LoadDisplays();
+			var mainApp = Application.Current as MainApp;
+			mainApp.ReloadConfiguration();
 			_module = _startOptions?.ModuleName;
 			_subModule = _startOptions?.SubModuleName;
 			var module = (string)cbModules?.SelectedValue;
 			DestroyWindows();
-
-			if ((_settings.ModuleNames?.Count ?? 0) > 0)
-			{
-				_modules?.Clear();
-				_settings.ModuleNames.ForEach(mf =>
-				{
-					try
-					{
-						var fileToLoad = Path.Combine(Directory.GetCurrentDirectory(), mf);
-						var modulesToAdd = _loadingService.LoadModulesConfigurationFile(fileToLoad, _displays);
-						_modules?.AddRange(modulesToAdd);
-					}
-					catch(JsonException jsonex)
-					{
-						_logger?.LogError($"Unable to load file {mf}. Exception: {jsonex}");
-						throw;
-					}
-				});
-			}
 			SetupWindow();
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
-			_logger?.LogInformation($"Loading module {selectedModule}");
 			if (!string.IsNullOrEmpty(selectedModule))
 			{
+				_logger?.LogInformation($"Loading module {selectedModule}");
 				ChangeSelectedModule(selectedModule, forceReload);
 			}
 			watch.Stop();
 			_logger?.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
+		}
+
+		private void UpdateMenu()
+		{
+			mnuEditConfiguration.IsEnabled = _selectedModule == null;
+			mnuShowModuleList.IsEnabled = _selectedModule == null;
+			mnuUnloadModule.IsEnabled = _selectedModule != null;
+			mnuReloadAllCache.IsEnabled = _selectedModule == null;
+		}
+
+		private void UnLoadModule_Click(object sender, RoutedEventArgs e)
+		{
+			cbModules.SelectedIndex = -1;
+		}
+
+		private void ReloadAllCache_Click(object sender, RoutedEventArgs e)
+		{
+			var bitmapDictionary = _configurationProvider.ReloadCacheForAllModulesAsync(Path.Combine(Directory.GetCurrentDirectory(), "Modules"), ThrottleKey, HotasKey, true).Result;
+			var loadedKeys = string.Join(',', bitmapDictionary.Keys.Select(key => key));
+			MessageBox.Show(this, loadedKeys, "Bitmaps loaded");
 		}
 
 		#endregion Menu Item processing

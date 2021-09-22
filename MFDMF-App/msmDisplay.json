@@ -1,10 +1,15 @@
 [
 	{
+		"name": "Main",
+		"width": 2560,
+		"height": 1440
+	},
+	{
 		"name": "LMFD",
-		"width": 400,
-		"height": 400,
-		"left": 400,
-		"top": 800,
+		"width": 870,
+		"height": 700,
+		"left": -1280,
+		"top": 0,
 		"xOffsetStart": 101,
 		"xOffsetFinish": 776,
 		"yOffsetStart": 250,
@@ -14,8 +19,8 @@
 	{
 		"name": "WHKEY",
 		"width": 1200,
-		"height": 1080,
-		"left": 2561,
+		"height": 1200,
+		"left": 1360,
 		"top": 0,
 		"xOffsetStart": 0,
 		"yOffsetStart": 0,
@@ -24,29 +29,10 @@
 		"opacity": 1.0
 	},
 	{
-		"name": "TestPattern",
-		"width": 1200,
-		"height": 1080,
-		"left": 2561,
-		"xOffsetStart": 0,
-		"yOffsetStart": 0,
-		"xOffsetFinish": 1024,
-		"yOffsetFinish": 768,
-		"opacity": 1.0
-	},
-	{
-		"name": "JOYKEY",
-		"width": 720,
-		"height": 1080,
-		"left": 3771,
-		"top": 10
-	},
-	{
 		"name": "RMFD",
-		"width": 400,
-		"height": 400,
-		"left": 900,
-		"top": 800,
+		"width": 870,
+		"height": 700,
+		"left": 3005,
 		"xOffsetStart": 903,
 		"xOffsetFinish": 1576,
 		"yOffsetStart": 250,
@@ -57,8 +43,16 @@
 		"name": "Flir",
 		"offsets": {
 			"top": -45,
-			"width": -190,
-			"height": -160
+			"width": -490,
+			"height": -260
 		}
+	},
+	{
+		"name": "CTSMFDOffset",
+		"xOffsetStart": 0,
+		"xOffsetFinish": 667,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 441
+
 	}
 ]

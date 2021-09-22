@@ -1,0 +1,32 @@
+﻿<Window x:Class="MFDMFApp.Modules"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MFDMFApp"
+        mc:Ignorable="d"
+        Title="Modules" Loaded="Window_Loaded">
+
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical">
+                <Label Content="Loaded Modules List" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <TreeView x:Name="treeModules" ItemsSource="{Binding ModuleItems}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=DisplayName}" />
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </StackPanel>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Configurations}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Name}" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

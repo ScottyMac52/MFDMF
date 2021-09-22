@@ -1,10 +1,11 @@
-﻿using MFDMF_Models.Interfaces;
-using System.Collections.Generic;
-
-namespace MFDMF_Services.Displays
+﻿namespace MFDMF_Services.Displays
 {
+	using MFDMF_Models.Interfaces;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
+
 	public interface IDisplayConfigurationService
 	{
-		List<IDisplayDefinition> LoadDisplays();
-}
+		Task<IEnumerable<IDisplayDefinition>> LoadDisplaysAsync();
+	}
 }

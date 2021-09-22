@@ -1,4 +1,6 @@
-﻿namespace MFDMF_Models.Interfaces
+﻿using System.Drawing;
+
+namespace MFDMF_Models.Interfaces
 {
     public interface IOffsetGeometry
 	{
@@ -10,6 +12,10 @@
         /// The percentage of Opacity for the object
         /// </summary>
         float? Opacity { get; set; }
+        /// <summary>
+        /// If true then the superimposed bitmaps are solid 
+        /// </summary>
+        bool? MakeOpaque { get; set; }
         /// <summary>
         /// Starting X position of the Crop
         /// </summary>
@@ -26,5 +32,26 @@
         /// Ending Y position of the Crop
         /// </summary>
         int? YOffsetFinish { get; set; }
+
+        /// <summary>
+        /// Starting coordinate of the crop
+        /// </summary>
+        Point CroppingStart { get; }
+
+        /// <summary>
+        /// Gets the Cropped area represented by the configuration
+        /// </summary>
+        Rectangle CroppingArea { get; }
+
+        /// <summary>
+        /// The Width of the Cropped Area
+        /// </summary>
+        int CroppedWidth { get; }
+
+        /// <summary>
+        /// The Height of the Cropped Area
+        /// </summary>
+        int CroppedHeight { get; }
+
     }
 }

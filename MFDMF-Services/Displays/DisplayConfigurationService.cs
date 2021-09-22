@@ -1,13 +1,15 @@
-﻿using MFDMF_Models.Interfaces;
-using MFDMF_Models.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-
-namespace MFDMF_Services.Displays
+﻿namespace MFDMF_Services.Displays
 {
+	using MFDMF_Models.Interfaces;
+	using MFDMF_Models.Models;
+	using Microsoft.Extensions.Logging;
+	using Microsoft.Extensions.Options;
+	using Newtonsoft.Json;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Threading.Tasks;
+
 	/// <summary>
 	/// Service that loads the display configurations
 	/// </summary>
@@ -43,13 +45,13 @@ namespace MFDMF_Services.Displays
 		/// Loads the display configuration for from the file specified in <see cref="AppSettings"/> property DisplayConfigurationFile
 		/// </summary>
 		/// <returns></returns>
-		public List<IDisplayDefinition> LoadDisplays()
+		public async Task<IEnumerable<IDisplayDefinition>> LoadDisplaysAsync()
 		{
 			var returnList = new List<IDisplayDefinition>();
-			var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), _settings.DisplayConfigurationFile);
+			var jsonFile = Environment.ExpandEnvironmentVariables(_settings.DisplayConfigurationFile);
 			_logger?.LogInformation($"Loading configuration from {jsonFile}");
-			var fileContent = File.ReadAllText(jsonFile);
-			var displayList = JsonConvert.DeserializeObject<List<DisplayDefinition>>(fileContent);
+			var fileContent = await File.ReadAllTextAsync(jsonFile);
+			var displayList = JsonConvert.DeserializeObject<IEnumerable<DisplayDefinition>>(fileContent);
 			returnList.AddRange(displayList);
 			return returnList;
 		}
