@@ -1,0 +1,45 @@
+﻿<Window x:Class="MFDMFApp.Configuration" Background="Azure"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MFDMFApp"
+        mc:Ignorable="d"
+        Title="Configuration" Loaded="Window_Loaded" Width="500" Height="150">
+    <Grid>
+        <StackPanel Orientation="Horizontal"> 
+            <StackPanel Orientation="Vertical">
+                <Label Content="Switches" />
+                <CheckBox x:Name="chkUseRulers" Content="Show Rulers" CommandParameter="ShowRulers" IsChecked="{Binding ElementName=Appsettings, Path=ShowRulers}" Click="CheckBox_Click" />
+                <CheckBox x:Name="chkShowTooltips" Content="Show Tooltips" CommandParameter="ShowTooltips" IsChecked="{Binding ElementName=Appsettings, Path=ShowTooltips}" Click="CheckBox_Click" />
+                <CheckBox x:Name="chkSaveCroppedImages" Content="Save Cropped Images" CommandParameter="SaveCroppedImages" IsChecked="{Binding ElementName=Appsettings, Path=SaveCroppedImages}" Click="CheckBox_Click" />
+                <CheckBox x:Name="chkTurnOffCache" Content="Turn Off Cache" CommandParameter="TurnOffCache" IsChecked="{Binding ElementName=Appsettings, Path=TurnOffCache}" Click="CheckBox_Click" />
+                <CheckBox x:Name="chkCreateKneeboard" Content="Create Kneeboards" CommandParameter="CreateKneeboard" IsChecked="{Binding ElementName=Appsettings, Path=CreateKneeboard}" Click="CheckBox_Click" />
+                <Button x:Name="btnSave" CommandParameter="Save" Click="btnSave_Click" Content="Save" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Label Content="Paths" />
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="Default Module: "/>
+                    <TextBox x:Name="txtDefaultConfiguration" Tag="DefaultConfiguration" TextChanged="TextChanged" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="Display Configuration File: "/>
+                    <TextBox x:Name="txtDisplayConfigurationFile" Tag="DisplayConfigurationFile" TextChanged="TextChanged" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="DCS Saved Games Path: "/>
+                    <TextBox x:Name="txtDcsSavedGamesPath" Tag="DcsSavedGamesPath" TextChanged="TextChanged" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="Images Base Path: "/>
+                    <TextBox x:Name="txtFilePath" Tag="FilePath" TextChanged="TextChanged" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Content="File Spec: "/>
+                    <TextBox x:Name="txtFileSpec" Tag="FileSpec" TextChanged="TextChanged" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

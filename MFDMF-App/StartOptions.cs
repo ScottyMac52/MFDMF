@@ -1,7 +1,7 @@
-﻿using CommandLine;
-
-namespace MFDMFApp
+﻿namespace MFDMFApp
 {
+	using CommandLine;
+
 	public class StartOptions : IStartOptions
 	{
 		[Option('m', "mod", Required = false, HelpText = "Module to load")]

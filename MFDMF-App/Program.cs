@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reflection;
-
-namespace MFDMFApp
+﻿namespace MFDMFApp
 {
+	using System;
+	using System.Diagnostics;
+	using System.Reflection;
+
 	/// <summary>
 	/// Main entry
 	/// </summary>

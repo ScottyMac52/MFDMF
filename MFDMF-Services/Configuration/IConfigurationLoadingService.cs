@@ -1,11 +1,10 @@
-﻿using MFDMF_Models.Interfaces;
-using MFDMF_Models.Models;
-using System.Collections.Generic;
-
-namespace MFDMF_Services.Configuration
+﻿namespace MFDMF_Services.Configuration
 {
+	using MFDMF_Models.Interfaces;
+	using System.Collections.Generic;
+
 	public interface IConfigurationLoadingService
 	{
-		List<IModuleDefinition> LoadModulesConfigurationFile(string jsonFile, List<IDisplayDefinition> displays);
+		IEnumerable<IModuleDefinition> LoadModulesConfigurationFile(string jsonContent, IEnumerable<IDisplayDefinition> displays, string category);
 	}
 }

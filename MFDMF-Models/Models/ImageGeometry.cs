@@ -1,10 +1,10 @@
-﻿using MFDMF_Models.Extensions;
-using MFDMF_Models.Interfaces;
-using Newtonsoft.Json;
-using System.Drawing;
-
-namespace MFDMF_Models.Models
+﻿namespace MFDMF_Models.Models
 {
+	using MFDMF_Models.Extensions;
+	using MFDMF_Models.Interfaces;
+	using Newtonsoft.Json;
+	using System.Drawing;
+
 	/// <summary>
 	/// Encapsulartes an object that defines a geometric area
 	/// </summary>

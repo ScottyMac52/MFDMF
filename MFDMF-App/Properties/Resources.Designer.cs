@@ -61,7 +61,16 @@ namespace MFDMFApp.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vyper Industries\\MFDMF\\.
+        ///   Looks up a localized string similar to The applictaion is exiting with.
+        /// </summary>
+        internal static string ApplicationExit {
+            get {
+                return ResourceManager.GetString("ApplicationExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vyper Industries\MFDMF\.
         /// </summary>
         internal static string BaseDataDirectory {
             get {

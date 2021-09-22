@@ -1,19 +1,19 @@
-﻿using MFDMF_Models.Extensions;
-using MFDMF_Models.Interfaces;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-
-namespace MFDMF_Models.Models
+﻿namespace MFDMF_Models.Models
 {
-    /// <summary>
-    /// Defines a Configuration of an image displayed
-    /// </summary>
-    [JsonObject("configuration")]
+	using MFDMF_Models.Extensions;
+	using MFDMF_Models.Interfaces;
+	using Microsoft.Extensions.Logging;
+	using Newtonsoft.Json;
+	using System;
+	using System.Collections.Generic;
+	using System.Drawing;
+	using System.IO;
+	using System.Linq;
+
+	/// <summary>
+	/// Defines a Configuration of an image displayed
+	/// </summary>
+	[JsonObject("configuration")]
     public class ConfigurationDefinition : IConfigurationDefinition
     {
         #region Constants
@@ -39,6 +39,7 @@ namespace MFDMF_Models.Models
         /// <param name="dc"></param>
         public ConfigurationDefinition(ConfigurationDefinition dc)
         {
+            Parent = dc.Parent;
             Name = dc.Name;
             FilePath = dc.FilePath;
             FileName = dc.FileName;
@@ -48,11 +49,16 @@ namespace MFDMF_Models.Models
             Top = dc.Top;
             Width = dc.Width;
             Height = dc.Height;
+            Center = dc.Center;
             Opacity = dc.Opacity;
+            MakeOpaque = dc.MakeOpaque;
             XOffsetStart = dc.XOffsetStart;
             XOffsetFinish = dc.XOffsetFinish;
             YOffsetStart = dc.YOffsetStart;
             YOffsetFinish = dc.YOffsetFinish;
+            RulerName = dc.RulerName;
+            ThrottleType = dc.ThrottleType;
+            UseAsSwitch = dc.UseAsSwitch;
             SubConfigurations = new List<ConfigurationDefinition>();
             SubConfigurations.AddRange(dc.SubConfigurations);
         }
@@ -206,13 +212,35 @@ namespace MFDMF_Models.Models
 
 		#endregion SubConfiguration support
 
+		#region Cropping properties 
+
+		/// <inheritdoc/>
+		public Rectangle CroppingArea => GetCroppingArea();
+
+        /// <inheritdoc/>
+        public int CroppedWidth => GetCroppingArea().Width;
+
+        /// <inheritdoc/>
+        public int CroppedHeight => GetCroppingArea().Height;
+
+        /// <inheritdoc/>
+        public Point CroppingStart => GetCroppingArea().Location;
+
+        #endregion Cropping properties 
+
+        #region Validation
+
+        public bool IsValid => CheckConfiguration();
+
+		#endregion Validation
+
 		#region Public methods
 
-        /// <summary>
-        /// Gets the center coordinates for the current Configuration inside the specified Configuration
-        /// </summary>
-        /// <param name="configurationDefinition"></param>
-        public Point GetCenterTo(IDisplayGeometry displayGeometry)
+		/// <summary>
+		/// Gets the center coordinates for the current Configuration inside the specified Configuration
+		/// </summary>
+		/// <param name="configurationDefinition"></param>
+		public Point GetCenterTo(IDisplayGeometry displayGeometry)
         {
             var size = new Size(Width ?? 0, Height ?? 0);
             var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height  ?? 0));
@@ -228,7 +256,7 @@ namespace MFDMF_Models.Models
         {
             var useAsStatic = ((UseAsSwitch ?? false) == false) && (Enabled ?? false);
             var useAsSwitch = (UseAsSwitch ?? false);
-            var selected = specifiedSubConfigs?.Any(ss => (Name?.Contains(ss, StringComparison.InvariantCultureIgnoreCase) == true)) ?? false;
+            var selected = specifiedSubConfigs?.Any(ss => Name?.Equals(ss, StringComparison.InvariantCultureIgnoreCase) == true) ?? false;
             return useAsStatic || (useAsSwitch && selected);
         }
 
@@ -239,16 +267,29 @@ namespace MFDMF_Models.Models
         /// <returns></returns>
         public string GetImagePrefix(List<string> selectedSubMods)
         {
-            int hashCode = GetHashCode();
+            var selectSubStrings = new List<string>();
+            var hashCode = GetHashCode();
             ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(this, (subConfig) =>
             {
                 if(subConfig.CheckForActiveSelectedSubConfiguration(selectedSubMods))
                 {
                     hashCode += subConfig.GetHashCode();
+                    if (selectedSubMods.Contains(subConfig.Name))
+                    {
+                        selectSubStrings.Add(subConfig.Name);
+                    }
                 }
             });
 
-            return $"{ModuleName}-{Name}-{hashCode}";
+            if(selectSubStrings.Count > 0)
+			{
+                return $"{ModuleName}-{Name}-{string.Join('-',selectSubStrings)}-{hashCode}";
+            }
+            else
+			{
+                return $"{ModuleName}-{Name}{hashCode}";
+            }
+
         }
 
         /// <summary>
@@ -264,49 +305,43 @@ namespace MFDMF_Models.Models
             });
         }
 
-        #endregion Public methods
+		#endregion Public methods
 
-        #region Public overrides 
+		#region Public overrides 
 
-        public override bool Equals(object obj)
+		public override string ToString()
+		{
+            return ToReadableString();
+        }
+
+		public override bool Equals(object obj)
         {
             var config2 = obj as ConfigurationDefinition;
             return GetHashCode().Equals(config2?.GetHashCode() ?? 0);
         }
 
-        private int? GetStringCode(string source)
-        {
-            int? x = HASH_START;
-            source?.ToList().ForEach((ch) =>
-            {
-                x += ch;
-            });
-            return x;
-        }
-
-    
         public override int GetHashCode()
         {
             var hashCode = HASH_START;
+            hashCode += (ModuleName?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+            hashCode += (Name?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+            hashCode += (FileName?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+            hashCode += (FilePath?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+            hashCode += (Height?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (Width?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (Left?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Center?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Enabled?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(FileName) ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(FilePath) ?? 0) * HASH_NUM;
-            hashCode += (Height?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (Left?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (MakeOpaque?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(ModuleName) ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(Name) ?? 0) * HASH_NUM;
             hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(RulerName) ?? 0) * HASH_NUM;
-            hashCode += (GetStringCode(ThrottleType) ?? 0) * HASH_NUM;
-            hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (RulerName?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+            hashCode += (ThrottleType?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
             hashCode += (UseAsSwitch?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (Width?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (XOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (XOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (YOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (XOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (YOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
+            hashCode += (YOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
             return hashCode;
         }
 
@@ -347,5 +382,29 @@ namespace MFDMF_Models.Models
         }
 
         #endregion Public overrides 
-    }
+
+        private bool CheckConfiguration()
+        {
+            bool isValid = true;
+
+            if ((Width ?? 0) < 0)
+            {
+                isValid = false;
+            }
+
+            if ((Height ?? 0) < 0)
+            {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private Rectangle GetCroppingArea()
+        {
+            var point = new Point(XOffsetStart ?? 0, YOffsetStart ?? 0);
+            var size = new Size((XOffsetFinish ?? 0) - (XOffsetStart ?? 0), (YOffsetFinish ?? 0) - (YOffsetStart ?? 0));
+            return new Rectangle(point, size);
+        }
+	}
 }

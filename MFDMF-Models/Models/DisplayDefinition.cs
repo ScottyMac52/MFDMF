@@ -1,12 +1,12 @@
-﻿using MFDMF_Models.Extensions;
-using MFDMF_Models.Interfaces;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Drawing;
-
-namespace MFDMF_Models.Models
+﻿namespace MFDMF_Models.Models
 {
+	using MFDMF_Models.Extensions;
+	using MFDMF_Models.Interfaces;
+	using Microsoft.Extensions.Logging;
+	using Newtonsoft.Json;
+	using System;
+	using System.Drawing;
+
 	/// <summary>
 	/// Describes a logical display device using absolute physical coordinates
 	/// </summary>
@@ -35,7 +35,7 @@ namespace MFDMF_Models.Models
 		/// Copy Ctor
 		/// </summary>
 		/// <param name="copy"></param>
-		public DisplayDefinition(DisplayDefinition copy) : this()
+		public DisplayDefinition(IDisplayDefinition copy) : this()
 		{
 			Name = copy.Name;
 			Left = copy.Left;
@@ -44,6 +44,21 @@ namespace MFDMF_Models.Models
 			Height = copy.Height;
 		}
 
+		public DisplayDefinition(IConfigurationDefinition copy)
+		{
+			Name = copy.Name;
+			Left = copy.Left;
+			Top = copy.Top;
+			Width = copy.Width;
+			Height = copy.Height;
+			XOffsetStart = copy.XOffsetStart;
+			XOffsetFinish = copy.XOffsetFinish;
+			YOffsetStart = copy.YOffsetStart;
+			YOffsetFinish = copy.YOffsetFinish;
+			UseAsSwitch = copy.UseAsSwitch;
+			Opacity = copy.Opacity;
+			Center = copy.Center;
+		}
 
 		#endregion Ctor
 
@@ -128,20 +143,17 @@ namespace MFDMF_Models.Models
 		
 		[JsonIgnore()]
 		public bool? Center { get; set; }
+		public bool? MakeOpaque { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+		public Point CroppingStart => throw new NotImplementedException();
+
+		public Rectangle CroppingArea => throw new NotImplementedException();
+
+		public int CroppedWidth => throw new NotImplementedException();
+
+		public int CroppedHeight => throw new NotImplementedException();
 
 		#endregion Image cropping properties IOffsetGeometry
-
-		/// <summary>
-		/// Centers the current Configuration inside the specified Configuration
-		/// </summary>
-		/// <param name="configurationDefinition"></param>
-		public Point GetCenterTo(IDisplayGeometry displayGeometry)
-		{
-			var size = new Size(Width ?? 0, Height ?? 0);
-			var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0));
-			return new Point(centerPoint.X, centerPoint.Y);
-		}
-
 
 		#region Public overrides 
 
@@ -165,13 +177,31 @@ namespace MFDMF_Models.Models
 			unchecked
 			{
 				var hashCode = HASH_START;
-				hashCode += (Name?.GetHashCode() ?? 0) * HASH_NUM;
-				hashCode += (Left ?? 0) * HASH_NUM;
-				hashCode += (Top ?? 0) * HASH_NUM;
-				hashCode += (Width ?? 0) * HASH_NUM;
-				hashCode += (Height ?? 0) * HASH_NUM;
+				hashCode += (Center?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (Height?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (Left?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (Name?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+				hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (UseAsSwitch?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (Width?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (XOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (XOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (YOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (YOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
 				return hashCode;
 			}
+		}
+
+		/// <summary>
+		/// Centers the current Configuration inside the specified Configuration
+		/// </summary>
+		/// <param name="configurationDefinition"></param>
+		public Point GetCenterTo(IDisplayGeometry displayGeometry)
+		{
+			var size = new Size(Width ?? 0, Height ?? 0);
+			var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0));
+			return new Point(centerPoint.X, centerPoint.Y);
 		}
 
 		/// <summary>

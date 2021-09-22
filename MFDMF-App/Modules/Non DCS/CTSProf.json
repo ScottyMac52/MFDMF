@@ -1,0 +1,29 @@
+{
+	"modules" :
+	[
+		{
+			"name": "CTSProf",
+			"displayName": "CTS Configuration Profile",
+			"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Vyper",
+			"fileName": "CTSConfigLMFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_CTSMFDOffset"
+				},
+				{
+					"name": "WHKEY_CTSProf",
+					"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\HTML\\gfx",
+					"fileName": "vr_hotas_sel.jpg",
+					"xOffsetStart": 0,
+					"xOffsetFinish": 1449,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 1184
+				},
+				{
+					"name": "RMFD_CTSMFDOffset",
+					"fileName": "CTSConfigRMFD.jpg"
+				}
+			]
+		}
+	]
+}

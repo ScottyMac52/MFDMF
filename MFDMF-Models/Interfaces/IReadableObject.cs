@@ -3,7 +3,7 @@
 	public interface IReadableObject
 	{
 		string ToReadableString();
-
 		string ToJson();
+		string ToString();
 	}
 }

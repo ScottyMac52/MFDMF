@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-
-namespace MFDMF_Models.Extensions
+﻿namespace MFDMF_Models.Extensions
 {
+    using System.Drawing;
+
     public static class SizeExtensions
 	{
         public static Point CenterInRectangle(this Size Inner, Rectangle Outer)
