@@ -173,24 +173,26 @@
             IDisplayDefinition currentDisplay = null;
             IDisplayDefinition auxDisplay = null;
 
-            // Get any of the displays where the configuration name contains their name
-            var currentDisplays = displays?.Where(dd => dd.Name == config?.Name || (config?.Name?.Contains(dd.Name, StringComparison.CurrentCulture) ?? false));
-            if (currentDisplays.Count() == 0)
-            {
-                currentDisplay = new DisplayDefinition(config);
+            if(string.IsNullOrEmpty(config.DisplayName))
+			{
+                // Get any of the displays where the configuration name contains their name
+                var currentDisplays = displays?.Where(dd => dd.Name == config?.Name || (config?.Name?.Contains(dd.Name, StringComparison.CurrentCulture) ?? false));
+                if (currentDisplays.Count() == 0)
+                {
+                    currentDisplay = new DisplayDefinition(config);
+                }
+                else
+                {
+                    // The primary display configuration MUST have it's name start with or equal the configuration name
+                    currentDisplay = currentDisplays.FirstOrDefault(cd => config.Name.StartsWith(cd.Name) || config.Name.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
+                    // The secondary display configuration MUST NOT have it's name start with the configuration name BUT must contain it
+                    auxDisplay = currentDisplays.FirstOrDefault(cd => !config.Name.StartsWith(cd.Name) && config.Name.Contains(cd.Name));
+                }
             }
             else
-            {
-                // The primary display configuration MUST have it's name start with or equal the configuration name
-                currentDisplay = currentDisplays.FirstOrDefault(cd => config.Name.StartsWith(cd.Name) || config.Name.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
-                // The secondary display configuration MUST NOT have it's name start with the configuration name BUT must contain it
-                auxDisplay = currentDisplays.FirstOrDefault(cd => !config.Name.StartsWith(cd.Name) && config.Name.Contains(cd.Name));
+			{
+                currentDisplay = displays.FirstOrDefault(cd => config.DisplayName.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
             }
-
-            currentDisplay.XOffsetStart ??= (auxDisplay?.XOffsetStart ?? currentDisplay?.XOffsetStart);
-            currentDisplay.XOffsetFinish ??= (auxDisplay?.XOffsetFinish ?? currentDisplay?.XOffsetFinish);
-            currentDisplay.YOffsetStart ??= (auxDisplay?.YOffsetStart ?? currentDisplay?.YOffsetStart);
-            currentDisplay.YOffsetFinish ??= (auxDisplay?.YOffsetFinish ?? currentDisplay?.YOffsetFinish);
 
             config.Logger = _logger;
             config.Enabled ??= arg.Enabled ?? config.Enabled ?? parentDef?.Enabled ?? false;

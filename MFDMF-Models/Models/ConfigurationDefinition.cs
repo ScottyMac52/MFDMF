@@ -37,10 +37,11 @@
         /// Copy constructor
         /// </summary>
         /// <param name="dc"></param>
-        public ConfigurationDefinition(ConfigurationDefinition dc)
+        public ConfigurationDefinition(IConfigurationDefinition dc)
         {
             Parent = dc.Parent;
             Name = dc.Name;
+            DisplayName = dc.DisplayName;
             FilePath = dc.FilePath;
             FileName = dc.FileName;
             ModuleName = dc.ModuleName;
@@ -120,6 +121,12 @@
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Identifies the display that used as a basis for the configuration
+        /// </summary>
+        [JsonProperty("displayName")]
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Throttle type specified in the configuration
@@ -383,6 +390,7 @@
 
         #endregion Public overrides 
 
+        #region Private helpers
         private bool CheckConfiguration()
         {
             bool isValid = true;
@@ -406,5 +414,6 @@
             var size = new Size((XOffsetFinish ?? 0) - (XOffsetStart ?? 0), (YOffsetFinish ?? 0) - (YOffsetStart ?? 0));
             return new Rectangle(point, size);
         }
-	}
+        #endregion Private helpers
+    }
 }
