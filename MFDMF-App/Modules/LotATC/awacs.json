@@ -2,7 +2,7 @@
 	"modules": [
 		{
 			"name": "AWACS",
-			"displayName": "AWACS for LotacATC/SRS",
+			"displayName": "AWACS for LotATC/SRS",
 			"fileName": "AWACS\\DCS AWACS MFD.jpg",
 			"configurations": [
 				{
@@ -20,7 +20,7 @@
 		},
 		{
 			"name": "AWACSHV",
-			"displayName": "AWACS HiViz for LotacATC/SRS",
+			"displayName": "AWACS HiViz for LotATC/SRS",
 			"fileName": "_High Contrast MFDs\\DCS AWACS MFD HiVis.jpg",
 			"configurations": [
 				{

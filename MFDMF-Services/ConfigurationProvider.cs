@@ -55,7 +55,7 @@ namespace MFDMF_Services
 		public async Task<Dictionary<string, ImageDefinition>> ReloadCacheForAllModulesAsync(string path, string throttleKey, string hotasKey, bool loadKneeboards = false)
 		{
 			var bitmapDictionary = new Dictionary<string, ImageDefinition>();
-			var modulesToProceeResponse = await LoadModulesAsync(path, "F-14BRIO.json").ConfigureAwait(false);
+			var modulesToProceeResponse = await LoadModulesAsync(path, _settings.FileSpec ?? "*.json").ConfigureAwait(false);
 			var modulesToProcess = modulesToProceeResponse?.ToList();
 			modulesToProcess.ForEach(module =>
 			{

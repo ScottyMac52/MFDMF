@@ -313,7 +313,6 @@ namespace MFDMFApp
 					catch (Exception ex)
 					{
 						_logger?.LogError($"Unable to delete cache file: {dir.FullName}, Exception: {ex}");
-						throw;
 					}
 				});
 			}
@@ -379,8 +378,8 @@ namespace MFDMFApp
 
 		private void UpdateMenu()
 		{
-			mnuEditConfiguration.IsEnabled = _selectedModule == null;
-			mnuShowModuleList.IsEnabled = _selectedModule == null;
+			mnuEditConfiguration.IsEnabled = false;
+			mnuShowModuleList.IsEnabled = false;
 			mnuUnloadModule.IsEnabled = _selectedModule != null;
 			mnuReloadAllCache.IsEnabled = _selectedModule == null;
 		}

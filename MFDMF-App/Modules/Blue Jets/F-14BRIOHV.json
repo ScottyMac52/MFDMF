@@ -1,10 +1,10 @@
 {
 	"modules": [
 		{
-			"name": "F-14R",
+			"name": "F-14RHV",
 			"tag": "F-14B",
-			"displayName": "F-14B Tomcat (RIO)",
-			"fileName": "F-14\\DCS F14RIO MFD.jpg",
+			"displayName": "F-14B Tomcat (RIO) Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS F14RIO MFD HiVis.jpg",
 			"configurations": [
 				{
 					"name": "LMFD_TomcatRIO",
@@ -13,7 +13,7 @@
 					"subConfigDef": [
 						{
 							"name": "BIT",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -28,7 +28,7 @@
 									"width": 100,
 									"height": 30,
 									"left": 135,
-									"top": 630,
+									"top": 635,
 									"enabled": false,
 									"useAsSwitch": true,
 									"makeOpaque": false,
@@ -42,7 +42,7 @@
 						},
 						{
 							"name": "SPL",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -71,7 +71,7 @@
 						},
 						{
 							"name": "NAV",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -86,7 +86,7 @@
 									"width": 100,
 									"height": 30,
 									"left": 260,
-									"top": 635,
+									"top": 605,
 									"enabled": false,
 									"useAsSwitch": true,
 									"makeOpaque": true,
@@ -100,7 +100,7 @@
 						},
 						{
 							"name": "TAC",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -113,9 +113,9 @@
 									"name": "TAC_Selected",
 									"fileName": "~MFDisplay_Overlays\\green.png",
 									"width": 100,
-									"height": 50,
+									"height": 35,
 									"left": 380,
-									"top": 615,
+									"top": 605,
 									"enabled": false,
 									"useAsSwitch": true,
 									"makeOpaque": true,
@@ -129,7 +129,7 @@
 						},
 						{
 							"name": "DL",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -144,7 +144,7 @@
 									"width": 100,
 									"height": 30,
 									"left": 505,
-									"top": 635,
+									"top": 605,
 									"enabled": false,
 									"useAsSwitch": true,
 									"makeOpaque": true,
@@ -158,7 +158,7 @@
 						},
 						{
 							"name": "TGT",
-							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP.jpg",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
 							"width": 210,
 							"height": 469,
 							"center": true,
@@ -171,9 +171,9 @@
 									"name": "TGT_Selected",
 									"fileName": "~MFDisplay_Overlays\\green.png",
 									"width": 100,
-									"height": 50,
+									"height": 30,
 									"left": 625,
-									"top": 615,
+									"top": 605,
 									"enabled": false,
 									"useAsSwitch": true,
 									"makeOpaque": true,
@@ -228,11 +228,12 @@
 				{
 					"name": "RMFD_TomcatRIO",
 					"enabled": true,
+					"useAsSwitch": true,
 					"makeOpaque": true,
 					"subConfigDef": [
 						{
 							"name": "Flir",
-							"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR.png",
+							"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR_HiVis.png",
 							"enabled": false,
 							"useAsSwitch": true,
 							"center": true,
