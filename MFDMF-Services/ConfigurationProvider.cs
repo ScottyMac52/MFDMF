@@ -11,6 +11,7 @@ namespace MFDMF_Services
 	using Microsoft.Win32;
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Drawing2D;
 	using System.Drawing.Imaging;
@@ -24,9 +25,9 @@ namespace MFDMF_Services
 		private readonly IDisplayConfigurationService _displayConfigurationService;
 		private readonly ILogger _logger;
 		private readonly AppSettings _settings;
-		private readonly IEnumerable<IDisplayDefinition> _displayDefinitions;
+		private readonly IEnumerable<DisplayDefinition> _displayDefinitions;
 
-		public IEnumerable<IDisplayDefinition> DisplayDefinitions => _displayDefinitions;
+		public IEnumerable<DisplayDefinition> DisplayDefinitions => _displayDefinitions;
 
 		private string _cacheFolder; 
 
@@ -47,13 +48,17 @@ namespace MFDMF_Services
 		/// <inheritdoc/>
 		public async Task<IEnumerable<IModuleDefinition>> GetModulesAsync(string path, string fileSpec)
 		{
+			ServiceTimer.Start();
 			var modules = await LoadModulesAsync(path, fileSpec).ConfigureAwait(false);
+			var elapsed = ServiceTimer.StopAndGetDuration();
+			_logger.LogDebug($"{modules?.Count() ?? 0} Modules loaded in {elapsed.TotalMilliseconds} ms");
 			return modules;
 		}
 
 		/// <inheritdoc/>
 		public async Task<Dictionary<string, ImageDefinition>> ReloadCacheForAllModulesAsync(string path, string throttleKey, string hotasKey, bool loadKneeboards = false)
 		{
+			ServiceTimer.Start();
 			var bitmapDictionary = new Dictionary<string, ImageDefinition>();
 			var modulesToProceeResponse = await LoadModulesAsync(path, _settings.FileSpec ?? "*.json").ConfigureAwait(false);
 			var modulesToProcess = modulesToProceeResponse?.ToList();
@@ -65,6 +70,8 @@ namespace MFDMF_Services
 					bitmapDictionary.Add(key, moduleDictionary[key]);
 				});
 			});
+			var elapsed = ServiceTimer.StopAndGetDuration();
+			_logger.LogDebug($"{bitmapDictionary?.Count() ?? 0} Images loaded in {elapsed.TotalMilliseconds} ms");
 			return bitmapDictionary;
 		}
 
@@ -222,7 +229,7 @@ namespace MFDMF_Services
 			foreach (var file in dirInfo.GetFiles(fileSpec))
 			{
 				var jsonContent = File.ReadAllText(file.FullName);
-				var moduleDefintions = _configurationLoadingService.LoadModulesConfigurationFile(jsonContent, _displayDefinitions, dirInfo.Name);
+				var moduleDefintions = _configurationLoadingService.LoadModulesConfigurationFile(jsonContent, dirInfo.Name);
 				items.AddRange(moduleDefintions);
 			}
 

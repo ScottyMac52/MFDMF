@@ -2,6 +2,7 @@
 {
 	using MFDMF_Models;
 	using MFDMF_Models.Interfaces;
+	using MFDMF_Models.Models;
 	using System.Collections.Generic;
 	using System.Drawing;
 	using System.Threading.Tasks;
@@ -20,7 +21,7 @@
 		/// Display defintions that are defined 
 		/// </summary>
 		/// <returns></returns>
-		IEnumerable<IDisplayDefinition> DisplayDefinitions { get; }
+		IEnumerable<DisplayDefinition> DisplayDefinitions { get; }
 
 		/// <summary>
 		/// Loads all of a module's images 

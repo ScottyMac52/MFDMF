@@ -28,7 +28,7 @@
 
 		private readonly ILogger _logger;
 		private readonly AppSettings _settings;
-		private readonly IEnumerable<IDisplayDefinition> _displayDefinitions;
+		private readonly IEnumerable<DisplayDefinition> _displayDefinitions;
 		private readonly IConfigurationProvider _configurationProvider;
 
 		/// <summary>

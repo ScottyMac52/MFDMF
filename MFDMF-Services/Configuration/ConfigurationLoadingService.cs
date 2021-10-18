@@ -10,6 +10,7 @@
 	using System.Drawing;
 	using System.IO;
 	using System.Linq;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// Servvice that is used to load Module configurations
@@ -46,7 +47,6 @@
         /// Loads a modules configuration file
         /// </summary>
         /// <param name="jsonContent"></param>
-        /// <param name="displays"></param>
         /// <param name="category"></param>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException"></exception>
@@ -60,7 +60,7 @@
         /// <exception cref="PathTooLongException"></exception>
         /// <exception cref="DirectoryNotFoundException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public IEnumerable<IModuleDefinition> LoadModulesConfigurationFile(string jsonContent, IEnumerable<IDisplayDefinition> displays, string category)
+        public IEnumerable<IModuleDefinition> LoadModulesConfigurationFile(string jsonContent, string category)
         {
             var modulesList = new List<IModuleDefinition>();
             try
@@ -68,15 +68,21 @@
                 if(jsonContent.Contains("\"modules\""))
                 {
                     var moduleDefinitions = JsonConvert.DeserializeObject<ModuleDefinitions>(jsonContent);
-                    var modules =  PreProcessModules(moduleDefinitions.Modules, displays, category);
-                    modulesList.AddRange(modules);
+                    modulesList.AddRange(moduleDefinitions.Modules);
                 }
                 else
                 {
                     var moduleDefinitions = JsonConvert.DeserializeObject<List<ModuleDefinition>>(jsonContent);
-                    var modules = PreProcessModules(moduleDefinitions, displays, category);
-                    modulesList.AddRange(modules);
+                    modulesList.AddRange(moduleDefinitions.Select(md => md));
                 }
+
+                Parallel.ForEach(modulesList, module =>
+                {
+                    module.Category = category;
+                    module.Enabled ??= true;
+                    module.FilePath ??= _settings.FilePath;
+                });
+
                 return modulesList;
             }
             catch (Exception ex)
@@ -100,7 +106,7 @@
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-		private IEnumerable<ModuleDefinition> PreProcessModules(List<ModuleDefinition> modules, IEnumerable<IDisplayDefinition> displays, string category)
+		private IEnumerable<ModuleDefinition> PreProcessModules(List<ModuleDefinition> modules, IEnumerable<DisplayDefinition> displays, string category)
         {
             foreach(var arg in modules) 
             {
@@ -115,19 +121,6 @@
                     {
                         // Get the Display for the configuration and get the placement
                         var currentConfig = LoadBaseConfigurationDefinition(arg, config, displays, out var currentDisplay);   
-                        
-                        var placement = GetPlacementRect(currentConfig, currentDisplay);
-                        currentConfig.Left = placement.X;
-                        currentConfig.Top = placement.Y;
-                        currentConfig.Width = placement.Width;
-                        currentConfig.Height = placement.Height;
-                                                
-                        var croppingRect = GetCroppingRect(currentConfig, currentDisplay);
-                        currentConfig.XOffsetStart ??= croppingRect.Left;
-                        currentConfig.XOffsetFinish ??= croppingRect.Right;
-                        currentConfig.YOffsetStart ??= croppingRect.Top;
-                        currentConfig.YOffsetFinish ??= croppingRect.Bottom;
-
                         _logger.LogDebug($"Configuration {currentConfig.Name} using {currentDisplay?.Name ?? "Scratch"} Using file: {currentConfig?.FileName ?? "None"} Size: ({currentConfig.Width ?? 0},{currentConfig.Height ?? 0}) Location: ({currentConfig.Left ?? 0}, {currentConfig.Top ?? 0})");
                         _logger.LogDebug($"Cropping offsets ({currentConfig.XOffsetStart??0}, {currentConfig.YOffsetStart??0}) to ({currentConfig.XOffsetFinish??0}, {currentConfig.YOffsetFinish??0}) Opacity: {currentConfig.Opacity}");
 
@@ -168,20 +161,16 @@
         /// <param name="displays"></param>
         /// <param name="mainDef"></param>
         /// <returns></returns>
-        private IConfigurationDefinition LoadBaseConfigurationDefinition(IModuleDefinition arg,  IConfigurationDefinition config, IEnumerable<IDisplayDefinition> displays, out IDisplayDefinition mainDef,  IConfigurationDefinition parentDef = null)
+        private IConfigurationDefinition LoadBaseConfigurationDefinition(IModuleDefinition arg,  IConfigurationDefinition config, IEnumerable<DisplayDefinition> displays, out DisplayDefinition mainDef,  IConfigurationDefinition parentDef = null)
         {
-            IDisplayDefinition currentDisplay = null;
-            IDisplayDefinition auxDisplay = null;
+            DisplayDefinition auxDisplay = null;
+            DisplayDefinition currentDisplay = null;
 
-            if(string.IsNullOrEmpty(config.DisplayName))
+            if (string.IsNullOrEmpty(config.DisplayName))
 			{
                 // Get any of the displays where the configuration name contains their name
                 var currentDisplays = displays?.Where(dd => dd.Name == config?.Name || (config?.Name?.Contains(dd.Name, StringComparison.CurrentCulture) ?? false));
-                if (currentDisplays.Count() == 0)
-                {
-                    currentDisplay = new DisplayDefinition(config);
-                }
-                else
+                if (currentDisplays.Count() > 0)
                 {
                     // The primary display configuration MUST have it's name start with or equal the configuration name
                     currentDisplay = currentDisplays.FirstOrDefault(cd => config.Name.StartsWith(cd.Name) || config.Name.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
@@ -194,6 +183,10 @@
                 currentDisplay = displays.FirstOrDefault(cd => config.DisplayName.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
             }
 
+            if(currentDisplay == null)
+			{
+                currentDisplay = new DisplayDefinition(config);
+            }
             config.Logger = _logger;
             config.Enabled ??= arg.Enabled ?? config.Enabled ?? parentDef?.Enabled ?? false;
             config.UseAsSwitch ??= parentDef?.UseAsSwitch ?? false;
@@ -207,11 +200,28 @@
             config.RulerName = (_settings.ShowRulers ?? false) ? $"Ruler-{_settings.RulerSize ?? 0}" : null;
             var throttleType = (_settings?.UseCougar ?? false) ? "HC" : "WH";
             config.ThrottleType = throttleType;
+
+            if (auxDisplay != null)
+            {
+                auxDisplay.Parent = currentDisplay;
+            }
+            config.Left = auxDisplay?.Left.HasValue ?? false ? auxDisplay.Left : currentDisplay.Left ?? 0;
+            config.Top = auxDisplay?.Top.HasValue ?? false ? auxDisplay.Top : currentDisplay.Top ?? 0;
+            config.Width = auxDisplay?.Width.HasValue ?? false ? auxDisplay.Width : currentDisplay.Width ?? 0;
+            config.Height = auxDisplay?.Height.HasValue ?? false  ? auxDisplay.Height : currentDisplay.Height ?? 0;
+            config.XOffsetStart = auxDisplay?.XOffsetStart.HasValue ?? false ? auxDisplay.XOffsetStart : currentDisplay.XOffsetStart ?? 0;
+            config.XOffsetFinish = auxDisplay?.XOffsetFinish.HasValue ?? false ? auxDisplay.XOffsetFinish : currentDisplay.XOffsetFinish ?? 0;
+            config.YOffsetStart = auxDisplay?.YOffsetStart.HasValue ?? false ? auxDisplay.YOffsetStart : currentDisplay.YOffsetStart ?? 0;
+            config.YOffsetFinish = auxDisplay?.YOffsetFinish.HasValue ?? false ? auxDisplay.YOffsetFinish : currentDisplay.YOffsetFinish ?? 0;
+            config.MakeOpaque = auxDisplay?.MakeOpaque.HasValue ?? false ? auxDisplay.MakeOpaque : currentDisplay.MakeOpaque ?? false;
+            config.Opacity = auxDisplay?.Opacity.HasValue ?? false ? auxDisplay.Opacity : currentDisplay.Opacity ?? 1.0F;
+            config.Center = auxDisplay?.Center.HasValue ?? false ? auxDisplay.Center : currentDisplay.Center ?? false;
+
             mainDef = currentDisplay;
             return config;
         }
 
-        private static Rectangle GetCroppingRect(IOffsetGeometry config, IDisplayDefinition display, IOffsetGeometry secondary = null)
+        private static Rectangle GetCroppingRect(IOffsetGeometry config, DisplayDefinition display, IOffsetGeometry secondary = null)
         {
             var xStart = secondary?.XOffsetStart ?? config?.XOffsetStart ?? display?.XOffsetStart ?? 0;
             var xFinish = secondary?.XOffsetFinish ?? config?.XOffsetFinish ?? display?.XOffsetFinish ?? 0;
@@ -220,7 +230,7 @@
             return new Rectangle(new Point(xStart, yStart), new Size(xFinish - xStart, yFinish - yStart));
         }
 
-        private static Rectangle GetPlacementRect(IDisplayGeometry config, IDisplayDefinition display, IDisplayGeometry subConfig = null)
+        private static Rectangle GetPlacementRect(IDisplayGeometry config, DisplayDefinition display, IDisplayGeometry subConfig = null)
         {
             // Get the size
             var size = GetSize(config, display, subConfig);
@@ -248,7 +258,7 @@
         /// <param name="display"></param>
         /// <param name="subConfig"></param>
         /// <returns></returns>
-        private static Point GetLocation(IDisplayGeometry config, IDisplayDefinition display = null, IDisplayGeometry subConfig = null)
+        private static Point GetLocation(IDisplayGeometry config, DisplayDefinition display = null, IDisplayGeometry subConfig = null)
         {
             IDisplayGeometry child, parent;
             int left, top;
@@ -284,8 +294,8 @@
             }
 
             // Offset as requested by configs Left and Top coordinates
-            left += (display?.ImageGeometry?.Left ?? 0);
-            top +=  (display?.ImageGeometry?.Top ?? 0);
+            left += (display?.Left ?? 0);
+            top +=  (display?.Top ?? 0);
             return new Point(left, top);
         }
 
@@ -296,12 +306,12 @@
         /// <param name="display"></param>
         /// <param name="subConfig"></param>
         /// <returns></returns>
-        private static Size GetSize(IDisplayGeometry config, IDisplayDefinition display, IDisplayGeometry subConfig = null)
+        private static Size GetSize(IDisplayGeometry config, DisplayDefinition display, IDisplayGeometry subConfig = null)
         {
             var width = subConfig?.Width ?? config?.Width ?? display?.Width ?? 0;
             var height = subConfig?.Height ?? config?.Height ?? display?.Height ?? 0;
-            width += (display?.ImageGeometry?.Width ?? 0);
-            height += (display?.ImageGeometry?.Height ?? 0);
+            width += (display?.Width ?? 0);
+            height += (display?.Height ?? 0);
             return new Size(width, height);
         }
 

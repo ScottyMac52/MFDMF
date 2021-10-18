@@ -8,19 +8,15 @@
 			"fileName": "CTSConfigLMFD.jpg",
 			"configurations": [
 				{
-					"name": "LMFD_CTSMFDOffset"
+					"name": "LMFD_CTSProf_CTSMFDOffset"
 				},
 				{
-					"name": "WHKEY_CTSProf",
+					"name": "WHKEY_CTSProf_CTSWHOffset",
 					"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\HTML\\gfx",
 					"fileName": "vr_hotas_sel.jpg",
-					"xOffsetStart": 0,
-					"xOffsetFinish": 1449,
-					"yOffsetStart": 0,
-					"yOffsetFinish": 1184
-				},
+					},
 				{
-					"name": "RMFD_CTSMFDOffset",
+					"name": "RMFD_CTSProf_CTSMFDOffset",
 					"fileName": "CTSConfigRMFD.jpg"
 				}
 			]

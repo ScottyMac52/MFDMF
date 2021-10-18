@@ -45,9 +45,9 @@
 		/// Loads the display configuration for from the file specified in <see cref="AppSettings"/> property DisplayConfigurationFile
 		/// </summary>
 		/// <returns></returns>
-		public async Task<IEnumerable<IDisplayDefinition>> LoadDisplaysAsync()
+		public async Task<IEnumerable<DisplayDefinition>> LoadDisplaysAsync()
 		{
-			var returnList = new List<IDisplayDefinition>();
+			var returnList = new List<DisplayDefinition>();
 			var jsonFile = Environment.ExpandEnvironmentVariables(_settings.DisplayConfigurationFile);
 			_logger?.LogInformation($"Loading configuration from {jsonFile}");
 			var fileContent = await File.ReadAllTextAsync(jsonFile).ConfigureAwait(false);

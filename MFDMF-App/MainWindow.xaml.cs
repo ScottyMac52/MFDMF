@@ -129,6 +129,8 @@ namespace MFDMFApp
 			{
 				if (mfd.Value.IsLoaded)
 				{
+					var controlGrid = mfd.Value.Content as Grid;
+					controlGrid?.Children?.Clear();
 					mfd.Value.Hide();
 					mfd.Value.Close();
 				}

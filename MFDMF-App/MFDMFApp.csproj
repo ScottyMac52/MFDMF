@@ -385,10 +385,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Modules\Blue Warbirds\Mosquito FB-VII.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -414,12 +410,6 @@
 
   <ItemGroup>
     <Content Include="Modules\Modern Non-Flight\blank.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Modules\SciFi Flight\blank.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

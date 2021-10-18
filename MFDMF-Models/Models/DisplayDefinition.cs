@@ -12,7 +12,7 @@
 	/// </summary>
 	/// <remarks>The <see cref="ConfigurationDefinition"/> objects can use coordinates relative to the display configuration by prepending their name with the name of the display</remarks>
 	[JsonObject("displays")]
-	public class DisplayDefinition : IDisplayDefinition
+	public class DisplayDefinition : ConfigurationDefinition
 	{
 		#region Constants
 
@@ -35,13 +35,21 @@
 		/// Copy Ctor
 		/// </summary>
 		/// <param name="copy"></param>
-		public DisplayDefinition(IDisplayDefinition copy) : this()
+		public DisplayDefinition(DisplayDefinition copy) : this()
 		{
 			Name = copy.Name;
 			Left = copy.Left;
 			Top = copy.Top;
 			Width = copy.Width;
 			Height = copy.Height;
+			XOffsetStart = copy.XOffsetStart;
+			XOffsetFinish = copy.XOffsetFinish;
+			YOffsetStart = copy.YOffsetStart;
+			YOffsetFinish = copy.YOffsetFinish;
+			UseAsSwitch = copy.UseAsSwitch;
+			MakeOpaque = copy.MakeOpaque;
+			Opacity = copy.Opacity;
+			Center = copy.Center;
 		}
 
 		public DisplayDefinition(IConfigurationDefinition copy)
@@ -56,6 +64,7 @@
 			YOffsetStart = copy.YOffsetStart;
 			YOffsetFinish = copy.YOffsetFinish;
 			UseAsSwitch = copy.UseAsSwitch;
+			MakeOpaque = copy.MakeOpaque;
 			Opacity = copy.Opacity;
 			Center = copy.Center;
 		}
@@ -89,71 +98,6 @@
 		}
 
 		#endregion Public static Create methods
-		
-		#region Display Definitin properties Name, Left, Top, Width, Height
-
-		[JsonProperty("name")]
-		public string Name { get; set; }
-		[JsonProperty("width")]
-		public int? Width { get; set; }
-		[JsonProperty("height")]
-		public int? Height { get; set; }
-		[JsonProperty("left")]
-		public int? Left { get; set; }
-		[JsonProperty("top")]
-		public int? Top { get; set; }
-
-		[JsonProperty("offsets")]
-		public ImageGeometry ImageGeometry { get; set; }
-
-		#endregion Display Definitin properties Name, Left, Top, Width, Height
-
-		#region Image cropping properties IOffsetGeometry
-
-		/// <summary>
-		/// Not really used with <see cref="DisplayDefinition"/>
-		/// </summary>
-		[JsonProperty("useAsSwitch")]
-		public bool? UseAsSwitch { get; set; }
-		/// <summary>
-		/// Translucency of the image expressed as percentage of solidness 
-		/// </summary>
-		[JsonProperty("opacity")]
-		public float? Opacity { get; set; }
-		/// <summary>
-		/// Starting X position of the Crop
-		/// </summary>
-		[JsonProperty("xOffsetStart")]
-		public int? XOffsetStart { get; set; }
-		/// <summary>
-		/// Starting Y position of the Crop
-		/// </summary>
-		[JsonProperty("yOffsetStart")]
-		public int? YOffsetStart { get; set; }
-		/// <summary>
-		/// Ending X position of the Crop
-		/// </summary>
-		[JsonProperty("xOffsetFinish")]
-		public int? XOffsetFinish { get; set; }
-		/// <summary>
-		/// Ending Y position of the Crop
-		/// </summary>
-		[JsonProperty("yOffsetFinish")]
-		public int? YOffsetFinish { get; set; }
-		
-		[JsonIgnore()]
-		public bool? Center { get; set; }
-		public bool? MakeOpaque { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-		public Point CroppingStart => throw new NotImplementedException();
-
-		public Rectangle CroppingArea => throw new NotImplementedException();
-
-		public int CroppedWidth => throw new NotImplementedException();
-
-		public int CroppedHeight => throw new NotImplementedException();
-
-		#endregion Image cropping properties IOffsetGeometry
 
 		#region Public overrides 
 
@@ -194,49 +138,12 @@
 		}
 
 		/// <summary>
-		/// Centers the current Configuration inside the specified Configuration
-		/// </summary>
-		/// <param name="configurationDefinition"></param>
-		public Point GetCenterTo(IDisplayGeometry displayGeometry)
-		{
-			var size = new Size(Width ?? 0, Height ?? 0);
-			var centerPoint = size.RelativeCenterInRectangle(new Size(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0));
-			return new Point(centerPoint.X, centerPoint.Y);
-		}
-
-		/// <summary>
 		/// Get the human readable string of the object
 		/// </summary>
 		/// <returns></returns>
 		public override string ToString()
 		{
 			return ToReadableString();
-		}
-
-		/// <summary>
-		/// Returns the portion of the readable string specific to <seealso cref="DisplayDefinition"/>
-		/// </summary>
-		/// <returns></returns>
-		public string ToJson()
-		{
-			try
-			{
-				var jsonString = JsonConvert.SerializeObject(this);
-				return jsonString;
-			}
-			catch (Exception ex)
-			{
-				return $"{{ \"message\": \"{ex.Message}\", \"exceptionType\": \"{ex.GetType().Name}\"}}";
-			}
-		}
-
-		/// <summary>
-		/// Returns JSON for <seealso cref="SubConfigurationDefinition"/>
-		/// </summary>
-		/// <returns></returns>
-		public string ToReadableString()
-		{
-			return $"{Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0})";
 		}
 
 		#endregion Public overrides 

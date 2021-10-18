@@ -53,6 +53,20 @@
 		"xOffsetFinish": 667,
 		"yOffsetStart": 0,
 		"yOffsetFinish": 441
-
+	},
+	{
+		"name": "CTSWHOffset",
+		"left": 1760,
+		"width": 800,
+		"height":  800,
+		"xOffsetStart": 0,
+		"xOffsetFinish": 1449,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 1184
+	},
+	{
+		"name": "CATEGORY",
+		"width": 210,
+		"height": 469
 	}
 ]
