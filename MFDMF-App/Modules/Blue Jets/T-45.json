@@ -1,0 +1,23 @@
+{
+	"modules": [
+		{
+			"name": "T-45",
+			"displayName": "T-45 Goshawk",
+			"fileName": "T-45\\DCS T45 THROTTLE.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Goshawk",
+					"enabled": false
+				},
+				{
+					"name": "WHKEY_Goshawk",
+					"fileName": "T-45\\DCS T45 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Goshawk",
+					"enabled": false
+				}
+			]
+		}
+	]
+}

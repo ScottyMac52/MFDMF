@@ -14,8 +14,12 @@
     <Copyright>© 2018-2021</Copyright>
     <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
-    <Version>3.0.2</Version>
+    <Version>3.0.3</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageProjectUrl>https://github.com/ScottyMac52/MFDMF</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ScottyMac52/MFDMF</RepositoryUrl>
+    <RepositoryType>GitHUb</RepositoryType>
+    <PackageTags>3.0.3</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -63,6 +67,7 @@
     <None Remove="Modules\Blue Jets\F-86F.json" />
     <None Remove="Modules\Blue Jets\M-2000C.json" />
     <None Remove="Modules\Blue Jets\MB339.json" />
+    <None Remove="Modules\Blue Jets\T-45.json" />
     <None Remove="Modules\Blue Warbirds\Mosquito FB-VII.json" />
     <None Remove="Modules\Blue Warbirds\P-47.json" />
     <None Remove="Modules\Blue Warbirds\P-51.json" />
@@ -76,6 +81,8 @@
     <None Remove="Modules\Non DCS\rgbSwitch.json" />
     <None Remove="Modules\NS430.json" />
     <None Remove="Modules\Red Helos\Ka-50.json" />
+    <None Remove="Modules\Red Helos\Mi-24Cpg.json" />
+    <None Remove="Modules\Red Helos\Mi-24Plt.json" />
     <None Remove="Modules\Red Helos\Mi-8.json" />
     <None Remove="Modules\Red Jets\JF-17.json" />
     <None Remove="Modules\Red Jets\L-39.json" />
@@ -94,6 +101,9 @@
   <ItemGroup>
     <Content Include="Modules\Blue Jets\F-14BRIOHV.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\T-45.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Modules\Red Jets\Mig-29.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -289,13 +299,13 @@
 
   <ItemGroup>
     <Content Include="Modules\Red Helos\Ka-50.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Modules\Red Helos\Mi-8.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -427,6 +437,18 @@
   <ItemGroup>
     <Content Include="Modules\SciFi Non-Flight\blank.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Modules\Red Helos\Mi-24Plt.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Modules\Red Helos\Mi-24Cpg.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
