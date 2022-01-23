@@ -165,7 +165,7 @@
                 "InstallUrl" = "8:https://dotnet.microsoft.com/download/dotnet/[NetCoreVerMajorDotMinor]"
                 "IsNETCore" = "11:TRUE"
                 "Architecture" = "2:2"
-                "Runtime" = "2:0"
+                "Runtime" = "2:2"
                 }
             }
         }
@@ -488,15 +488,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MFDMF"
-        "ProductCode" = "8:{2A656CE8-E003-4289-92E6-C1C62BF5E5A7}"
-        "PackageCode" = "8:{463B5B66-9E3B-478B-88DC-F4622EB43E21}"
+        "ProductCode" = "8:{78E27590-28D6-4A04-935E-37DE91C9F0AF}"
+        "PackageCode" = "8:{2B0D5075-F7D3-4A00-86EB-5A26108C799B}"
         "UpgradeCode" = "8:{10A36A70-4527-422C-9715-54AE7A24ECC8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.0.3"
+        "ProductVersion" = "8:3.1.0"
         "Manufacturer" = "8:Vyper Industries"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/ScottyMac52/MFDMF/issues"
@@ -1088,7 +1088,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D40C0B95CF45451486426DC5DF9E0C40"
             {
-            "SourcePath" = "8:..\\MFDMF-App\\obj\\x64\\Debug\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\MFDMF-App\\obj\\x64\\Debug\\net5.0-windows10.0.17763.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7FCB61EBE1E14F5F9BB45E9312EFFC0D"

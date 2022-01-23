@@ -1,24 +1,23 @@
-﻿namespace MFDMFApp
-{
-	using MFDMF_Models;
-	using MFDMF_Models.Interfaces;
-	using MFDMF_Models.Models;
-	using MFDMF_Services;
-	using Microsoft.Extensions.Logging;
-	using System;
-	using System.Collections.Generic;
-	using System.Drawing;
-	using System.Drawing.Imaging;
-	using System.IO;
-	using System.Linq;
-	using System.Windows;
-	using System.Windows.Controls;
-	using System.Windows.Forms;
-	using System.Windows.Input;
-	using System.Windows.Interop;
-	using System.Windows.Media;
-	using System.Windows.Media.Imaging;
+﻿using MFDMF_Models;
+using MFDMF_Models.Interfaces;
+using MFDMF_Models.Models;
+using MFDMF_Services;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
+namespace MFDMFApp
+{
 	/// <summary>
 	/// Interaction logic for ConfigurationWindow.xaml
 	/// </summary>
@@ -106,10 +105,10 @@
 			var displayForConfig = _displayDefinitions?.FirstOrDefault(dd => dd.Name == Configuration?.Name || (Configuration?.Name?.StartsWith(dd.Name, StringComparison.CurrentCulture) ?? false));
 			Title = Configuration?.Name;
 			ResizeMode = ResizeMode.NoResize;
-			Width = Configuration?.Width ?? displayForConfig.Width ?? 0;
-			Height = Configuration?.Height ?? displayForConfig.Height ?? 0;
-			Left = Configuration?.Left ?? displayForConfig.Left ?? 0;
-			Top = Configuration?.Top ?? displayForConfig.Top ?? 0;
+			Width = Configuration?.Width ?? displayForConfig?.Width ?? 0;
+			Height = Configuration?.Height ?? displayForConfig?.Height ?? 0;
+			Left = Configuration?.Left ?? displayForConfig?.Left ?? 0;
+			Top = Configuration?.Top ?? displayForConfig?.Top ?? 0;
 			Opacity = Configuration?.Opacity ?? 1.0F;
 			var status = $"Configuration: {Title} at ({Left},{Top}) for ({Width},{Height}) Created from: {displayForConfig?.ToReadableString() ?? "Scratch"}";
 			_logger?.LogInformation(status);
@@ -117,6 +116,7 @@
 			{
 				ToolTip = status;
 			}
+			Topmost = displayForConfig?.AlwaysOnTop ?? false;
 			return true;
 		}
 
@@ -131,47 +131,20 @@
 		private System.Windows.Controls.Image CreateNewImage(string imageName)
 		{
 			var controlGrid = Content as Grid;
-			while(controlGrid.Children.Count > 0)
+			while((controlGrid?.Children?.Count ?? 0) > 0)
 			{
-				controlGrid.Children.RemoveAt(0);
-			}
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                controlGrid.Children.RemoveAt(0);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
 			var imgMain = new System.Windows.Controls.Image()
 			{
 				Name = imageName
 			};
-			controlGrid.Children.Add(imgMain);
-			return imgMain;
-		}
-
-		/// <summary>
-		/// Crops the image to the specified dimensions 
-		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="config"></param>
-		/// <param name="saveOriginal"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="Exception"></exception>
-		private Bitmap Crop(Bitmap src, IConfigurationDefinition config, bool saveOriginal = true)
-		{
-			if (config.IsValid)
-			{
-				if (saveOriginal)
-				{
-					SaveOriginalImageIfRequired(src);
-				}
-				var cropRect = new Rectangle(config.CroppingStart, new System.Drawing.Size(config.CroppedWidth, config.CroppedHeight));
-				var newBitmap = new Bitmap(config?.Width ?? 0, config?.Height ?? 0, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-				using (var g = Graphics.FromImage(newBitmap))
-				{
-					g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect, GraphicsUnit.Pixel);
-				}
-				return newBitmap;
-			}
-			else
-			{
-				throw new ArgumentException($"Unable to Crop bitmap for {config.ToReadableString()}. The configuration is not valid.");
-			}
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            controlGrid.Children.Add(imgMain);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            return imgMain;
 		}
 
 		private void SaveOriginalImageIfRequired(Bitmap src)
@@ -208,32 +181,11 @@
 			g.DrawRectangle(Pens.Red, config.CroppingArea);
 		}
 
-		/*
-		private void SaveFileAsKneeboardRef(string path, IConfigurationDefinition config)
+		private void SaveFileAsKneeboardRefAsRequired(string path, IConfigurationDefinition config)
 		{
-			if (_settings.CreateKneeboard ?? false)
+			if ((_settings.CreateKneeboard ?? false) && !string.IsNullOrEmpty(ModuleDefinition.DCSName))
 			{
-				using var img = Crop((Bitmap)System.Drawing.Image.FromFile(path), config, false);
-				ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(config, (subConfig) =>
-				{
-					// See if the Coonfiguration is selected
-					if (CheckForConfiguration(subConfig))
-					{
-						var key = $"{config.ModuleName}-{config?.Name}-{subConfig.Name}";
-						var insetImage = ImageDictionary.FirstOrDefault(id => id.Key == key).Value;
-						using var cropped = Crop(insetImage, subConfig, false);
-						using var g = Graphics.FromImage(img);
-						g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-						var origin = new System.Drawing.Point(subConfig?.Left ?? 0, subConfig?.Top ?? 0);
-						g.DrawImage(cropped, new Rectangle(origin, new System.Drawing.Size(subConfig?.Width ?? 0, subConfig?.Height ?? 0)));
-					}
-				});
-
-				if (string.IsNullOrEmpty(ModuleDefinition.DCSName))
-				{
-					_logger.LogWarning($"Configuration {ModuleDefinition.DisplayName} doesn't have a kneeboard tag");
-					return;
-				}
+				using var img = System.Drawing.Image.FromFile(path);
 				var kneeBoardPath = Path.Combine(SavedGamesFolder, _settings.DcsSavedGamesPath, "Kneeboard", ModuleDefinition.DCSName);
 				var kneeBoardFile = Path.Combine(kneeBoardPath, $"{ModuleDefinition.DCSName}-{config.Name}.png");
 				if (!Directory.Exists(kneeBoardPath))
@@ -241,9 +193,9 @@
 					Directory.CreateDirectory(kneeBoardPath);
 					_logger.LogInformation($"Creating {kneeBoardPath}");
 				}
-				if (!File.Exists(kneeBoardFile))
+				if (!File.Exists(kneeBoardFile) || (_settings.TurnOffCache ?? false))
 				{
-					using var kneeBoardBitmap = new Bitmap(768, 1024, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+					using var kneeBoardBitmap = new Bitmap(768, 1024, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 					using (var gk = Graphics.FromImage(kneeBoardBitmap))
 					{
 						var cropRect = config.CroppingArea;
@@ -254,49 +206,7 @@
 				}
 			}
 		}
-		*/
 
-		private void CreateRulers(IConfigurationDefinition config, Graphics g)
-		{
-			var xCenter = (config.Width ?? 0) / 2;
-			var yCenter = (config.Height ?? 0) / 2;
-
-			g.DrawLine(Pens.Red, new System.Drawing.Point(0, yCenter), new System.Drawing.Point(config.Width ?? 0, yCenter));
-
-			for (int x = 0; x < (config.Width ?? 0); x++)
-			{
-				if (x % (_settings.RulerSize ?? 0) == 0)
-				{
-					var startPoint = new System.Drawing.Point(x, yCenter - 10);
-					var endPoint = new System.Drawing.Point(x, yCenter + 10);
-					g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
-				}
-
-				if (x % 100 == 0)
-				{
-					var textPoint = new PointF(x - 10, (float) yCenter + 10);
-					g.DrawString($"{x}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
-				}
-			}
-
-			g.DrawLine(Pens.Red, new System.Drawing.Point(xCenter, 0), new System.Drawing.Point(xCenter, config.Height ?? 0));
-
-			for (int y = 0; y < (config.Height ?? 0); y++)
-			{
-				if (y % (_settings.RulerSize ?? 0) == 0)
-				{
-					var startPoint = new System.Drawing.Point(xCenter - 10, y);
-					var endPoint = new System.Drawing.Point(xCenter + 10, y);
-					g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
-				}
-
-				if(y % 100 == 0)
-				{
-					var textPoint = new PointF(xCenter + 10, y-5);
-					g.DrawString($"{y}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
-				}
-			}
-		}
 
 		/// <summary>
 		/// Loads the configured image either from the test pattern, user's cache or from the original location
@@ -318,7 +228,7 @@
 			imgMain.StretchDirection = StretchDirection.Both;
 			imgMain.Stretch = Stretch.Fill;
 			var imgSource = new Uri(cacheFile, UriKind.RelativeOrAbsolute);
-			BitmapImage src = new BitmapImage();
+			var src = new BitmapImage();
 			src.BeginInit();
 			src.UriSource = imgSource;
 			src.CacheOption = BitmapCacheOption.OnLoad;
@@ -366,6 +276,7 @@
 				});
 				var selectedImage = ImageDictionary[key];
 				LoadImage(selectedImage.CacheFile);
+				SaveFileAsKneeboardRefAsRequired(selectedImage.CacheFile, Configuration);
 			}
 			watch.Stop();
 			_logger?.LogWarning($"Configuration {Configuration.ModuleName}-{Configuration.Name}-{SubConfigurationNames}: loaded in {watch.ElapsedMilliseconds} milliseconds");
@@ -398,14 +309,50 @@
 
 		protected override void OnMouseDown(MouseButtonEventArgs e)
 		{
+			var rightButton = e.RightButton;
 			var mousePos = System.Windows.Forms.Control.MousePosition;
 			var currentRect = new Rectangle(mousePos.X, mousePos.Y, 1, 1);
-			var screen = GetScreen(this);
-			var currentDisplay = _displayDefinitions?.FirstOrDefault(dd => currentRect.IntersectsWith(new Rectangle(dd?.Left ?? 0, dd?.Top ?? 0, dd?.Width ?? 0, dd?.Height ?? 0)));
-			var clientLeft = mousePos.X - (currentDisplay?.Left ?? 0);
-			var clientTop = mousePos.Y - (currentDisplay?.Top ?? 0);
-			System.Windows.MessageBox.Show($"({mousePos.X}, {mousePos.Y}) ({clientLeft}, {clientTop}) in {currentDisplay?.ToReadableString() ?? "None"} on Screen {screen?.DeviceName ?? "None"}", $"{Configuration.Name}", MessageBoxButton.OK, MessageBoxImage.Information);
-			base.OnMouseDown(e);
+
+			IDisplayDefinition? displayDef;
+			var displayDefs = _displayDefinitions.Where(dd => currentRect.IntersectsWith(new Rectangle(dd?.Left ?? 0, dd?.Top ?? 0, dd?.Width ?? 0, dd?.Height ?? 0)));
+			if (displayDefs.Count() > 1)
+			{
+				// Get the smallest config in the area
+				displayDef = displayDefs.Aggregate((first, second) => ((first.Width ?? 0) * (first.Height ?? 0)) > ((second.Width ?? 0) * (second.Height ?? 0)) ? second : first);
+			}
+			else
+			{
+				displayDef = displayDefs.SingleOrDefault();
+			}
+			var relatedDisplays = _displayDefinitions.Where(dd => dd.Name.StartsWith(displayDef?.Name));
+			if (relatedDisplays.Count() > 1)
+			{
+				// Get the display definition with the longest name
+				displayDef = relatedDisplays.Aggregate((first, second) => (first.Name.Length > second.Name.Length) ? first : second);
+			}
+
+			if (e.RightButton == MouseButtonState.Pressed)
+			{
+				switch (System.Windows.MessageBox.Show("Do you want to close this configuration window?", $"Close {Configuration?.DisplayName} in display {displayDef?.Name ?? "Not Specified"}", MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
+				{
+					case MessageBoxResult.No:
+					case MessageBoxResult.Cancel:
+					case MessageBoxResult.None:
+						break;
+					case MessageBoxResult.OK:
+					case MessageBoxResult.Yes:
+						Close();
+						break;
+				}
+			}
+			else
+			{
+				var screen = GetScreen(this);
+				var clientLeft = mousePos.X - (displayDef?.Left ?? 0);
+				var clientTop = mousePos.Y - (displayDef?.Top ?? 0);
+				System.Windows.MessageBox.Show($"({mousePos.X}, {mousePos.Y}) ({clientLeft}, {clientTop}) in {displayDef?.ToReadableString() ?? "None"} on Screen {screen?.DeviceName ?? "None"}", $"{Configuration.Name}", MessageBoxButton.OK, MessageBoxImage.Information);
+				base.OnMouseDown(e);
+			}
 		}
 
 		#endregion Mouse events

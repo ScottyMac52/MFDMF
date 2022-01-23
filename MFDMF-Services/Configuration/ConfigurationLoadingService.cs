@@ -62,22 +62,25 @@
         /// <exception cref="NotSupportedException"></exception>
         public IEnumerable<IModuleDefinition> LoadModulesConfigurationFile(string jsonContent, IEnumerable<IDisplayDefinition> displays, string category)
         {
-            var modulesList = new List<IModuleDefinition>();
             try
             {
                 if(jsonContent.Contains("\"modules\""))
                 {
+                    var modulesList = new List<IModuleDefinition>();
                     var moduleDefinitions = JsonConvert.DeserializeObject<ModuleDefinitions>(jsonContent);
                     var modules =  PreProcessModules(moduleDefinitions.Modules, displays, category);
                     modulesList.AddRange(modules);
+                    var names = string.Join(',', modules.Select(mod => mod.ModuleName));
+                    if(_logger.IsEnabled(LogLevel.Debug))
+					{
+                        _logger.LogDebug($"Loaded {modules.Count()} modules: {names} for Category: {category ?? "None"}");
+                    }
+                    return modulesList;
                 }
                 else
                 {
-                    var moduleDefinitions = JsonConvert.DeserializeObject<List<ModuleDefinition>>(jsonContent);
-                    var modules = PreProcessModules(moduleDefinitions, displays, category);
-                    modulesList.AddRange(modules);
+                    throw new ArgumentException($"The JSON content is missing the \"modules\": {jsonContent}");
                 }
-                return modulesList;
             }
             catch (Exception ex)
             {
@@ -115,19 +118,6 @@
                     {
                         // Get the Display for the configuration and get the placement
                         var currentConfig = LoadBaseConfigurationDefinition(arg, config, displays, out var currentDisplay);   
-                        
-                        var placement = GetPlacementRect(currentConfig, currentDisplay);
-                        currentConfig.Left = placement.X;
-                        currentConfig.Top = placement.Y;
-                        currentConfig.Width = placement.Width;
-                        currentConfig.Height = placement.Height;
-                                                
-                        var croppingRect = GetCroppingRect(currentConfig, currentDisplay);
-                        currentConfig.XOffsetStart ??= croppingRect.Left;
-                        currentConfig.XOffsetFinish ??= croppingRect.Right;
-                        currentConfig.YOffsetStart ??= croppingRect.Top;
-                        currentConfig.YOffsetFinish ??= croppingRect.Bottom;
-
                         _logger.LogDebug($"Configuration {currentConfig.Name} using {currentDisplay?.Name ?? "Scratch"} Using file: {currentConfig?.FileName ?? "None"} Size: ({currentConfig.Width ?? 0},{currentConfig.Height ?? 0}) Location: ({currentConfig.Left ?? 0}, {currentConfig.Top ?? 0})");
                         _logger.LogDebug($"Cropping offsets ({currentConfig.XOffsetStart??0}, {currentConfig.YOffsetStart??0}) to ({currentConfig.XOffsetFinish??0}, {currentConfig.YOffsetFinish??0}) Opacity: {currentConfig.Opacity}");
 
@@ -135,20 +125,19 @@
                         {
                             var currentSubConfig = LoadBaseConfigurationDefinition(arg, subConfig, displays, out var currentSubDisplay, currentConfig);
                             currentSubConfig.Parent = config;
-
-                            var placement = GetPlacementRect(currentConfig, currentSubDisplay, currentSubConfig);
-                            currentSubConfig.Left = placement.X;
-                            currentSubConfig.Top = placement.Y;
-                            currentSubConfig.Width = placement.Width;
-                            currentSubConfig.Height = placement.Height;
-
-                            // The cropping offsets can originate from the sub configurations display offset geometry and from their parent configurations
-                            var croppingRect = GetCroppingRect(currentConfig, currentDisplay, currentSubConfig);
-                            currentSubConfig.XOffsetStart ??= croppingRect.Left;
-                            currentSubConfig.XOffsetFinish ??= croppingRect.Right;
-                            currentSubConfig.YOffsetStart ??= croppingRect.Top;
-                            currentSubConfig.YOffsetFinish ??= croppingRect.Bottom;
-                            currentSubConfig.Opacity ??= currentSubDisplay?.Opacity ?? currentConfig.Opacity;
+                            bool determineDimension = false;
+                            if((currentSubConfig.Width ?? 0) == 0 || (currentSubConfig.Height ?? 0) == 0)
+                            {
+                                determineDimension = true;  
+                            }
+                            if (determineDimension)
+                            {
+                                var placement = GetPlacementRect(currentConfig, currentSubDisplay, currentSubConfig);
+                                currentSubConfig.Left = placement.X;
+                                currentSubConfig.Top = placement.Y;
+                                currentSubConfig.Width = placement.Width;
+                                currentSubConfig.Height = placement.Height;
+                            }
 
                             _logger.LogDebug($"Configuration: {currentSubConfig.Name} using {currentSubDisplay?.Name ?? "Scratch"} Using file: {currentSubConfig?.FileName ?? "None"} Size: ({currentSubConfig.Width ?? 0},{currentSubConfig.Height ?? 0}) Location: ({currentSubConfig.Left ?? 0}, {currentSubConfig.Top ?? 0})");
                             _logger.LogDebug($"Cropping offsets: ({currentSubConfig.XOffsetStart ?? 0}, {currentSubConfig.YOffsetStart ?? 0}) to ({currentSubConfig.XOffsetFinish ?? 0}, {currentSubConfig.YOffsetFinish ?? 0}) Opacity: {currentSubConfig.Opacity}");
@@ -185,8 +174,8 @@
                 {
                     // The primary display configuration MUST have it's name start with or equal the configuration name
                     currentDisplay = currentDisplays.FirstOrDefault(cd => config.Name.StartsWith(cd.Name) || config.Name.Equals(cd.Name, StringComparison.CurrentCultureIgnoreCase));
-                    // The secondary display configuration MUST NOT have it's name start with the configuration name BUT must contain it
-                    auxDisplay = currentDisplays.FirstOrDefault(cd => !config.Name.StartsWith(cd.Name) && config.Name.Contains(cd.Name));
+                    // The secondary display configuration MUST NOT have it's name equal the configuration
+                    auxDisplay = currentDisplays.FirstOrDefault(cd => !cd.Name.Equals(currentDisplay.Name, StringComparison.CurrentCultureIgnoreCase));
                 }
             }
             else
@@ -195,6 +184,10 @@
             }
 
             config.Logger = _logger;
+            config.Left ??= currentDisplay.Left;
+            config.Top ??= currentDisplay.Top;
+            config.Width ??= currentDisplay.Width;
+            config.Height ??= currentDisplay.Height;
             config.Enabled ??= arg.Enabled ?? config.Enabled ?? parentDef?.Enabled ?? false;
             config.UseAsSwitch ??= parentDef?.UseAsSwitch ?? false;
             config.ModuleName ??= arg?.ModuleName;
@@ -202,11 +195,14 @@
             config.FileName ??= arg?.FileName;
             config.MakeOpaque ??= false;
             config.Center ??= false;
-            config.Opacity ??= 1.0F;
             config.Opacity ??= currentDisplay?.Opacity ?? 1.0F;
             config.RulerName = (_settings.ShowRulers ?? false) ? $"Ruler-{_settings.RulerSize ?? 0}" : null;
             var throttleType = (_settings?.UseCougar ?? false) ? "HC" : "WH";
             config.ThrottleType = throttleType;
+            config.XOffsetStart ??= auxDisplay?.XOffsetStart ?? currentDisplay?.XOffsetStart ?? 0;
+            config.XOffsetFinish ??= auxDisplay?.XOffsetFinish ?? currentDisplay?.XOffsetFinish ?? 0;
+            config.YOffsetStart ??= auxDisplay?.YOffsetStart ?? currentDisplay?.YOffsetStart ?? 0;
+            config.YOffsetFinish ??= auxDisplay?.YOffsetFinish ?? currentDisplay?.YOffsetFinish ?? 0;
             mainDef = currentDisplay;
             return config;
         }

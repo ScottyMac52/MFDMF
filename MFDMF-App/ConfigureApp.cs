@@ -37,11 +37,12 @@ namespace MFDMFApp
 						var logFile = Path.Combine(appFolder, $"{Properties.Resources.BaseDataDirectory}Logs\\status");
 						loggerConfiguration.MinimumLevel.Warning();
 						loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
-						loggerConfiguration.MinimumLevel.Override("MFDMFApp", LogEventLevel.Warning);
-						loggerConfiguration.MinimumLevel.Override("MFDMF_Services", LogEventLevel.Warning);
-						loggerConfiguration.MinimumLevel.Override("MFDMF_Services.Configuration", LogEventLevel.Information);
+						loggerConfiguration.MinimumLevel.Override("MFDMFApp", LogEventLevel.Information);
+						loggerConfiguration.MinimumLevel.Override("MFDMF_Services.Configuration", LogEventLevel.Warning);
+						loggerConfiguration.MinimumLevel.Override("MFDMF_Services.Displays", LogEventLevel.Warning);
+						loggerConfiguration.MinimumLevel.Override("MFDMF_Services.ConfigurationProvider", LogEventLevel.Warning);
 						loggerConfiguration.Enrich.FromLogContext();
-						loggerConfiguration.WriteTo.RollingFile(logFile + "-{Date}.log", LogEventLevel.Information, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level}] [{SourceContext}] [{Message}]{NewLine}{Exception}");
+						loggerConfiguration.WriteTo.RollingFile(logFile + "-{Date}.log", LogEventLevel.Verbose, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level}] [{SourceContext}] [{Message}]{NewLine}{Exception}");
 					})
 					.Build();
 			}

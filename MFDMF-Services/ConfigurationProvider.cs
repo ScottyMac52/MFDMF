@@ -100,17 +100,8 @@ namespace MFDMF_Services
 			var cacheFile = $"{fileTemplate}.png";
 			var cacheFileExists = File.Exists(cacheFile);
 			var key = $"{module.ModuleName}-{config.Name}";
-			if (imageDictionary.TryGetValue(key, out var mainImage))
-			{
-				if (!cacheFileExists || forceReload)
-				{
-					_logger.LogDebug($"Creating cache file {cacheFile}");
-					mainImage.Save($"{fileTemplate}.png");
-				}
-				_logger.LogDebug($"Adding image {key}");
-				var bitMapCache = new ImageDefinition() { Bitmap = mainImage, CacheFile = cacheFile, Key = key };
-				bitmapDictionary.Add(key, bitMapCache);
-			}
+			imageDictionary.TryGetValue(key, out var mainImage);
+			_logger.LogDebug($"Processing image {key}");
 
 			config?.SubConfigurations?.ForEach(subConfig =>
 			{
@@ -133,36 +124,90 @@ namespace MFDMF_Services
 							g.CompositingMode = CompositingMode.SourceOver;
 							var newLocation = (subConfig.Center ?? false) ? subConfig.GetCenterTo(config) : new Point(subConfig.Left ?? config.Left ?? 0, subConfig.Top ?? config.Top ?? 0);
 							var croppingArea = new Rectangle(newLocation, new Size(subConfig.Width ?? 0, subConfig.Height ?? 0));
-							_logger.LogDebug($"Using image: {key} to paint configuration {subConfig.Name} for {subConfig.ToReadableString()}");
+							_logger.LogDebug($"Using image: {key} to paint configuration {subConfig.Name} for {subConfig}");
 							g.DrawImage(sourceImage, croppingArea);
-						}
 
-						ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(subConfig, (subsubConfig) =>
-						{
-							var key = $"{module.ModuleName}-{config.Name}-{subsubConfig.Name}";
-							if (imageDictionary.TryGetValue(key, out var sourceImage))
+							ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(subConfig, (subsubConfig) =>
 							{
-								using (var g = Graphics.FromImage(currentConfig))
+								var key = $"{module.ModuleName}-{config.Name}-{subsubConfig.Name}";
+								if (imageDictionary.TryGetValue(key, out var sourceImage))
 								{
-									g.CompositingMode = CompositingMode.SourceOver;
+									using var graphicsSuperimposed = Graphics.FromImage(currentConfig);
+									graphicsSuperimposed.CompositingMode = CompositingMode.SourceOver;
 									var newLocation = (subsubConfig.Center ?? false) ? subsubConfig.GetCenterTo(subConfig) : new Point(subsubConfig.Left ?? subConfig.Left ?? config.Left ?? 0, subsubConfig.Top ?? subConfig.Top ?? config.Top ?? 0);
 									var croppingArea = new Rectangle(newLocation, new Size(subsubConfig.Width ?? 0, subsubConfig.Height ?? 0));
-									_logger.LogDebug($"Using image: {key} to paint configuration {subsubConfig.Name} for {subsubConfig.ToReadableString()}");
-									g.DrawImage(sourceImage, croppingArea);
+									_logger.LogDebug($"Using image: {key} to paint configuration {subsubConfig.Name} for {subsubConfig}");
+									graphicsSuperimposed.DrawImage(sourceImage, croppingArea);
 								}
-							}
-						});
-						currentConfig.Save($"{fileTemplate}.png");
+							});
+						}
+						using var graphics = Graphics.FromImage(currentConfig);
+						CreateRulersAsRequired(config, graphics);
+						currentConfig.Save(cacheFile);
 					}
 				}
 				var bitMapCache = new ImageDefinition() { Bitmap = currentConfig, CacheFile = cacheFile, Key = key };
 				bitmapDictionary.Add(key, bitMapCache);
 			});
-			var mainKey = $"{module.ModuleName}-{config.Name}";
-			imageDictionary.TryGetValue(key, out mainImage);
 
+			if (!cacheFileExists || forceReload)
+			{
+				using var graphics = Graphics.FromImage(mainImage);
+				CreateRulersAsRequired(config, graphics);
+				_logger.LogDebug($"Creating cache file {cacheFile}");
+				mainImage.Save($"{fileTemplate}.png");
+			}
+			var bitMapCache = new ImageDefinition() { Bitmap = mainImage, CacheFile = cacheFile, Key = key };
+			bitmapDictionary.Add(key, bitMapCache);
+			var mainKey = $"{module.ModuleName}-{config.Name}";
 			return bitmapDictionary;
 		}
+
+		private void CreateRulersAsRequired(IConfigurationDefinition config, Graphics g)
+		{
+			if (_settings.ShowRulers ?? false)
+			{
+				var xCenter = (config.Width ?? 0) / 2;
+				var yCenter = (config.Height ?? 0) / 2;
+
+				g.DrawLine(Pens.Red, new System.Drawing.Point(0, yCenter), new System.Drawing.Point(config.Width ?? 0, yCenter));
+
+				for (int x = 0; x < (config.Width ?? 0); x++)
+				{
+					if (x % (_settings.RulerSize ?? 0) == 0)
+					{
+						var startPoint = new System.Drawing.Point(x, yCenter - 10);
+						var endPoint = new System.Drawing.Point(x, yCenter + 10);
+						g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+					}
+
+					if (x % 100 == 0)
+					{
+						var textPoint = new PointF(x - 10, (float)yCenter + 10);
+						g.DrawString($"{x}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+					}
+				}
+
+				g.DrawLine(Pens.Red, new System.Drawing.Point(xCenter, 0), new System.Drawing.Point(xCenter, config.Height ?? 0));
+
+				for (int y = 0; y < (config.Height ?? 0); y++)
+				{
+					if (y % (_settings.RulerSize ?? 0) == 0)
+					{
+						var startPoint = new System.Drawing.Point(xCenter - 10, y);
+						var endPoint = new System.Drawing.Point(xCenter + 10, y);
+						g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+					}
+
+					if (y % 100 == 0)
+					{
+						var textPoint = new PointF(xCenter + 10, y - 5);
+						g.DrawString($"{y}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+					}
+				}
+			}
+		}
+
 
 		// public Dictionary<string, ImageDefinition> 
 
@@ -185,6 +230,7 @@ namespace MFDMF_Services
 		private Bitmap Crop(Bitmap src, IDisplayGeometry displayGeometry, IOffsetGeometry cropping)
 		{
 			var cropRect = new Rectangle(cropping.CroppingStart, new Size(cropping.CroppedWidth, cropping.CroppedHeight));
+			_logger.LogDebug($"Creating bitmap {displayGeometry?.Width ?? 0} * {displayGeometry?.Height ?? 0}");
 			var newBitmap = new Bitmap(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0, PixelFormat.Format32bppArgb);
 			using (var g = Graphics.FromImage(newBitmap))
 			{
@@ -262,7 +308,7 @@ namespace MFDMF_Services
 				{
 					throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
 				}
-				_logger?.LogInformation($"Loading file: {fileSource} for {subConfig.ToReadableString()}");
+				_logger?.LogInformation($"Loading file: {fileSource} for {subConfig}");
 				bitMap = (Bitmap)Image.FromFile(fileSource);
 				var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
 				using var croppedBitmap = Crop(bitMap, subConfig, subConfig);

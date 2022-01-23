@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -110,7 +109,7 @@ namespace MFDMFApp
 				}
 				else
 				{
-					_logger?.LogWarning($"Configuration: {config.ToReadableString()} Disabled");
+					_logger?.LogWarning($"Configuration: {config} Disabled");
 				}
 			});
 			watch.Stop();
