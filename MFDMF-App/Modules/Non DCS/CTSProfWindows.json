@@ -2,10 +2,10 @@
 	"modules" :
 	[
 		{
-			"name": "CTSProf",
-			"displayName": "CTS Configuration Profile",
-			"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Vyper",
-			"fileName": "CTSConfigLMFD.jpg",
+			"name": "CTSProf3",
+			"displayName": "CTS Windows Configuration Profile",
+			"filePath": "E:\\HOTAS\\Windows\\CTS\\TARGET Profiles\\CTS_Windows\\Docs\\Profile JPGs\\CTSProfile",
+			"fileName": "LMFD_CTSProfile.jpg",
 			"configurations": [
 				{
 					"name": "LMFD_CTSMFD",
@@ -25,7 +25,7 @@
 				},
 				{
 					"name": "RMFD_CTSMFD",
-					"fileName": "CTSConfigRMFD.jpg",
+					"fileName": "RMFD_CTSProfile.jpg",
 					"xOffsetStart": 0,
 					"xOffsetFinish": 670,
 					"yOffsetStart": 0,

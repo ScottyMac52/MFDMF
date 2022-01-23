@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
     <RootNamespace>MFDMFApp</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
@@ -11,15 +11,18 @@
     <Authors>Vyper Industries</Authors>
     <Company>Vyper Industries</Company>
     <Product>Multi-Function Display Management Application</Product>
-    <Copyright>© 2018-2021</Copyright>
+    <Copyright>© 2018-2022</Copyright>
     <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
-    <Version>3.0.3</Version>
+    <Version>3.1.0</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageProjectUrl>https://github.com/ScottyMac52/MFDMF</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ScottyMac52/MFDMF</RepositoryUrl>
     <RepositoryType>GitHUb</RepositoryType>
-    <PackageTags>3.0.3</PackageTags>
+    <PackageTags>3.1</PackageTags>
+    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <FileVersion>3.1.0.0</FileVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -74,8 +77,11 @@
     <None Remove="Modules\Blue Warbirds\Spitfire.json" />
     <None Remove="Modules\CombinedArms.json" />
     <None Remove="Modules\Historical Flight\blank.json" />
+    <None Remove="Modules\Historical Flight\SW_Squadrons.json" />
     <None Remove="Modules\LotATC\awacs.json" />
     <None Remove="Modules\Non DCS\CTSProf.json" />
+    <None Remove="Modules\Non DCS\CTSProf2.json" />
+    <None Remove="Modules\Non DCS\CTSProfWindows.json" />
     <None Remove="Modules\Non DCS\Elite.json" />
     <None Remove="Modules\Non DCS\Il2.json" />
     <None Remove="Modules\Non DCS\rgbSwitch.json" />
@@ -104,6 +110,12 @@
     </Content>
     <Content Include="Modules\Blue Jets\T-45.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Non DCS\CTSProf2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Non DCS\CTSProfWindows.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Modules\Red Jets\Mig-29.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -449,6 +461,12 @@
   <ItemGroup>
     <Content Include="Modules\Red Helos\Mi-24Cpg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Modules\Historical Flight\SW_Squadrons.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

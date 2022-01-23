@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ApplicationExit" xml:space="preserve">
-    <value>The applictaion is exiting with</value>
+    <value>The application is exiting with</value>
   </data>
   <data name="BaseDataDirectory" xml:space="preserve">
     <value>Vyper Industries\MFDMF\</value>

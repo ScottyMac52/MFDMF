@@ -42,6 +42,7 @@
 			Top = copy.Top;
 			Width = copy.Width;
 			Height = copy.Height;
+			AlwaysOnTop = copy.AlwaysOnTop;
 		}
 
 		public DisplayDefinition(IConfigurationDefinition copy)
@@ -143,15 +144,18 @@
 		
 		[JsonIgnore()]
 		public bool? Center { get; set; }
-		public bool? MakeOpaque { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public bool? MakeOpaque { get; set; }
+		[JsonIgnore()]
+		public Point CroppingStart => this.YOffsetStart.HasValue && this.YOffsetStart.HasValue ? new Point(this.XOffsetStart.Value, this.YOffsetStart.Value) : new Point();
+		[JsonIgnore()]
+		public Rectangle CroppingArea => this.XOffsetStart.HasValue && this.XOffsetFinish.HasValue && this.YOffsetStart.HasValue && this.YOffsetFinish.HasValue ? new Rectangle(CroppingStart, new Size(CroppedWidth, CroppedHeight)) : new Rectangle();
+		[JsonIgnore()]
+		public int CroppedWidth => this.XOffsetStart.HasValue && this.XOffsetFinish.HasValue ? Math.Abs(this.XOffsetFinish.Value - this.XOffsetStart.Value) : 0;
+		[JsonIgnore()]
+		public int CroppedHeight => this.YOffsetStart.HasValue && this.YOffsetFinish.HasValue ? Math.Abs(this.YOffsetFinish.Value - this.YOffsetStart.Value) : 0;
 
-		public Point CroppingStart => throw new NotImplementedException();
-
-		public Rectangle CroppingArea => throw new NotImplementedException();
-
-		public int CroppedWidth => throw new NotImplementedException();
-
-		public int CroppedHeight => throw new NotImplementedException();
+		[JsonProperty("alwaysOnTop")]
+		public bool? AlwaysOnTop { get; set; }
 
 		#endregion Image cropping properties IOffsetGeometry
 
