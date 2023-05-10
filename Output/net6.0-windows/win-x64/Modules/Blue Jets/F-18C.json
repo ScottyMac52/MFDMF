@@ -1,0 +1,268 @@
+{
+	"modules": [
+		{
+			"name": "FA-18C",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 2 MFD",
+			"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "FA-18C\\DCS FA18C WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "FA-18C\\DCS FA18C HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "JOYKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C MFD3.jpg",
+					"enabled": false,
+					"width": 400,
+					"height": 400,
+					"left": 20,
+					"top": 10,
+					"xOffsetStart": 101,
+					"xOffsetFinish": 776,
+					"yOffsetStart": 250,
+					"yOffsetFinish": 900,
+					"opacity": 1.0
+				}
+			]
+		},
+		{
+			"name": "FA-18CHV",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 2 MFD Hi Viz ",
+			"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "FA-18C\\DCS FA18C WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "FA-18C\\DCS FA18C HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "JOYKEY_Hornet",
+					"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg",
+					"enabled": false,
+					"width": 400,
+					"height": 400,
+					"left": 20,
+					"top": 10,
+					"xOffsetStart": 101,
+					"xOffsetFinish": 776,
+					"yOffsetStart": 250,
+					"yOffsetFinish": 900,
+					"opacity": 1.0
+				}
+			]
+		},
+		{
+			"name": "FA-18C3",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 3 MFD",
+			"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "FA-18C\\DCS FA18C WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "FA-18C\\DCS FA18C HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "JOYKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C MFD3.jpg",
+					"enabled": true,
+					"width": 400,
+					"height": 400,
+					"left": 20,
+					"top": 10,
+					"xOffsetStart": 101,
+					"xOffsetFinish": 776,
+					"yOffsetStart": 250,
+					"yOffsetFinish": 900,
+					"opacity": 1.0
+				}
+			]
+		},
+		{
+			"name": "FA-18CHV3",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 3 MFD Hi Viz ",
+			"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "FA-18C\\DCS FA18C WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "FA-18C\\DCS FA18C HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "JOYKEY_Hornet",
+					"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg",
+					"enabled": true,
+					"width": 400,
+					"height": 400,
+					"left": 20,
+					"top": 10,
+					"xOffsetStart": 101,
+					"xOffsetFinish": 776,
+					"yOffsetStart": 250,
+					"yOffsetFinish": 900,
+					"opacity": 1.0
+				}
+			]
+		}
+	]
+}

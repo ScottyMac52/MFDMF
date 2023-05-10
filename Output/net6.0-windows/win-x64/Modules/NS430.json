@@ -1,0 +1,45 @@
+{
+	"modules": [
+		{
+			"name": "NS430",
+			"displayName": "NS430 Console",
+			"fileName": "NS430\\DCS NS430 MFD3.jpg",
+			"configurations": [
+				{
+					"name": "JOYKEY_NS430",
+					"fileName": "NS430\\DCS NS430 MFD3.jpg",
+					"enabled": true,
+					"makeOpaque": false,
+					"width": 400,
+					"height": 400,
+					"xOffsetStart": 101,
+					"xOffsetFinish": 776,
+					"yOffsetStart": 250,
+					"yOffsetFinish": 900,
+					"opacity": 0.85
+				},
+				{
+					"name": "WHKEY_NS430",
+					"fileName": "NS430\\DCS NS430 Overlay.jpg",
+					"enabled": true,
+					"makeOpaque": false,
+					"width": 808,
+					"height": 336,
+					"xOffsetStart": 1,
+					"xOffsetFinish": 1617,
+					"yOffsetStart": 1,
+					"yOffsetFinish": 673,
+					"opacity": 0.85
+				},
+				{
+					"name": "LMFD_NS430",
+					"enabled": false
+				},
+				{
+					"name": "RMFD_NS430",
+					"enabled": false
+				}
+			]
+		}
+	]
+}

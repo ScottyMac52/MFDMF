@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mi-8",
+			"displayName": "Mi-8MTV2 Magnificent Eight",
+			"fileName": "Mi-8\\DCS MI8 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-8"
+				},
+				{
+					"name": "WHKEY_Mi-8",
+					"filename": "Mi-8\\DCS Mi8 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-8"
+				}
+			]
+		},
+		{
+			"name": "Mi-8HV",
+			"displayName": "Mi-8MTV2 Magnificent Eight Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS MI8 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-8"
+				},
+				{
+					"name": "WHKEY_Mi-8",
+					"filename": "Mi-8\\DCS Mi8 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-8"
+				}
+			]
+		}
+	]
+}

@@ -20,11 +20,11 @@
 
 	public class MainApp : Application
 	{
-		private readonly ILoggerFactory _loggerFactory;
-		private readonly ILogger _logger;
-		private AppSettings _settings;
+		private readonly ILoggerFactory? _loggerFactory;
+		private readonly ILogger? _logger;
+		private AppSettings? _settings;
 
-		public IHost Host { get; }
+		public IHost? Host { get; }
 
 		/// <summary>
 		/// Application Ctor
@@ -61,11 +61,14 @@
 		/// </summary>
 		public void ReloadConfiguration()
 		{
-			_settings = Host.Services.GetService<IOptions<AppSettings>>()?.Value;
+			_settings = Host?.Services.GetService<IOptions<AppSettings>>()?.Value;
 			var modulesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Modules");
-			var moduleProvider = Host.Services.GetService<IConfigurationProvider>();
-			var modules = moduleProvider.GetModulesAsync(modulesDirectory, _settings.FileSpec).Result;
-			_settings.ModuleItems = modules;
+			var moduleProvider = Host?.Services.GetService<IConfigurationProvider>();
+			var modules = moduleProvider?.GetModulesAsync(modulesDirectory, _settings?.FileSpec).Result;
+			if(_settings != null)
+			{ 
+				_settings.ModuleItems = modules;
+			}
 		}
 
 		/// <summary>
@@ -76,7 +79,7 @@
 		/// <exception cref="ArgumentNullException"></exception>
 		protected static StartOptions GetStartOptions(string[] args)
 		{
-			StartOptions startOptions = null;
+			StartOptions? startOptions = null;
 			Parser.Default.ParseArguments<StartOptions>(args).WithParsed(o =>
 			{
 				startOptions = new StartOptions()
@@ -85,7 +88,7 @@
 					SubModuleName = o.SubModuleName
 				};
 			});
-			return startOptions;
+			return startOptions ?? new StartOptions();
 		}
 
 		/// <summary>
@@ -95,10 +98,16 @@
 		/// <exception cref="InvalidOperationException"></exception>
 		protected override async void OnStartup(StartupEventArgs e)
 		{
-			await (Host?.StartAsync()).ConfigureAwait(true);
-			MainWindow = Host?.Services?.GetRequiredService<MainWindow>();
-			_logger?.LogSystemStart();
-			MainWindow.Show();
+			if(Host != null)
+			{
+				await (Host.StartAsync()).ConfigureAwait(true);
+				MainWindow = Host?.Services?.GetRequiredService<MainWindow>();
+				_logger?.LogSystemStart();
+				if(MainWindow != null)
+				{
+					MainWindow.Show();
+				}
+			}
 			base.OnStartup(e);
 		}
 
@@ -126,12 +135,12 @@
 		/// <summary>
 		/// Gets the users AppData folder location
 		/// </summary>
-		public static string AppDataFolder => GetSpecialFolder("AppData");
+		public static string? AppDataFolder => GetSpecialFolder("AppData");
 
 		/// <summary>
 		/// Gets the Users Saved games folder
 		/// </summary>
-		public static string SavedGamesFolder => GetSpecialFolder("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}", Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE"), "SavedGames"));
+		public static string? SavedGamesFolder => GetSpecialFolder("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}", Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", "SavedGames"));
 
 		/// <summary>
 		/// Uses the registry to get the specified folder location
@@ -139,11 +148,11 @@
 		/// <param name="folderName"></param>
 		/// <param name="defaultValue"></param>
 		/// <returns></returns>
-		private static string GetSpecialFolder(string folderName, string defaultValue = null)
+		private static string? GetSpecialFolder(string? folderName, string? defaultValue = null)
 		{
 			var regKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
 			var regKeyValue = folderName;
-			return (string)Registry.GetValue(regKey, regKeyValue, defaultValue);
+			return (string?) Registry.GetValue(regKey, regKeyValue, defaultValue);
 		}
 
 		/// <summary>
@@ -158,7 +167,7 @@
 			var copyrightAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
 			var companyAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
 			var versionAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-			return $"{productAttribute.Product} Copyright {companyAttribute.Company} {copyrightAttribute.Copyright} version {versionAttribute.InformationalVersion}";
+			return $"{productAttribute?.Product} Copyright {companyAttribute?.Company} {copyrightAttribute?.Copyright} version {versionAttribute?.InformationalVersion}";
 		}
 
 		/// <summary>

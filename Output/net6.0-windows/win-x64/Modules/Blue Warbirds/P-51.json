@@ -1,0 +1,41 @@
+{
+	"modules": [
+		{
+			"name": "P_TF-51D",
+			"tag": "P_TF-51D",
+			"displayName": "P-51D Mustang",
+			"fileName": "P_TF-51D\\DCS P51D MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_P_TF-51D"
+				},
+				{
+					"name": "WHKEY_P_TF-51D",
+					"filename": "P_TF-51D\\DCS P51D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_P_TF-51D"
+				}
+			]
+		},
+		{
+			"name": "P_TF-51DHV",
+			"tag": "P_TF-51D",
+			"displayName": "P-51D Mustang HiViz",
+			"fileName": "_High Contrast MFDs\\DCS P51D MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_P_TF-51DHV"
+				},
+				{
+					"name": "WHKEY_P_TF-51DHV",
+					"filename": "P_TF-51D\\DCS P51D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_P_TF-51DHV"
+				}
+			]
+		}
+
+	]
+}

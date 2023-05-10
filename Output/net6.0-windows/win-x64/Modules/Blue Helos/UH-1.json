@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "UH-1",
+			"tag": "UH-1H",
+			"displayName": "UH-1 Huey",
+			"fileName": "UH-1\\DCS UH1 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_UH-1"
+				},
+				{
+					"name": "WHKEY_UH-1",
+					"filename": "UH-1\\DCS UH1 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_UH-1"
+				}
+			]
+		},
+		{
+			"name": "UH-1HV",
+			"tag": "UH-1H",
+			"displayName": "UH-1 Huey Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS UH1 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_UH-1"
+				},
+				{
+					"name": "WHKEY_UH-1",
+					"filename": "UH-1\\DCS UH1 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_UH-1"
+				}
+			]
+		}
+	]
+}

@@ -23,7 +23,7 @@ namespace MFDMFApp
 		private readonly AppSettings _settings;
 		private readonly ILoggerFactory _loggerFactory;
 		private readonly ILogger<MainWindow> _logger;
-		private readonly StartOptions _startOptions;
+		private readonly StartOptions? _startOptions;
 		private readonly IConfigurationProvider _configurationProvider;
 		#endregion IoC Injected fields
 
@@ -31,19 +31,19 @@ namespace MFDMFApp
 		/// <summary>
 		/// List of all created <see cref="ConfigurationWindow"/> Windows
 		/// </summary>
-		private SortedList<string, ConfigurationWindow> _windowList;
+		private SortedList<string, ConfigurationWindow>? _windowList;
 		/// <summary>
 		/// Currently selected Module
 		/// </summary>
-		private IModuleDefinition _selectedModule;
+		private IModuleDefinition? _selectedModule;
 		/// <summary>
 		/// The name of the module that was passed in
 		/// </summary>
-		private string _module;
+		private string? _module;
 		/// <summary>
 		/// The name of the sub-module that was passed
 		/// </summary>
-		private string _subModule;
+		private string? _subModule;
 		/// <summary>
 		/// Is the current module valid?
 		/// </summary>
@@ -68,12 +68,12 @@ namespace MFDMFApp
 		public MainWindow(IOptions<AppSettings> settings, ILoggerFactory loggerFactory, IConfigurationProvider configurationProvider)
 		{
 			InitializeComponent();
-			_settings = settings?.Value;
+			_settings = settings.Value;
 			_loggerFactory = loggerFactory;
 			_configurationProvider = configurationProvider;
 			_logger = _loggerFactory.CreateLogger<MainWindow>();
 			_windowList = new SortedList<string, ConfigurationWindow>();
-			_startOptions = (StartOptions) ((MainApp)Application.Current).Host.Services.GetService(typeof(StartOptions));
+			_startOptions = (StartOptions?) ((MainApp)Application.Current).Host?.Services.GetService(typeof(StartOptions));
 		}
 		#endregion Constructor
 		
@@ -99,7 +99,7 @@ namespace MFDMFApp
 					configWindow.Show();
 					if (configWindow.IsWindowLoaded)
 					{
-						_windowList.Add(config.Name, configWindow);
+						_windowList?.Add(config.Name, configWindow);
 						configWindow.Visibility = Visibility.Visible;
 					}
 					else
@@ -124,7 +124,7 @@ namespace MFDMFApp
 		/// <exception cref="InvalidOperationException"></exception>
 		private void DestroyWindows()
 		{
-			_windowList.ToList().ForEach(mfd =>
+			_windowList?.ToList().ForEach(mfd =>
 			{
 				if (mfd.Value.IsLoaded)
 				{
@@ -134,7 +134,7 @@ namespace MFDMFApp
 					mfd.Value.Close();
 				}
 			});
-			_windowList.Clear();
+			_windowList?.Clear();
 			_logger?.LogInformation(Properties.Resources.WindowListCleared);
 		}
 
@@ -164,22 +164,23 @@ namespace MFDMFApp
 			{
 				cbModules.SelectedIndex = -1;
 			}
-			if (moduleName != (string)cbModules?.SelectedValue)
+			if (moduleName != (string?)cbModules?.SelectedValue)
 			{
-				cbModules.SelectedValue = moduleName;
+				if(cbModules != null)
+				{
+					cbModules.SelectedValue = moduleName;
+					if(cbModules.SelectedIndex == -1)
+					{
+						IsValid = false;
+						_logger?.LogError($"Unable to find a configuration named {moduleName}");
+						throw new ArgumentOutOfRangeException(nameof(moduleName));
+					}
+					else
+					{
+						IsValid = true;
+					}
+				}
 			}
-
-			if(cbModules.SelectedIndex == -1)
-			{
-				IsValid = false;
-				_logger?.LogError($"Unable to find a configuration named {moduleName}");
-				throw new ArgumentOutOfRangeException(nameof(moduleName));
-			}
-			else
-			{
-				IsValid = true;
-			}
-
 			UpdateMenu();
 		}
 
@@ -199,7 +200,7 @@ namespace MFDMFApp
 				}
 				else
 				{
-					_selectedModule = (ModuleDefinition)e.AddedItems[0];
+					_selectedModule = (ModuleDefinition?)e.AddedItems[0];
 					CreateWindows();
 				}
 				_logger?.LogInformation($"Module selected {_selectedModule?.ToReadableString()}");
@@ -298,8 +299,8 @@ namespace MFDMFApp
 			_logger?.LogInformation(Properties.Resources.UserRequestedCacheClear);
 			DestroyWindows();
 			var appDataFolder = MainApp.AppDataFolder;
-			_logger.LogInformation($"Using appFolder: {appDataFolder}");
-			var cacheFolder = Path.Combine(appDataFolder, Properties.Resources.BaseDataDirectory, "cache");
+			_logger?.LogInformation($"Using appFolder: {appDataFolder}");
+			var cacheFolder = Path.Combine(appDataFolder ?? "", Properties.Resources.BaseDataDirectory, "cache");
 			if (Directory.Exists(cacheFolder))
 			{
 				var cacheParent = new DirectoryInfo(cacheFolder);
@@ -361,10 +362,10 @@ namespace MFDMFApp
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			var mainApp = Application.Current as MainApp;
-			mainApp.ReloadConfiguration();
+			mainApp?.ReloadConfiguration();
 			_module = _startOptions?.ModuleName;
 			_subModule = _startOptions?.SubModuleName;
-			var module = (string)cbModules?.SelectedValue;
+			var module = (string?)cbModules?.SelectedValue;
 			DestroyWindows();
 			SetupWindow();
 			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;

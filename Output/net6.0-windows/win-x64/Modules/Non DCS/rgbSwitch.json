@@ -1,0 +1,66 @@
+{
+	"modules": [
+		{
+			"name": "TestPattern_Switch",
+			"displayName": "Test Pattern with 3 switches",
+			"filePath": "C:\\Users\\Scott\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
+			"configurations": [
+				{
+					"name": "WHKEY_Switch",
+					"fileName": "convergence-fine-1024x768.gif",
+					"enabled": true,
+					"width": 1080,
+					"height": 1080,
+					"xOffsetStart": 0,
+					"xOffsetFinish": 1024,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 768,
+					"opacity": 0.75,
+					"makeOpaque": true,
+					"subConfigDef": [
+						{
+							"name": "Red",
+							"fileName": "red.png",
+							"width": 800,
+							"height": 600,
+							"opacity": 1.0,
+							"xOffsetStart": 0,
+							"xOffsetFinish": 1024,
+							"yOffsetStart": 0,
+							"yOffsetFinish": 768,
+							"enabled": false,
+							"useAsSwitch": true,
+							"center": true
+						},
+						{
+							"name": "Green",
+							"fileName": "green.png",
+							"width": 800,
+							"height": 600,
+							"xOffsetStart": 0,
+							"xOffsetFinish": 1024,
+							"yOffsetStart": 0,
+							"yOffsetFinish": 768,
+							"enabled": false,
+							"useAsSwitch": true,
+							"center": true
+						},
+						{
+							"name": "Blue",
+							"fileName": "blue.png",
+							"width": 800,
+							"height": 600,
+							"xOffsetStart": 0,
+							"xOffsetFinish": 1024,
+							"yOffsetStart": 0,
+							"yOffsetFinish": 768,
+							"enabled": false,
+							"useAsSwitch": true,
+							"center": true
+						}
+					]
+				}
+			]
+		}
+	]
+}

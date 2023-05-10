@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "Elite",
+			"displayName": "Elite Dangerous",
+			"fileName": "Elite Dangerous\\EliteD MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Elite"
+				},
+				{
+					"name": "WHKEY_Elite",
+					"filename": "Elite Dangerous\\EliteD THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Elite",
+					"enabled": false
+				}
+			]
+		},
+		{
+			"name": "EliteHV",
+			"displayName": "Elite Dangerous Hi Viz",
+			"fileName": "_High Contrast MFDs\\EliteD MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Elite"
+				},
+				{
+					"name": "WHKEY_Elite",
+					"filename": "Elite Dangerous\\EliteD THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Elite",
+					"enabled": false
+				}
+			]
+		}
+	]
+}

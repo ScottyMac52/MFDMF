@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mi-24PLT",
+			"displayName": "Mi-24 Hind Pilot",
+			"fileName": "Mi-24\\DCS MI24PLT MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-24PLT"
+				},
+				{
+					"name": "WHKEY_Mi-24PLT",
+					"filename": "Mi-24\\DCS Mi24 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-24PLT"
+				}
+			]
+		},
+		{
+			"name": "Mi-24PLTHV",
+			"displayName": "Mi-24 Hind Pilot Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Mi24PLT MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-24PLTHV"
+				},
+				{
+					"name": "WHKEY_Mi-24PLTHV",
+					"filename": "Mi-24\\DCS Mi24 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-24PLTHV"
+				}
+			]
+		}
+	]
+}

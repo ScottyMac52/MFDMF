@@ -1,0 +1,116 @@
+{
+	"modules": [
+		{
+			"name": "M-2000C",
+			"tag": "M-2000C",
+			"displayName": "Mirage 2000C",
+			"fileName": "M-2000C\\DCS M2000 MFD THROTTLE.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_M-2000C"
+				},
+				{
+					"name": "WHKEY_M-2000C",
+					"filename": "M-2000C\\DCS M2000 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_M-2000C"
+				},
+				{
+					"name": "JOYKEY_INS",
+					"enabled": true,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 500,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 114,
+					"yOffsetFinish": 744,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_PSM",
+					"enabled": false,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 156,
+					"top": 515,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 548,
+					"yOffsetFinish": 744,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_PCN",
+					"enabled": false,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 341,
+					"top": 686,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 114,
+					"yOffsetFinish": 544,
+					"opacity": 1.0
+				}
+			]
+		},
+		{
+			"name": "M-2000CHV",
+			"tag": "M-2000C",
+			"displayName": "Mirage M-2000C Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS M2000 MFD THROTTLE HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_M-2000C"
+				},
+				{
+					"name": "WHKEY_M-2000C",
+					"filename": "M-2000C\\DCS M2000 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_M-2000C"
+				},
+				{
+					"name": "JOYKEY_INS",
+					"enabled": true,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 500,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 114,
+					"yOffsetFinish": 744,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_PSM",
+					"enabled": false,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 156,
+					"top": 515,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 548,
+					"yOffsetFinish": 744,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_PCN",
+					"enabled": false,
+					"fileName": "M-2000C\\DCS M2000 INS.jpg",
+					"width": 548,
+					"height": 341,
+					"top": 686,
+					"xOffsetStart": 8,
+					"xOffsetFinish": 698,
+					"yOffsetStart": 114,
+					"yOffsetFinish": 544,
+					"opacity": 1.0
+				}
+			]
+		}
+	]
+}

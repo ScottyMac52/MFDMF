@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "F-86",
+			"tag": "F-86F Sabre",
+			"displayName": "F-86F Sabre",
+			"fileName": "F-86\\DCS F86 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-86"
+				},
+				{
+					"name": "WHKEY_F-86",
+					"filename": "F-86\\DCS F-86 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_F-86"
+				}
+			]
+		},
+		{
+			"name": "F-86HV",
+			"tag": "F-86F Sabre",
+			"displayName": "F-86F Sabre Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS F86 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-86"
+				},
+				{
+					"name": "WHKEY_F-86",
+					"filename": "F-86\\DCS F-86 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_F-86"
+				}
+			]
+		}
+	]
+}

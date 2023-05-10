@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mig-15",
+			"displayName": "Mig-15bis",
+			"fileName": "Mig-15\\DCS Mig15 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-15"
+				},
+				{
+					"name": "WHKEY_Mig-15",
+					"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-15"
+				}
+			]
+		},
+		{
+			"name": "Mig-15HV",
+			"displayName": "Mig-15bis Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Mig15 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-15"
+				},
+				{
+					"name": "WHKEY_Mig-15",
+					"filename": "Mig-15\\DCS Mig15 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-15"
+				}
+			]
+		}
+	]
+}

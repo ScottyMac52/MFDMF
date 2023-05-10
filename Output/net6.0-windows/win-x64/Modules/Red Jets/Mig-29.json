@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "Mig-29",
+			"tag": "MiG-29A",
+			"displayName": "Mig-29A Fulcrum",
+			"fileName": "FC3_Su25T\\DCS FC3 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-29"
+				},
+				{
+					"name": "WHKEY_Mig-29",
+					"filename": "FC3_Su25T\\DCS MiG29 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-29"
+				}
+			]
+		},
+		{
+			"name": "Mig-29HV",
+			"tag": "MiG-29A",
+			"displayName": "Mig-29 Fulcrum Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS FC3 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-29"
+				},
+				{
+					"name": "WHKEY_Mig-29",
+					"filename": "FC3_Su25T\\DCS MiG29 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-29"
+				}
+			]
+		}
+	]
+}

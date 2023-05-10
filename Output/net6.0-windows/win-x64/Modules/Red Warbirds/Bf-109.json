@@ -1,0 +1,21 @@
+{
+	"modules": [
+		{
+			"name": "Bf-109",
+			"displayName": "Bf-109 K-4 Kurfurst",
+			"fileName": "_High Contrast MFDs\\DCS Bf109 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Bf-109"
+				},
+				{
+					"name": "WHKEY_Bf-109",
+					"filename": "Bf-109\\DCS Bf109 THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Bf-109"
+				}
+			]
+		}
+	]
+}
