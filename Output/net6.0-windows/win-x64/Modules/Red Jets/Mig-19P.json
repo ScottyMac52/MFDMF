@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mig-19",
+			"displayName": "Mig-19P Farmer",
+			"fileName": "Mig-19\\DCS Mig19 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-19"
+				},
+				{
+					"name": "WHKEY_Mig-19",
+					"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-19"
+				}
+			]
+		},
+		{
+			"name": "Mig-19HV",
+			"displayName": "Mig-19P Farmer Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Mig19 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-19"
+				},
+				{
+					"name": "WHKEY_Mig-19",
+					"filename": "Mig-19\\DCS Mig19 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-19"
+				}
+			]
+		}
+	]
+}

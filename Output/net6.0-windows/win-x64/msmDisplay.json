@@ -1,0 +1,73 @@
+[
+	{
+		"name": "Main",
+		"width": 2560,
+		"height": 1440
+	},
+	{
+		"name": "LMFD",
+		"alwaysOnTop": true,
+		"width": 870,
+		"height": 700,
+		"left": -1280,
+		"top": 0,
+		"xOffsetStart": 101,
+		"xOffsetFinish": 776,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
+		"name": "WHKEY",
+		"width": 1200,
+		"height": 1200,
+		"left": 1360,
+		"top": 0,
+		"xOffsetStart": 0,
+		"yOffsetStart": 0,
+		"xOffsetFinish": 3330,
+		"yOffsetFinish": 2295,
+		"opacity": 1.0
+	},
+	{
+		"name": "RMFD",
+		"alwaysOnTop": true,
+		"width": 870,
+		"height": 700,
+		"left": 3005,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
+		"name": "Flir",
+		"offsets": {
+			"top": -45,
+			"width": -490,
+			"height": -260
+		}
+	},
+	{
+		"name": "LMFDOffset",
+		"xOffsetStart": 0,
+		"xOffsetFinish": 667,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 441
+	},
+	{
+		"name": "RMFDOffset",
+		"xOffsetStart": 0,
+		"xOffsetFinish": 667,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 441
+	},
+	{
+		"name": "WHKEY_CTSProfOffset",
+		"xOffsetStart": 0,
+		"xOffsetFinish": 1449,
+		"yOffsetStart": 0,
+		"yOffsetFinish": 1184
+	}
+]

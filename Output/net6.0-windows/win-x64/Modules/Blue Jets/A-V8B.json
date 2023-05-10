@@ -1,0 +1,83 @@
+{
+	"modules": [
+		{
+			"name": "AV-8B",
+			"tag": "AV8BNA",
+			"displayName": "AV-8B Harrier II",
+			"fileName": "AV-8B\\DCS AV8B MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Harrier"
+				},
+				{
+					"name": "WHKEY_Harrier",
+					"fileName": "AV-8B\\DCS AV8B THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "AV-8B\\DCS AV8B WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 600,
+							"left": 550,
+							"top": 250,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "AV-8B\\DCS AV8B HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 600,
+							"left": 550,
+							"top": 250,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "JOYKEY_ODU",
+					"filename": "AV-8B\\DCS AV8B UFC.jpg",
+					"enabled": true,
+					"makeOpaque": true,
+					"opacity": 1.0,
+					"width": 375,
+					"height": 185,
+					"xOffsetStart": 30,
+					"xOffsetFinish": 425,
+					"yOffsetStart": 40,
+					"yOffsetFinish": 255
+				},
+				{
+					"name": "JOYKEY_UFC",
+					"filename": "AV-8B\\DCS AV8B UFC.jpg",
+					"enabled": true,
+					"makeOpaque": true,
+					"opacity": 1.0,
+					"width": 515,
+					"height": 500,
+					"top": 200,
+					"xOffsetStart": 426,
+					"xOffsetFinish": 975,
+					"yOffsetStart": 40,
+					"yOffsetFinish": 580
+				},
+				{
+					"name": "RMFD_Harrier"
+				}
+			]
+		}
+	]
+}

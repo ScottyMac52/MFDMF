@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mi-24CPG",
+			"displayName": "Mi-24 Hind Co-Pilot/Gunner",
+			"fileName": "Mi-24\\DCS MI24CPG MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-24"
+				},
+				{
+					"name": "WHKEY_Mi-24",
+					"filename": "Mi-24\\DCS Mi24 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-24"
+				}
+			]
+		},
+		{
+			"name": "Mi-24CPGHV",
+			"displayName": "Mi-24 Hind Co-Pilot/Gunner Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Mi24CPG MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mi-24CPGHV"
+				},
+				{
+					"name": "WHKEY_Mi-24CPGHV",
+					"filename": "Mi-24\\DCS Mi24 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mi-24CPGHV"
+				}
+			]
+		}
+	]
+}

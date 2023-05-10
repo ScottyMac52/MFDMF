@@ -23,7 +23,7 @@
 		/// Detects if another instance is running and kills it
 		/// </summary>
 		/// <returns></returns>
-		public static Process RunningInstance()
+		public static Process? RunningInstance()
 		{
 			Process current = Process.GetCurrentProcess();
 			Process[] processes = Process.GetProcessesByName(current.ProcessName);
@@ -32,11 +32,11 @@
 			foreach (Process process in processes)
 			{
 				//Ignore the current process
-				if (process.Id != current.Id)
+				if (process.Id != current?.Id)
 				{
 					var currentLocation = Assembly.GetExecutingAssembly()?.Location.Replace(".dll", ".exe", StringComparison.InvariantCultureIgnoreCase);
 					//Make sure that the process is running from the exe file.
-					if (currentLocation?.Equals(current.MainModule.FileName, StringComparison.InvariantCultureIgnoreCase) ?? false)
+					if (currentLocation?.Equals(current?.MainModule?.FileName, StringComparison.InvariantCultureIgnoreCase) ?? false)
 					{
 						//Return the other process instance.
 						return process;

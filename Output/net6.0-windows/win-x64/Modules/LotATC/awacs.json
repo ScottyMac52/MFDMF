@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "AWACS",
+			"displayName": "AWACS for LotATC/SRS",
+			"fileName": "AWACS\\DCS AWACS MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_AWACS"
+				},
+				{
+					"name": "WHKEY_AWACS",
+					"filename": "AWACS\\DCS AWACS THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_AWACS",
+					"enabled": false
+				}
+			]
+		},
+		{
+			"name": "AWACSHV",
+			"displayName": "AWACS HiViz for LotATC/SRS",
+			"fileName": "_High Contrast MFDs\\DCS AWACS MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_AWACS"
+				},
+				{
+					"name": "WHKEY_AWACS",
+					"filename": "AWACS\\DCS AWACS THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_AWACS",
+					"enabled": false
+				}
+			]
+		}
+	]
+}

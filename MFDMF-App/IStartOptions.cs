@@ -2,7 +2,7 @@
 {
 	public interface IStartOptions
 	{
-		string ModuleName { get; }
-		string SubModuleName { get; }
+		string? ModuleName { get; }
+		string? SubModuleName { get; }
 	}
 }

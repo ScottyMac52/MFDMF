@@ -15,7 +15,7 @@ namespace MFDMFApp
 		/// </summary>
 		/// <param name="addtionalServices"><see cref="Action{IServiceCollection, IConfiguration}"/> used to invoke custom dependency injection</param>
 		/// <returns></returns>
-		internal static IHost Configure(Action<IServiceCollection, IConfiguration> addtionalServices = null)
+		internal static IHost Configure(Action<IServiceCollection, IConfiguration>? addtionalServices = null)
 		{
 			try
 			{
@@ -34,7 +34,7 @@ namespace MFDMFApp
 					.UseSerilog((hostBuilderContext, loggerConfiguration) =>
 					{
 						var appFolder = MainApp.AppDataFolder;
-						var logFile = Path.Combine(appFolder, $"{Properties.Resources.BaseDataDirectory}Logs\\status");
+						var logFile = Path.Combine(appFolder ?? "", $"{Properties.Resources.BaseDataDirectory}Logs\\status");
 						loggerConfiguration.MinimumLevel.Warning();
 						loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
 						loggerConfiguration.MinimumLevel.Override("MFDMFApp", LogEventLevel.Information);

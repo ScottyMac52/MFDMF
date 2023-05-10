@@ -1,0 +1,37 @@
+{
+	"modules" :
+	[
+		{
+			"name": "CTSProf3",
+			"displayName": "CTS Windows Configuration Profile",
+			"filePath": "E:\\HOTAS\\Windows\\CTS\\TARGET Profiles\\CTS_Windows\\Docs\\Profile JPGs\\CTSProfile",
+			"fileName": "LMFD_CTSProfile.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_CTSMFD",
+					"xOffsetStart": 0,
+					"xOffsetFinish": 668,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 441
+				},
+				{
+					"name": "WHKEY_CTSProf",
+					"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\HTML\\gfx",
+					"fileName": "vr_hotas_sel.jpg",
+					"xOffsetStart": 0,
+					"xOffsetFinish": 1449,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 1184
+				},
+				{
+					"name": "RMFD_CTSMFD",
+					"fileName": "RMFD_CTSProfile.jpg",
+					"xOffsetStart": 0,
+					"xOffsetFinish": 670,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 443
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "F-15C",
+			"tag": "F-15C",
+			"displayName": "F-15C Eagle",
+			"fileName": "FC3_Su25T\\DCS FC3 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-15C"
+				},
+				{
+					"name": "WHKEY_F-15C",
+					"filename": "FC3_Su25T\\DCS F15C THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_F-15C"
+				}
+			]
+		},
+		{
+			"name": "F-15CHV",
+			"tag": "F-15C",
+			"displayName": "F-15C Eagle Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS FC3 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-15C"
+				},
+				{
+					"name": "WHKEY_F-15C",
+					"filename": "FC3_Su25T\\DCS F15C THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_F-15C"
+				}
+			]
+		}
+	]
+}

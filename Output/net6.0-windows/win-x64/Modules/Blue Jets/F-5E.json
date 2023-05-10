@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "F-5E",
+			"tag": "F-5E-3",
+			"displayName": "F-5E Tiger II",
+			"fileName": "F-5E\\DCS F5E MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-5E"
+				},
+				{
+					"name": "WHKEY_F-5E",
+					"filename": "F-5E\\DCS F5E THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_F-5E"
+				}
+			]
+		},
+		{
+			"name": "F-5EHV",
+			"tag": "F-5E-3",
+			"displayName": "F-5E Tiger II Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS F5E MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_F-5E"
+				},
+				{
+					"name": "WHKEY_F-5E",
+					"filename": "F-5E\\DCS F5E THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_F-5E"
+				}
+			]
+		}
+	]
+}

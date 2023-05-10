@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Ka-50",
+			"displayName": "Ka-50 Black Shark",
+			"fileName": "Ka-50\\DCS BS2 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Ka-50"
+				},
+				{
+					"name": "WHKEY_Ka-50",
+					"filename": "Ka-50\\DCS BS2 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Ka-50"
+				}
+			]
+		},
+		{
+			"name": "Ka-50HV",
+			"displayName": "Ka-50 Black Shark Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Ka50 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Ka-50"
+				},
+				{
+					"name": "WHKEY_Ka-50",
+					"filename": "Ka-50\\DCS BS2 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Ka-50"
+				}
+			]
+		}
+	]
+}

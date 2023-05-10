@@ -2,26 +2,30 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
     <RootNamespace>MFDMFApp</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>MFDMFApp.Program</StartupObject>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Vyper Industries</Authors>
+    <Authors>Let's Go Brandon!</Authors>
     <Company>Vyper Industries</Company>
     <Product>Multi-Function Display Management Application</Product>
-    <Copyright>© 2018-2022</Copyright>
+    <Copyright>© 2018-2023</Copyright>
     <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
-    <Version>3.1.0</Version>
+    <Version>4.0.0</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageProjectUrl>https://github.com/ScottyMac52/MFDMF</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ScottyMac52/MFDMF</RepositoryUrl>
     <RepositoryType>GitHUb</RepositoryType>
-    <PackageTags>3.1</PackageTags>
-    <AssemblyVersion>3.1.0.0</AssemblyVersion>
-    <FileVersion>3.1.0.0</FileVersion>
+    <PackageTags>4.0</PackageTags>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

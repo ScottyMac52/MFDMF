@@ -1,0 +1,42 @@
+{
+	"modules": [
+		{
+			"name": "F-16C",
+			"tag": "F-16C_50",
+			"displayName": "F-16C Block 50 Viper",
+			"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Profile JPGs",
+			"fileName": "F-16C\\DCS F16C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Viper"
+				},
+				{
+					"name": "WHKEY_Viper",
+					"fileName": "F-16C\\DCS F16C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Viper"
+				}
+			]
+		},
+		{
+			"name": "F-16CHV",
+			"tag": "F-16C_50",
+			"displayName": "F-16C Block 50 Viper HiViz",
+			"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\Profile JPGs",
+			"fileName": "_High Contrast MFDs\\DCS F16C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Viper"
+				},
+				{
+					"name": "WHKEY_Viper",
+					"fileName": "F-16C\\DCS F16C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Viper"
+				}
+			]
+		}
+	]
+}

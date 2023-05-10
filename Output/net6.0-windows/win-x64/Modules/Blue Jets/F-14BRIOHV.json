@@ -1,0 +1,250 @@
+{
+	"modules": [
+		{
+			"name": "F-14RHV",
+			"tag": "F-14B",
+			"displayName": "F-14B Tomcat (RIO) Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS F14RIO MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_TomcatRIO",
+					"useAsSwitch": true,
+					"makeOpaque": true,
+					"subConfigDef": [
+						{
+							"name": "BIT",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 50,
+							"xOffsetFinish": 260,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "BIT_Selected",
+									"fileName": "~MFDisplay_Overlays\\red.png",
+									"width": 100,
+									"height": 30,
+									"left": 135,
+									"top": 635,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": false,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						},
+						{
+							"name": "SPL",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 325,
+							"xOffsetFinish": 535,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "SPL_Selected",
+									"fileName": "~MFDisplay_Overlays\\blue.png",
+									"width": 100,
+									"height": 30,
+									"left": 135,
+									"top": 605,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": true,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						},
+						{
+							"name": "NAV",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 590,
+							"xOffsetFinish": 800,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "NAV_Selected",
+									"fileName": "~MFDisplay_Overlays\\blue.png",
+									"width": 100,
+									"height": 30,
+									"left": 260,
+									"top": 605,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": true,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						},
+						{
+							"name": "TAC",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 860,
+							"xOffsetFinish": 1070,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "TAC_Selected",
+									"fileName": "~MFDisplay_Overlays\\green.png",
+									"width": 100,
+									"height": 35,
+									"left": 380,
+									"top": 605,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": true,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						},
+						{
+							"name": "DL",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 1125,
+							"xOffsetFinish": 1335,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "DL_Selected",
+									"fileName": "~MFDisplay_Overlays\\blue.png",
+									"width": 100,
+									"height": 30,
+									"left": 505,
+									"top": 605,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": true,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						},
+						{
+							"name": "TGT",
+							"fileName": "~MFDisplay_Overlays\\F14R LMFD_CAP_HiVis.jpg",
+							"width": 210,
+							"height": 469,
+							"center": true,
+							"xOffsetStart": 1380,
+							"xOffsetFinish": 1590,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 430,
+							"subConfigDef": [
+								{
+									"name": "TGT_Selected",
+									"fileName": "~MFDisplay_Overlays\\green.png",
+									"width": 100,
+									"height": 30,
+									"left": 625,
+									"top": 605,
+									"enabled": false,
+									"useAsSwitch": true,
+									"makeOpaque": true,
+									"opacity": 0.35,
+									"xOffsetStart": 0,
+									"xOffsetFinish": 100,
+									"yOffsetStart": 0,
+									"yOffsetFinish": 20
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "WHKEY_TomcatRIO",
+					"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-14\\DCS F14RIO WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-14\\DCS F14RIO HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_TomcatRIO",
+					"enabled": true,
+					"useAsSwitch": true,
+					"makeOpaque": true,
+					"subConfigDef": [
+						{
+							"name": "Flir",
+							"fileName": "~MFDisplay_Overlays\\F14R_RMFD_FLIR_HiVis.png",
+							"enabled": false,
+							"useAsSwitch": true,
+							"center": true,
+							"xOffsetStart": 0,
+							"xOffsetFinish": 380,
+							"yOffsetStart": 0,
+							"yOffsetFinish": 440
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "FC3_Su-25T",
+			"displayName": "Su-25T/Flaming Cliffs 3",
+			"fileName": "FC3_Su25T\\DCS FC3 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Su-25T"
+				},
+				{
+					"name": "WHKEY_Su-25T",
+					"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Su-25T"
+				}
+			]
+		},
+		{
+			"name": "Su-25THV",
+			"displayName": "Su-25T/FC3 HiViz",
+			"fileName": "_High Contrast MFDs\\DCS FC3 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Su-25T"
+				},
+				{
+					"name": "WHKEY_Su-25T",
+					"filename": "FC3_Su25T\\DCS Su25 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Su-25T"
+				}
+			]
+		}
+	]
+}

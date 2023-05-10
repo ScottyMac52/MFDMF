@@ -26,7 +26,7 @@
 			this.Closing += Configuration_Closing;
 		}
 
-		private void Configuration_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		private void Configuration_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if(_isDataDirty)
 			{
@@ -53,11 +53,14 @@
 		private void CheckBox_Click(object sender, RoutedEventArgs e)
 		{
 			var chkBox = sender as CheckBox;
-			var cmdParamnter = chkBox.CommandParameter.ToString();
-			var property = _settings.GetType().GetProperty(cmdParamnter);
-			if(property != null)
+			var cmdParameter = chkBox?.CommandParameter.ToString();
+			if(cmdParameter != null && chkBox != null)
 			{
-				property.SetValue(_settings, chkBox.IsChecked);
+				var property = _settings.GetType()?.GetProperty(cmdParameter);
+				if(property != null)
+				{
+					property.SetValue(_settings, chkBox.IsChecked);
+				}
 			}
 			UpdateButtonState();
 		}
@@ -83,7 +86,7 @@
 					if(!string.IsNullOrEmpty(propertyName))
 					{
 						var property = _settings.GetType().GetProperty(propertyName);
-						property.SetValue(_settings, txtBox.Text);
+						property?.SetValue(_settings, txtBox.Text);
 					}
 				}
 				UpdateButtonState();

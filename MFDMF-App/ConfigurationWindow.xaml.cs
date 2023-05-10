@@ -25,7 +25,7 @@ namespace MFDMFApp
 	{
 		#region fields and properties
 
-		private readonly ILogger _logger;
+		private readonly ILogger? _logger;
 		private readonly AppSettings _settings;
 		private readonly IEnumerable<IDisplayDefinition> _displayDefinitions;
 		private readonly IConfigurationProvider _configurationProvider;
@@ -37,13 +37,13 @@ namespace MFDMFApp
 		/// <summary>
 		/// Name of the selected subConfigurations
 		/// </summary>
-		public string SubConfigurationNames { get; set; }
+		public string? SubConfigurationNames { get; set; }
 		/// <summary>
 		/// Is the Window loaded?
 		/// </summary>
 		public bool IsWindowLoaded { get; protected set; }
 
-		private List<string> _selectedSubs => SubConfigurationNames?.Split('|')?.ToList();
+		private List<string>? _selectedSubs => SubConfigurationNames?.Split('|')?.ToList();
 
 		public IModuleDefinition ModuleDefinition { get; }
 		
@@ -54,17 +54,17 @@ namespace MFDMFApp
 		/// <summary>
 		/// AppData 
 		/// </summary>
-		public static string AppDataFolder => MainApp.AppDataFolder;
+		public static string? AppDataFolder => MainApp.AppDataFolder;
 		
 		/// <summary>
 		/// Saved games
 		/// </summary>
-		public static string SavedGamesFolder => MainApp.SavedGamesFolder;
+		public static string? SavedGamesFolder => MainApp.SavedGamesFolder;
 
 		/// <summary>
 		/// Cache folder for current Module
 		/// </summary>
-		public string CacheFolder => Path.Combine(AppDataFolder, Properties.Resources.BaseDataDirectory, "cache", Configuration.ModuleName);
+		public string CacheFolder => Path.Combine(AppDataFolder ?? "", Properties.Resources.BaseDataDirectory, "cache", Configuration.ModuleName);
 
 		#endregion Folder definitions
 
@@ -158,7 +158,7 @@ namespace MFDMFApp
 						gg.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 						gg.DrawImage(src, new Rectangle() { X = 0, Width = src.Width, Height = src.Height });
 						CreateCroppingRectangle(Configuration, gg);
-						_logger.LogInformation($"Using appFolder: {AppDataFolder}");
+						_logger?.LogInformation($"Using appFolder: {AppDataFolder}");
 						var cacheFile = Path.Combine(CacheFolder, $"{Configuration.Name}-Original.png");
 						originalBitmap.Save(cacheFile);
 					}
@@ -186,12 +186,12 @@ namespace MFDMFApp
 			if ((_settings.CreateKneeboard ?? false) && !string.IsNullOrEmpty(ModuleDefinition.DCSName))
 			{
 				using var img = System.Drawing.Image.FromFile(path);
-				var kneeBoardPath = Path.Combine(SavedGamesFolder, _settings.DcsSavedGamesPath, "Kneeboard", ModuleDefinition.DCSName);
+				var kneeBoardPath = Path.Combine(SavedGamesFolder ?? "", _settings.DcsSavedGamesPath, "Kneeboard", ModuleDefinition.DCSName);
 				var kneeBoardFile = Path.Combine(kneeBoardPath, $"{ModuleDefinition.DCSName}-{config.Name}.png");
 				if (!Directory.Exists(kneeBoardPath))
 				{
 					Directory.CreateDirectory(kneeBoardPath);
-					_logger.LogInformation($"Creating {kneeBoardPath}");
+					_logger?.LogInformation($"Creating {kneeBoardPath}");
 				}
 				if (!File.Exists(kneeBoardFile) || (_settings.TurnOffCache ?? false))
 				{
@@ -324,7 +324,7 @@ namespace MFDMFApp
 			{
 				displayDef = displayDefs.SingleOrDefault();
 			}
-			var relatedDisplays = _displayDefinitions.Where(dd => dd.Name.StartsWith(displayDef?.Name));
+			var relatedDisplays = _displayDefinitions.Where(dd => dd.Name.StartsWith(displayDef?.Name ?? ""));
 			if (relatedDisplays.Count() > 1)
 			{
 				// Get the display definition with the longest name

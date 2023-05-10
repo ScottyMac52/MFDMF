@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "L-39C",
+			"displayName": "L-39C Albatros",
+			"fileName": "L-39\\DCS L39C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_L-39"
+				},
+				{
+					"name": "WHKEY_L-39",
+					"filename": "L-39\\DCS L39 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_L-39"
+				}
+			]
+		},
+		{
+			"name": "L-39ZA",
+			"displayName": "L-39ZA Albatros",
+			"fileName": "L-39\\DCS L39ZA LMFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_L-39"
+				},
+				{
+					"name": "WHKEY_L-39",
+					"filename": "L-39\\DCS L39 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_L-39"
+				}
+			]
+		}
+	]
+}

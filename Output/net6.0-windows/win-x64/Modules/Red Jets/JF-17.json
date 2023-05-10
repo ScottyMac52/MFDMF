@@ -1,0 +1,130 @@
+{
+	"modules": [
+		{
+			"name": "JF-17",
+			"displayName": "JF-17 Thunder",
+			"fileName": "JF-17\\DCS JF17 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_JF-17"
+				},
+				{
+					"name": "WHKEY_JF-17",
+					"filename": "JF-17\\DCS JF17 THROTTLE.jpg",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "JF-17\\DCS JF17 WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 725,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": true,
+							"useAsSwitch": false,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "JF-17\\DCS JF17 HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 725,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": false,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "JOYKEY_UFCP",
+					"fileName": "JF-17\\DCS JF17 UFCP.jpg",
+					"enabled": true,
+					"width": 700,
+					"height": 540,
+					"xOffsetStart": 1,
+					"xOffsetFinish": 1533,
+					"yOffsetStart": 1,
+					"yOffsetFinish": 1080,
+					"opacity": 1.0
+				},
+				{
+					"name": "RMFD_JF-17"
+				}
+			]
+		},
+		{
+			"name": "JF-17HV",
+			"displayName": "JF-17 Thunder Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS JF17 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_JF-17"
+				},
+				{
+					"name": "WHKEY_JF-17",
+					"filename": "JF-17\\DCS JF17 THROTTLE.jpg",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "JF-17\\DCS JF17 WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 725,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": true,
+							"useAsSwitch": false,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "JF-17\\DCS JF17 HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 725,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": false,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "JOYKEY_UFCP",
+					"fileName": "JF-17\\DCS JF17 UFCP.jpg",
+					"enabled": true,
+					"width": 700,
+					"height": 540,
+					"xOffsetStart": 1,
+					"xOffsetFinish": 1533,
+					"yOffsetStart": 1,
+					"yOffsetFinish": 1080,
+					"opacity": 1.0
+				},
+				{
+					"name": "RMFD_JF-17"
+				}
+			]
+		}
+	]
+}
