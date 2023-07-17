@@ -188,7 +188,7 @@
             config.Top ??= currentDisplay.Top;
             config.Width ??= currentDisplay.Width;
             config.Height ??= currentDisplay.Height;
-            config.Enabled ??= arg.Enabled ?? config.Enabled ?? parentDef?.Enabled ?? false;
+            config.Enabled ??= (arg.Enabled ?? config.Enabled ?? parentDef?.Enabled ?? false) && (currentDisplay?.Enabled ?? true);
             config.UseAsSwitch ??= parentDef?.UseAsSwitch ?? false;
             config.ModuleName ??= arg?.ModuleName;
             config.FilePath ??= arg?.FilePath;

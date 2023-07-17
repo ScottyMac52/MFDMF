@@ -5,8 +5,8 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>false</PublishSingleFile>
-    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishReadyToRun>true</PublishReadyToRun>
     <RootNamespace>MFDMFApp</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
@@ -14,7 +14,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Let's Go Brandon!</Authors>
     <Company>Vyper Industries</Company>
-    <Product>Multi-Function Display Management Application</Product>
+    <Product>Multi-Function Display Management Framework</Product>
     <Copyright>© 2018-2023</Copyright>
     <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
@@ -27,6 +27,10 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
     <Nullable>enable</Nullable>
+    <Title>Multi-Function Display Management Framework</Title>
+    <Description>Multi-Function Display Management Framework requires elements of CTS to be installed in order to properly operate. Please see https://www.digitalcombatsimulator.com/en/files/3043393/ for information about CTS and installation instructions.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -47,7 +51,11 @@
     <OutputPath>..\Output</OutputPath>
   </PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup>
+		<PackageIcon>Resources\MFD.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
     <None Remove="A-10C.json" />
     <None Remove="A-4E.json" />
     <None Remove="AJS-37.json" />
@@ -393,6 +401,10 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -400,6 +412,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -474,5 +491,14 @@
     </Content>
   </ItemGroup>
 
-
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\MFD.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>

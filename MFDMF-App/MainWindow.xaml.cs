@@ -31,7 +31,7 @@ namespace MFDMFApp
 		/// <summary>
 		/// List of all created <see cref="ConfigurationWindow"/> Windows
 		/// </summary>
-		private SortedList<string, ConfigurationWindow>? _windowList;
+		private readonly SortedList<string, ConfigurationWindow>? _windowList;
 		/// <summary>
 		/// Currently selected Module
 		/// </summary>
@@ -88,28 +88,28 @@ namespace MFDMFApp
 		{
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			_logger?.LogWarning($"Creating configuration {_selectedModule?.DisplayName}");
-			_selectedModule?.Configurations?.ForEach(config =>
+
+			// select the enabled configurations for the module
+			var eneabledConfigurations = _selectedModule?.Configurations?.Where(config => config.Enabled == true)?.ToList();
+
+            eneabledConfigurations?.ForEach(config =>
 			{
-				if (config?.Enabled ?? false)
+#pragma warning disable CS8604 // Possible null reference argument.
+                var configWindow = new ConfigurationWindow(_selectedModule, config, _loggerFactory, _settings, _configurationProvider)
 				{
-					var configWindow = new ConfigurationWindow(_selectedModule, config, _loggerFactory, _settings, _configurationProvider)
-					{
-						SubConfigurationNames = _subModule
-					};
-					configWindow.Show();
-					if (configWindow.IsWindowLoaded)
-					{
-						_windowList?.Add(config.Name, configWindow);
-						configWindow.Visibility = Visibility.Visible;
-					}
-					else
-					{
-						configWindow?.Close();
-					}
+					SubConfigurationNames = _subModule
+				};
+#pragma warning restore CS8604 // Possible null reference argument.
+                configWindow.Show();
+				if (configWindow.IsWindowLoaded && configWindow.IsEnabled)
+				{
+					_windowList?.Add(config.Name, configWindow);
+					configWindow.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					_logger?.LogWarning($"Configuration: {config} Disabled");
+                    _logger?.LogWarning($"Configuration: {config} Disabled or there was a problem loading the window, see the log for more information.");
+                    configWindow?.Close();
 				}
 			});
 			watch.Stop();

@@ -80,14 +80,24 @@
 		protected static StartOptions GetStartOptions(string[] args)
 		{
 			StartOptions? startOptions = null;
-			Parser.Default.ParseArguments<StartOptions>(args).WithParsed(o =>
-			{
-				startOptions = new StartOptions()
+			string? errorResults = null;
+			Parser.Default.ParseArguments<StartOptions>(args)
+				.WithParsed(o =>
 				{
-					ModuleName = o.ModuleName,
-					SubModuleName = o.SubModuleName
-				};
-			});
+					startOptions = new StartOptions()
+					{
+						ModuleName = o.ModuleName,
+						SubModuleName = o.SubModuleName
+					};
+				})
+				.WithNotParsed(errors =>
+				{
+					errorResults = string.Join(Environment.NewLine, errors.Select(err => err.Tag));
+				});
+			if(!string.IsNullOrEmpty(errorResults))
+			{
+				Console.WriteLine(errorResults);
+			}
 			return startOptions ?? new StartOptions();
 		}
 

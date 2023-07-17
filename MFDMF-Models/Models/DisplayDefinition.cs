@@ -43,11 +43,13 @@
 			Width = copy.Width;
 			Height = copy.Height;
 			AlwaysOnTop = copy.AlwaysOnTop;
+			Enabled = copy.Enabled;
 		}
 
 		public DisplayDefinition(IConfigurationDefinition copy)
 		{
 			Name = copy.Name;
+			Enabled = copy.Enabled ?? true;
 			Left = copy.Left;
 			Top = copy.Top;
 			Width = copy.Width;
@@ -116,46 +118,57 @@
 		/// </summary>
 		[JsonProperty("useAsSwitch")]
 		public bool? UseAsSwitch { get; set; }
-		/// <summary>
-		/// Translucency of the image expressed as percentage of solidness 
-		/// </summary>
+
+        /// <inheritdoc/>
 		[JsonProperty("opacity")]
 		public float? Opacity { get; set; }
-		/// <summary>
-		/// Starting X position of the Crop
-		/// </summary>
+
+        /// <inheritdoc/>
 		[JsonProperty("xOffsetStart")]
 		public int? XOffsetStart { get; set; }
-		/// <summary>
-		/// Starting Y position of the Crop
-		/// </summary>
+
+        /// <inheritdoc/>
 		[JsonProperty("yOffsetStart")]
 		public int? YOffsetStart { get; set; }
-		/// <summary>
-		/// Ending X position of the Crop
-		/// </summary>
+
+        /// <inheritdoc/>
 		[JsonProperty("xOffsetFinish")]
 		public int? XOffsetFinish { get; set; }
-		/// <summary>
-		/// Ending Y position of the Crop
-		/// </summary>
-		[JsonProperty("yOffsetFinish")]
+
+        /// <inheritdoc/>
+        [JsonProperty("yOffsetFinish")]
 		public int? YOffsetFinish { get; set; }
-		
-		[JsonIgnore()]
+
+        /// <inheritdoc/>
+        [JsonIgnore()]
 		public bool? Center { get; set; }
-		public bool? MakeOpaque { get; set; }
-		[JsonIgnore()]
+
+        /// <inheritdoc/>
+        public bool? MakeOpaque { get; set; }
+
+        /// <inheritdoc/>
+        [JsonIgnore()]
 		public Point CroppingStart => this.YOffsetStart.HasValue && this.YOffsetStart.HasValue ? new Point(this.XOffsetStart.Value, this.YOffsetStart.Value) : new Point();
-		[JsonIgnore()]
+
+        /// <inheritdoc/>
+        [JsonIgnore()]
 		public Rectangle CroppingArea => this.XOffsetStart.HasValue && this.XOffsetFinish.HasValue && this.YOffsetStart.HasValue && this.YOffsetFinish.HasValue ? new Rectangle(CroppingStart, new Size(CroppedWidth, CroppedHeight)) : new Rectangle();
-		[JsonIgnore()]
+        
+		/// <inheritdoc/>
+        [JsonIgnore()]
 		public int CroppedWidth => this.XOffsetStart.HasValue && this.XOffsetFinish.HasValue ? Math.Abs(this.XOffsetFinish.Value - this.XOffsetStart.Value) : 0;
-		[JsonIgnore()]
+
+        /// <inheritdoc/>
+        [JsonIgnore()]
 		public int CroppedHeight => this.YOffsetStart.HasValue && this.YOffsetFinish.HasValue ? Math.Abs(this.YOffsetFinish.Value - this.YOffsetStart.Value) : 0;
 
-		[JsonProperty("alwaysOnTop")]
+        /// <inheritdoc/>
+        [JsonProperty("alwaysOnTop")]
 		public bool? AlwaysOnTop { get; set; }
+
+		/// <inheritdoc/>
+		[JsonProperty("enabled")]
+        public bool Enabled { get; set; } = true;
 
 		#endregion Image cropping properties IOffsetGeometry
 
@@ -185,6 +198,8 @@
 				hashCode += (Height?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Left?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Name?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
+				hashCode += Enabled.GetHashCode() * HASH_NUM;
+				hashCode += (AlwaysOnTop?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (UseAsSwitch?.GetHashCode() ?? 0) * HASH_NUM;
@@ -240,7 +255,7 @@
 		/// <returns></returns>
 		public string ToReadableString()
 		{
-			return $"{Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0})";
+			return $"{Enabled} - {Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0})";
 		}
 
 		#endregion Public overrides 

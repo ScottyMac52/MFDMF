@@ -117,6 +117,7 @@ namespace MFDMFApp
 				ToolTip = status;
 			}
 			Topmost = displayForConfig?.AlwaysOnTop ?? false;
+			IsEnabled = displayForConfig?.Enabled ?? true;
 			return true;
 		}
 

@@ -15,5 +15,12 @@ namespace MFDMF_Models.Interfaces
 		/// </summary>
 		[JsonProperty("alwaysOnTop")]
 		bool? AlwaysOnTop { get; set; }
+
+		/// <summary>
+		/// If false then disabled 
+		/// </summary>
+		/// <remarks>Should be implemented as true by default</remarks>
+		[JsonProperty("enabled")]
+		bool Enabled { get; set; }
 	}
 }
