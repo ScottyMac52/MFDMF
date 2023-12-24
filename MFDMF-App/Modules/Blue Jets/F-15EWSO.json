@@ -1,0 +1,60 @@
+{
+	"modules": [
+		{
+			"name": "F-15EW",
+			"tag": "F-15E",
+			"displayName": "F-15E Strike Eagle (WSO)",
+			"fileName": "F-15E\\DCS F15EWSO MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_StrikeEagleWSO",
+					"useAsSwitch": true,
+					"makeOpaque": true,
+				},
+				{
+					"name": "WHKEY_StrikeEagleWSO",
+					"fileName": "F-15E\\DCS F15EWSO THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EWSO WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EWSO HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true,
+							"makeOpaque": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_StrikeEagleWSO",
+					"enabled": true,
+					"makeOpaque": true
+				}
+			]
+		}
+	]
+}

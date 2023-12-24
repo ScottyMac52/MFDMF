@@ -352,3 +352,5 @@ MigrationBackup/
 /Output/net5.0
 /Output/net5.0-windows
 /.editorconfig
+/Output/net6.0-windows/win-x64
+/Output/net6.0-windows/win-x64
