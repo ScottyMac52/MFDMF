@@ -47,7 +47,7 @@
 					]
 				},
 				{
-					"name": "JOYKEY_UFCP",
+					"name": "JOYKEY_UF_CP",
 					"fileName": "JF-17\\DCS JF17 UFCP.jpg",
 					"enabled": true,
 					"width": 700,
@@ -110,7 +110,7 @@
 					]
 				},
 				{
-					"name": "JOYKEY_UFCP",
+					"name": "JOYKEY_UF_CP",
 					"fileName": "JF-17\\DCS JF17 UFCP.jpg",
 					"enabled": true,
 					"width": 700,

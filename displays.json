@@ -39,5 +39,19 @@
 		"yOffsetStart": 250,
 		"yOffsetFinish": 900,
 		"opacity": 1.0
+	},
+	{
+	"name": "F-18WH",
+	"opacity": 1.0,
+	"width": 550,
+	"height": 700,
+	"left": 482,
+	"top": 100,
+	"xOffsetStart": 1,
+	"xOffsetFinish": 1286,
+	"yOffsetStart": 1,
+	"yOffsetFinish": 1340,
+	"enabled": false,
+	"useAsSwitch": true
 	}
 ]

@@ -354,3 +354,4 @@ MigrationBackup/
 /.editorconfig
 /Output/net6.0-windows/win-x64
 /Output/net6.0-windows/win-x64
+/Output/net6.0/win-x64

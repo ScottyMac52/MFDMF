@@ -5,13 +5,11 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
-    <PublishReadyToRun>true</PublishReadyToRun>
     <RootNamespace>MFDMFApp</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>MFDMFApp.Program</StartupObject>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Let's Go Brandon!</Authors>
     <Company>Vyper Industries</Company>
     <Product>Multi-Function Display Management Framework</Product>
@@ -36,23 +34,29 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Output</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\Output</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\Output</OutputPath>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutputPath>..\Output</OutputPath>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
 	<PropertyGroup>
 		<PackageIcon>Resources\MFD.png</PackageIcon>
+		<IsPublishable>True</IsPublishable>
+		<BaseOutputPath>Output</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -76,6 +80,8 @@
     <None Remove="Modules\Blue Jets\F-14BRIO.json" />
     <None Remove="Modules\Blue Jets\F-14BRIOHV.json" />
     <None Remove="Modules\Blue Jets\F-15C.json" />
+    <None Remove="Modules\Blue Jets\F-15EPilot.json" />
+    <None Remove="Modules\Blue Jets\F-15EWSO.json" />
     <None Remove="Modules\Blue Jets\F-16C.json" />
     <None Remove="Modules\Blue Jets\F-18C.json" />
     <None Remove="Modules\Blue Jets\F-5E.json" />
@@ -120,6 +126,12 @@
     <Content Include="Modules\Blue Jets\F-14BRIOHV.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Modules\Blue Jets\F-15EPilot.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Modules\Blue Jets\F-15EWSO.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Modules\Blue Jets\T-45.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -139,7 +151,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="displays.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -168,7 +180,7 @@
     <PackageReference Include="Microsoft.NETCore.DotNetAppHost" Version="5.0.10" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 

@@ -13,10 +13,6 @@ namespace MFDMF_Models.Interfaces
         /// </summary>
         float? Opacity { get; set; }
         /// <summary>
-        /// If true then the superimposed bitmaps are solid 
-        /// </summary>
-        bool? MakeOpaque { get; set; }
-        /// <summary>
         /// Starting X position of the Crop
         /// </summary>
         int? XOffsetStart { get; set; }

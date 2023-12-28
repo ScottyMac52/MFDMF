@@ -44,6 +44,14 @@
 			Height = copy.Height;
 			AlwaysOnTop = copy.AlwaysOnTop;
 			Enabled = copy.Enabled;
+            XOffsetStart = copy.XOffsetStart;
+            XOffsetFinish = copy.XOffsetFinish;
+            YOffsetStart = copy.YOffsetStart;
+            YOffsetFinish = copy.YOffsetFinish;
+            UseAsSwitch = copy.UseAsSwitch;
+            Opacity = copy.Opacity;
+            Center = copy.Center;
+			ImageGeometry = copy.ImageGeometry;
 		}
 
 		public DisplayDefinition(IConfigurationDefinition copy)
@@ -144,9 +152,6 @@
 		public bool? Center { get; set; }
 
         /// <inheritdoc/>
-        public bool? MakeOpaque { get; set; }
-
-        /// <inheritdoc/>
         [JsonIgnore()]
 		public Point CroppingStart => this.YOffsetStart.HasValue && this.YOffsetStart.HasValue ? new Point(this.XOffsetStart.Value, this.YOffsetStart.Value) : new Point();
 
@@ -202,7 +207,7 @@
 				hashCode += (AlwaysOnTop?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
-				hashCode += (UseAsSwitch?.GetHashCode() ?? 0) * HASH_NUM;
+				hashCode += (UseAsSwitch?.GetHashCode() ?? false.GetHashCode()) * HASH_NUM;
 				hashCode += (Width?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (XOffsetFinish?.GetHashCode() ?? 0) * HASH_NUM;
 				hashCode += (XOffsetStart?.GetHashCode() ?? 0) * HASH_NUM;
@@ -255,7 +260,7 @@
 		/// <returns></returns>
 		public string ToReadableString()
 		{
-			return $"{Enabled} - {Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0})";
+			return $"{AlwaysOnTop}-{Enabled}-{UseAsSwitch?.ToString() ?? "False"}-{Opacity}-{Name} ({Left ?? 0}, {Top ?? 0}) ({Width ?? 0}, {Height ?? 0}), Offsets: (X:{XOffsetStart}, {XOffsetFinish}, Y:{YOffsetStart}, {YOffsetFinish})";
 		}
 
 		#endregion Public overrides 

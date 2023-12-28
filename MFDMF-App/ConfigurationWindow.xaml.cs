@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
 
 namespace MFDMFApp
 {
@@ -148,25 +149,6 @@ namespace MFDMFApp
             return imgMain;
 		}
 
-		private void SaveOriginalImageIfRequired(Bitmap src)
-		{
-			if (_settings?.SaveCroppedImages ?? false)
-			{
-				using (var originalBitmap = new Bitmap(src.Width, src.Height))
-				{
-					using (var gg = Graphics.FromImage(originalBitmap))
-					{
-						gg.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-						gg.DrawImage(src, new Rectangle() { X = 0, Width = src.Width, Height = src.Height });
-						CreateCroppingRectangle(Configuration, gg);
-						_logger?.LogInformation($"Using appFolder: {AppDataFolder}");
-						var cacheFile = Path.Combine(CacheFolder, $"{Configuration.Name}-Original.png");
-						originalBitmap.Save(cacheFile);
-					}
-				}
-			}
-		}
-
 		/// <summary>
 		/// Checks to see if the current configuration is statically selected or selected via command line logic
 		/// </summary>
@@ -177,31 +159,33 @@ namespace MFDMFApp
 			return (sc?.CheckForActiveSelectedSubConfiguration(_selectedSubs) ?? false) == true;
 		}
 
-		private void CreateCroppingRectangle(IConfigurationDefinition config, Graphics g)
-		{
-			g.DrawRectangle(Pens.Red, config.CroppingArea);
-		}
-
 		private void SaveFileAsKneeboardRefAsRequired(string path, IConfigurationDefinition config)
 		{
 			if ((_settings.CreateKneeboard ?? false) && !string.IsNullOrEmpty(ModuleDefinition.DCSName))
 			{
-				using var img = System.Drawing.Image.FromFile(path);
+				using var img = (Bitmap) System.Drawing.Image.FromFile(path);
 				var kneeBoardPath = Path.Combine(SavedGamesFolder ?? "", _settings.DcsSavedGamesPath, "Kneeboard", ModuleDefinition.DCSName);
 				var kneeBoardFile = Path.Combine(kneeBoardPath, $"{ModuleDefinition.DCSName}-{config.Name}.png");
-				if (!Directory.Exists(kneeBoardPath))
+                var origFile = Path.Combine(kneeBoardPath, $"ORIG_{ModuleDefinition.DCSName}-{config.Name}.png");
+                if (!Directory.Exists(kneeBoardPath))
 				{
 					Directory.CreateDirectory(kneeBoardPath);
 					_logger?.LogInformation($"Creating {kneeBoardPath}");
 				}
-				if (!File.Exists(kneeBoardFile) || (_settings.TurnOffCache ?? false))
+				if(File.Exists(origFile))
 				{
-					using var kneeBoardBitmap = new Bitmap(768, 1024, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-					using (var gk = Graphics.FromImage(kneeBoardBitmap))
+					File.Delete(origFile);
+				}
+              
+                img.Save(origFile);
+                if (!File.Exists(kneeBoardFile) || (_settings.TurnOffCache ?? false))
+				{
+					using var kneeBoardBitmap = new Bitmap(768, 1024, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                    using (var gk = Graphics.FromImage(kneeBoardBitmap))
 					{
 						var cropRect = config.CroppingArea;
-						gk.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-						gk.DrawImage(img, new Rectangle(0, 0, kneeBoardBitmap.Width, kneeBoardBitmap.Height), new Rectangle(new System.Drawing.Point(0, 0), new System.Drawing.Size(img.Width, img.Height)), GraphicsUnit.Pixel);
+						gk.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                        gk.DrawImage(img, new Rectangle(0, 0, kneeBoardBitmap.Width, kneeBoardBitmap.Height), new Rectangle(new System.Drawing.Point(0, 0), new System.Drawing.Size(img.Width, img.Height)), GraphicsUnit.Pixel);
 					}
 					kneeBoardBitmap.Save(kneeBoardFile);
 				}

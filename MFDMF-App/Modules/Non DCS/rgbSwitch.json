@@ -3,7 +3,7 @@
 		{
 			"name": "TestPattern_Switch",
 			"displayName": "Test Pattern with 3 switches",
-			"filePath": "C:\\Users\\Scott\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
+			"filePath": "C:\\Users\\%username%\\AppData\\Roaming\\Vyper Industries\\MFDMF\\TestPatterns",
 			"configurations": [
 				{
 					"name": "WHKEY_Switch",
@@ -15,8 +15,7 @@
 					"xOffsetFinish": 1024,
 					"yOffsetStart": 0,
 					"yOffsetFinish": 768,
-					"opacity": 0.75,
-					"makeOpaque": true,
+					"opacity": 1.0,
 					"subConfigDef": [
 						{
 							"name": "Red",
@@ -25,9 +24,9 @@
 							"height": 600,
 							"opacity": 1.0,
 							"xOffsetStart": 0,
-							"xOffsetFinish": 1024,
+							"xOffsetFinish": 1,
 							"yOffsetStart": 0,
-							"yOffsetFinish": 768,
+							"yOffsetFinish": 1,
 							"enabled": false,
 							"useAsSwitch": true,
 							"center": true
@@ -37,10 +36,11 @@
 							"fileName": "green.png",
 							"width": 800,
 							"height": 600,
+							"opacity": 1.0,
 							"xOffsetStart": 0,
-							"xOffsetFinish": 1024,
+							"xOffsetFinish": 1,
 							"yOffsetStart": 0,
-							"yOffsetFinish": 768,
+							"yOffsetFinish": 1,
 							"enabled": false,
 							"useAsSwitch": true,
 							"center": true
@@ -50,10 +50,11 @@
 							"fileName": "blue.png",
 							"width": 800,
 							"height": 600,
+							"opacity": 1.0,
 							"xOffsetStart": 0,
-							"xOffsetFinish": 1024,
+							"xOffsetFinish": 1,
 							"yOffsetStart": 0,
-							"yOffsetFinish": 768,
+							"yOffsetFinish": 1,
 							"enabled": false,
 							"useAsSwitch": true,
 							"center": true

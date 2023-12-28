@@ -3,7 +3,6 @@
 		{
 			"name": "SW_Sqns",
 			"displayName": "Star Wars Squadrons",
-			"filePath": "E:\\HOTAS\\Windows\\CTS\\TARGET Profiles\\CTS_Windows\\Docs\\Profile JPGs",
 			"fileName": "SW_Sqns\\SW_Sqns MFD.jpg",
 			"configurations": [
 				{
@@ -21,7 +20,6 @@
 		{
 			"name": "SW_SqnsHV",
 			"displayName": "Star Wars Squadrons Hi Viz",
-			"filePath": "E:\\HOTAS\\Windows\\CTS\\TARGET Profiles\\CTS_Windows\\Docs\\Profile JPGs",
 			"fileName": "_High Contrast MFDs\\SW_Sqns MFD HiVis.jpg",
 			"configurations": [
 				{

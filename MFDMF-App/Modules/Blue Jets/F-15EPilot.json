@@ -3,106 +3,72 @@
 		{
 			"name": "F-15EP",
 			"tag": "F-15E",
-			"displayName": "F-15E Strike Eagle (Pilot)",
+			"displayName": "F-15E Mud Hen (Pilot)",
 			"fileName": "F-15E\\DCS F15EPlt MFD.jpg",
 			"configurations": [
 				{
-					"name": "LMFD_StrikeEaglePILOT",
-					"enabled": true
+					"name": "LMFD_MudHenPILOT"
 				},
 				{
-					"name": "WHKEY_StrikeEaglePILOT",
+					"name": "WHKEY_MudHenPILOT",
 					"fileName": "F-15E\\DCS F15EPlt THROTTLE.JPG",
 					"subConfigDef": [
 						{
 							"name": "F-18WH",
 							"fileName": "F-15E\\DCS F15EPlt WHH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"enabled":  false
 						},
 						{
 							"name": "F-18HC",
 							"fileName": "F-15E\\DCS F15EPlt HCH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"enabled": false
 						}
 					]
 				},
 				{
-					"name": "RMFD_StrikeEaglePILOT",
-					"enabled": true
+					"name": "RMFD_MudHenPILOT"
 				}
 			]
 		},
 		{
 			"name": "F-15EPHV3",
 			"tag": "F-15E",
-			"displayName": "F-15E Strike Eagle (Pilot) Hi Viz",
+			"displayName": "F-15E Mud Hen (Pilot) Hi Viz MFD 4",
 			"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD HiVis.jpg",
 			"configurations": [
 				{
-					"name": "LMFD_StrikeEaglePILOT"
+					"name": "LMFD_MudHenPILOT"
 				},
 				{
-					"name": "WHKEY_StrikeEaglePILOT",
+					"name": "WHKEY_MudHenPILOT",
 					"fileName": "F-15E\\DCS F15EPlt THROTTLE.JPG",
 					"subConfigDef": [
 						{
 							"name": "F-18WH",
 							"fileName": "F-15E\\DCS F15EPlt WHH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"enabled": false
 						},
 						{
 							"name": "F-18HC",
 							"fileName": "F-15E\\DCS F15EPlt HCH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"enabled": false
 						}
 					]
 				},
 				{
-					"name": "RMFD_StrikeEaglePILOT"
+					"name": "RMFD_MudHenPILOT"
+				},
+				{
+					"name": "MFD3_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD3 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD3 HiVis.jpg"
 				}
 			]
 		}

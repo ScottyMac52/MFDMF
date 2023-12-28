@@ -9,7 +9,6 @@
 				{
 					"name": "LMFD_TomcatRIO",
 					"useAsSwitch": true,
-					"makeOpaque": true,
 					"subConfigDef": [
 						{
 							"name": "BIT",
@@ -31,7 +30,6 @@
 									"top": 635,
 									"enabled": false,
 									"useAsSwitch": true,
-									"makeOpaque": false,
 									"opacity": 0.35,
 									"xOffsetStart": 0,
 									"xOffsetFinish": 100,
@@ -190,6 +188,7 @@
 				{
 					"name": "WHKEY_TomcatRIO",
 					"fileName": "F-14\\DCS F14RIO THROTTLE.JPG",
+					"makeOpaque": false,
 					"subConfigDef": [
 						{
 							"name": "F-18WH",
@@ -205,7 +204,7 @@
 							"yOffsetFinish": 1340,
 							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"makeOpaque": false
 						},
 						{
 							"name": "F-18HC",
@@ -221,7 +220,7 @@
 							"yOffsetFinish": 1340,
 							"enabled": false,
 							"useAsSwitch": true,
-							"makeOpaque": true
+							"makeOpaque": false
 						}
 					]
 				},

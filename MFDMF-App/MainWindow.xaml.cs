@@ -336,7 +336,7 @@ namespace MFDMFApp
 
 		private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(MainApp.VersionString);
+			MessageBox.Show(MainApp.VersionString, "Help->About");
 		}
 
 		/// <summary>

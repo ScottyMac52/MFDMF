@@ -25,18 +25,14 @@
 			"fileName": "_High Contrast MFDs\\DCS A4E MFD HiVis.jpg",
 			"configurations": [
 				{
-					"name": "LMFD_Skyhawk",
-					"makeOpaque": true,
-					"center": true
+					"name": "LMFD_Skyhawk"
 				},
 				{
 					"name": "WHKEY_Skyhawk",
-					"fileName": "A-4E\\DCS A4E THROTTLE.JPG",
-					"makeOpaque": true
+					"fileName": "A-4E\\DCS A4E THROTTLE.JPG"
 				},
 				{
-					"name": "RMFD_Skyhawk",
-					"makeOpaque": true
+					"name": "RMFD_Skyhawk"
 				}
 			]
 		}

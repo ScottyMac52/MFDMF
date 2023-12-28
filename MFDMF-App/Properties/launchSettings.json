@@ -2,7 +2,7 @@
   "profiles": {
     "MFDMFApp": {
       "commandName": "Project",
-      "commandLineArgs": "-m \"F-14RHV\" -s \"SPL|Flir|F-18WH\""
+      "commandLineArgs": "-m \"FA-18CHV3\" -s \"F-18WH\""
     }
   }
 }

@@ -1,15 +1,20 @@
 [
 	{
 		"name": "Main",
-		"width": 1920,
-		"height": 1080
+		"width": 2560,
+		"height": 1440
+	},
+	{
+		"name": "Aux",
+		"width": 2560,
+		"height": 1440
 	},
 	{
 		"name": "LMFD",
-		"width": 350,
-		"height": 350,
-		"left": 0,
-		"top": 351,
+		"width": 600,
+		"height": 600,
+		"left": 2561,
+		"top": 0,
 		"xOffsetStart": 101,
 		"xOffsetFinish": 776,
 		"yOffsetStart": 250,
@@ -17,10 +22,46 @@
 		"opacity": 1.0
 	},
 	{
+		"name": "RMFD",
+		"width": 600,
+		"height": 600,
+		"left": 3161,
+		"top": 0,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
+		"name": "MFD3",
+		"width": 600,
+		"height": 600,
+		"left": 2561,
+		"top": 601,
+		"xOffsetStart": 101,
+		"xOffsetFinish": 776,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
+		"name": "MFD4",
+		"width": 600,
+		"height": 600,
+		"left": 3161,
+		"top": 601,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
+	},
+	{
 		"name": "WHKEY",
-		"width": 350,
-		"height": 350,
-		"left": 0,
+		"width": 1200,
+		"height": 1200,
+		"left": 3761,
 		"top": 0,
 		"xOffsetStart": 0,
 		"yOffsetStart": 0,
@@ -29,15 +70,52 @@
 		"opacity": 1.0
 	},
 	{
-		"name": "RMFD",
-		"width": 350,
-		"height": 350,
-		"left": 0,
-		"top":  701,
-		"xOffsetStart": 903,
-		"xOffsetFinish": 1576,
-		"yOffsetStart": 250,
-		"yOffsetFinish": 900,
+		"name": "CDU",
+		"left": 400,
+		"enabled": true,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 694,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 352,
 		"opacity": 1.0
+	},
+	{
+		"name": "UFC",
+		"left": 400,
+		"top": 400,
+		"enabled": true,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1730,
+		"yOffsetStart": 590,
+		"yOffsetFinish": 990,
+		"opacity": 1.0
+	},
+	{
+		"name": "F-18WH",
+		"opacity": 1.0,
+		"width": 550,
+		"height": 700,
+		"left": 482,
+		"top": 100,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1286,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 1340,
+		"enabled": false,
+		"useAsSwitch": true
+	},
+	{
+		"name": "F-18HC",
+		"opacity": 1.0,
+		"width": 650,
+		"height": 800,
+		"left": 550,
+		"top": 100,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1286,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 1340,
+		"enabled": false,
+		"useAsSwitch": true
 	}
 ]

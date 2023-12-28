@@ -26,7 +26,12 @@ namespace MFDMF_Services
 		private readonly AppSettings _settings;
 		private readonly IEnumerable<IDisplayDefinition> _displayDefinitions;
 
-		public IEnumerable<IDisplayDefinition> DisplayDefinitions => _displayDefinitions;
+        /// <summary>
+        /// Gets the Users Saved games folder
+        /// </summary>
+        private static string SavedGamesFolder => GetSpecialFolder("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}", Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", "SavedGames"));
+
+        public IEnumerable<IDisplayDefinition> DisplayDefinitions => _displayDefinitions;
 
 		private string _cacheFolder; 
 
@@ -116,12 +121,13 @@ namespace MFDMF_Services
 				}
 				else
 				{
-					currentConfig = (Bitmap)mainImage.Clone();
+					var graphicsUnit = GraphicsUnit.Pixel;
+                    currentConfig = (Bitmap)mainImage.Clone(mainImage.GetBounds(ref graphicsUnit), PixelFormat.Format24bppRgb);
 					if (imageDictionary.TryGetValue(key, out var sourceImage))
 					{
 						using (var g = Graphics.FromImage(currentConfig))
 						{
-							g.CompositingMode = CompositingMode.SourceOver;
+                            g.CompositingMode = CompositingMode.SourceOver;
 							var newLocation = (subConfig.Center ?? false) ? subConfig.GetCenterTo(config) : new Point(subConfig.Left ?? config.Left ?? 0, subConfig.Top ?? config.Top ?? 0);
 							var croppingArea = new Rectangle(newLocation, new Size(subConfig.Width ?? 0, subConfig.Height ?? 0));
 							_logger.LogDebug($"Using image: {key} to paint configuration {subConfig.Name} for {subConfig}");
@@ -150,13 +156,21 @@ namespace MFDMF_Services
 				bitmapDictionary.Add(key, bitMapCache);
 			});
 
-			if (!cacheFileExists || forceReload)
+			try
 			{
-				using var graphics = Graphics.FromImage(mainImage);
-				CreateRulersAsRequired(config, graphics);
-				_logger.LogDebug($"Creating cache file {cacheFile}");
-				mainImage.Save($"{fileTemplate}.png");
+				if (!cacheFileExists || forceReload)
+				{
+					using var graphics = Graphics.FromImage(mainImage);
+					CreateRulersAsRequired(config, graphics);
+					_logger.LogDebug($"Creating cache file {cacheFile}");
+					mainImage.Save($"{fileTemplate}.png");
+				}
 			}
+			catch (Exception ex)
+			{
+				_logger.LogCritical(ex, $"********* MODULE {module} ********** FILE {cacheFile}");
+			}
+			
 			var bitMapCache = new ImageDefinition() { Bitmap = mainImage, CacheFile = cacheFile, Key = key };
 			bitmapDictionary.Add(key, bitMapCache);
 			var mainKey = $"{module.ModuleName}-{config.Name}";
@@ -208,12 +222,9 @@ namespace MFDMF_Services
 			}
 		}
 
-
-		// public Dictionary<string, ImageDefinition> 
-
 		private void CheckCacheFolder(IModuleName moduleName)
 		{
-			_cacheFolder = Path.Combine(GetSpecialFolder("AppData", null), "Vyper Industries", "MFDMF", "cache", moduleName.ModuleName);
+			_cacheFolder = Path.Combine(SavedGamesFolder, "Vyper Industries", "MFDMF", "cache", moduleName.ModuleName);
 			if (!Directory.Exists(_cacheFolder))
 			{
 				_logger?.LogWarning($"Creating directory: {_cacheFolder}");
@@ -221,17 +232,18 @@ namespace MFDMF_Services
 			}
 		}
 
-		/// <summary>
-		/// Crops the src <see cref="Bitmap"/> using the configuration <see cref="IConfigurationDefinition"/>
-		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="config"></param>
-		/// <returns></returns>
-		private Bitmap Crop(Bitmap src, IDisplayGeometry displayGeometry, IOffsetGeometry cropping)
+
+        /// <summary>
+        /// Crops the src <see cref="Bitmap"/> using the configuration <see cref="IConfigurationDefinition"/>
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private Bitmap Crop(Bitmap src, IDisplayGeometry displayGeometry, IOffsetGeometry cropping)
 		{
 			var cropRect = new Rectangle(cropping.CroppingStart, new Size(cropping.CroppedWidth, cropping.CroppedHeight));
 			_logger.LogDebug($"Creating bitmap {displayGeometry?.Width ?? 0} * {displayGeometry?.Height ?? 0}");
-			var newBitmap = new Bitmap(displayGeometry?.Width ?? 0, displayGeometry?.Height ?? 0, PixelFormat.Format32bppArgb);
+			var newBitmap = new Bitmap(displayGeometry?.Width ?? cropping.CroppedWidth, displayGeometry?.Height ?? cropping.CroppedHeight, PixelFormat.Format24bppRgb);
 			using (var g = Graphics.FromImage(newBitmap))
 			{
 				var matrix = new ColorMatrix
@@ -242,16 +254,10 @@ namespace MFDMF_Services
 				imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect.Left, cropRect.Top, cropRect.Width, cropRect.Height, GraphicsUnit.Pixel, imageAttributes);
 			}
-
-			if (!(cropping.MakeOpaque ?? false))
-			{
-				newBitmap.MakeTransparent(Color.White);
-			}
-
 			return newBitmap;
 		}
 
-		private string GetSpecialFolder(string folderName, string defaultValue = null)
+		private static string GetSpecialFolder(string folderName, string defaultValue = null)
 		{
 			var regKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
 			var regKeyValue = folderName;
@@ -293,11 +299,12 @@ namespace MFDMF_Services
 			string filePath, fileSource;
 			var imageDictionary = new Dictionary<string, Bitmap>();
 			(filePath, fileSource) = GetImageFilename(configurationDefinition, throttleKey, hotasKey);
-			_logger?.LogInformation($"Loading file: {fileSource} for Configuration {configurationDefinition.ModuleName}-{configurationDefinition.Name}");
-			var bitMap = (Bitmap)Image.FromFile(fileSource);
+			_logger?.LogInformation($"Loading file: {fileSource} for Configuration {configurationDefinition.ModuleName}-{configurationDefinition.Name} Throttle:{throttleKey} HOTAS:{hotasKey}");
+			var bitMap = (Bitmap)Image.FromFile(fileSource, true);
 			var key = $"{configurationDefinition.ModuleName}-{configurationDefinition.Name}";
 			using var croppedBitmap = Crop(bitMap, configurationDefinition, configurationDefinition);
-			imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone());
+			var pageUnit = GraphicsUnit.Pixel;
+			imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone(croppedBitmap.GetBounds(ref pageUnit), PixelFormat.Format24bppRgb));
 			var currentConfig = configurationDefinition;
 
 			ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>

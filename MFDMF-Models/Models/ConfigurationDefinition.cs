@@ -52,7 +52,6 @@
             Height = dc.Height;
             Center = dc.Center;
             Opacity = dc.Opacity;
-            MakeOpaque = dc.MakeOpaque;
             XOffsetStart = dc.XOffsetStart;
             XOffsetFinish = dc.XOffsetFinish;
             YOffsetStart = dc.YOffsetStart;
@@ -201,11 +200,6 @@
         /// </summary>
         [JsonProperty("top")]
         public int? Top { get; set; }
-        /// <summary>
-        /// If true then the superimposed bitmap is opaque
-        /// </summary>
-        [JsonProperty("makeOpaque")]
-        public bool? MakeOpaque { get; set; }
 
         #endregion Basic Image Properties Center, Left, Top, Width, Height and Opacity
 
@@ -340,7 +334,6 @@
             hashCode += (Top?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Center?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Enabled?.GetHashCode() ?? 0) * HASH_NUM;
-            hashCode += (MakeOpaque?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (Opacity?.GetHashCode() ?? 0) * HASH_NUM;
             hashCode += (RulerName?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
             hashCode += (ThrottleType?.ToHashCode(HASH_START) ?? 0) * HASH_NUM;
@@ -371,7 +364,7 @@
             var position = $"{Left ?? 0}-{Top ?? 0}-{Width ?? 0}-{Height ?? 0}";
             var offsetCoord = $"{(XOffsetStart ?? 0)}-{(YOffsetStart ?? 0)}";
             var offSetSize = $"{(XOffsetFinish ?? 0)-(XOffsetStart ?? 0)}-{(YOffsetFinish ?? 0)-(YOffsetStart ?? 0)}";
-            var imagePrefix = $"{Parent?.Name ?? ""}-{fileName}-{Name}-{offsetCoord}-{offSetSize}-{position}-{Opacity ?? 1.0F}-{MakeOpaque ?? false}-{Center ?? false}-{ThrottleType}-{RulerName}";
+            var imagePrefix = $"{Parent?.Name ?? ""}-{fileName}-{Name}-{offsetCoord}-{offSetSize}-{position}-{Opacity ?? 1.0F}-{Center ?? false}-{ThrottleType}-{RulerName}";
             return imagePrefix;
         }
 

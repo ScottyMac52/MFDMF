@@ -4,7 +4,6 @@
 		{
 			"name": "CTSProf3",
 			"displayName": "CTS Windows Configuration Profile",
-			"filePath": "E:\\HOTAS\\Windows\\CTS\\TARGET Profiles\\CTS_Windows\\Docs\\Profile JPGs\\CTSProfile",
 			"fileName": "LMFD_CTSProfile.jpg",
 			"configurations": [
 				{
@@ -16,7 +15,6 @@
 				},
 				{
 					"name": "WHKEY_CTSProf",
-					"filePath": "E:\\HOTAS\\TARGET\\CTS\\Docs\\HTML\\gfx",
 					"fileName": "vr_hotas_sel.jpg",
 					"xOffsetStart": 0,
 					"xOffsetFinish": 1449,

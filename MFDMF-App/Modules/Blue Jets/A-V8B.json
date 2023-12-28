@@ -26,8 +26,7 @@
 							"yOffsetStart": 1,
 							"yOffsetFinish": 1340,
 							"enabled": false,
-							"useAsSwitch": true,
-							"makeOpaque": true
+							"useAsSwitch": true
 						},
 						{
 							"name": "F-18HC",
@@ -42,16 +41,14 @@
 							"yOffsetStart": 1,
 							"yOffsetFinish": 1340,
 							"enabled": false,
-							"useAsSwitch": true,
-							"makeOpaque": true
+							"useAsSwitch": true
 						}
 					]
 				},
 				{
-					"name": "JOYKEY_ODU",
+					"name": "JOYKEY_ODUAV8",
 					"filename": "AV-8B\\DCS AV8B UFC.jpg",
 					"enabled": true,
-					"makeOpaque": true,
 					"opacity": 1.0,
 					"width": 375,
 					"height": 185,
@@ -61,10 +58,9 @@
 					"yOffsetFinish": 255
 				},
 				{
-					"name": "JOYKEY_UFC",
+					"name": "JOYKEY_AV8_U_FC",
 					"filename": "AV-8B\\DCS AV8B UFC.jpg",
 					"enabled": true,
-					"makeOpaque": true,
 					"opacity": 1.0,
 					"width": 515,
 					"height": 500,

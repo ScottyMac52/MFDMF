@@ -3,58 +3,68 @@
 		{
 			"name": "F-15EW",
 			"tag": "F-15E",
-			"displayName": "F-15E Strike Eagle (WSO)",
+			"displayName": "F-15E Mud Hen (WSO)",
 			"fileName": "F-15E\\DCS F15EWSO MFD.jpg",
 			"configurations": [
 				{
-					"name": "LMFD_StrikeEagleWSO",
-					"useAsSwitch": true,
-					"makeOpaque": true,
+					"name": "LMFD_MudHenWSO"
 				},
 				{
-					"name": "WHKEY_StrikeEagleWSO",
+					"name": "WHKEY_MudHenWSO",
 					"fileName": "F-15E\\DCS F15EWSO THROTTLE.JPG",
 					"subConfigDef": [
 						{
 							"name": "F-18WH",
-							"fileName": "F-15E\\DCS F15EWSO WHH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
-							"useAsSwitch": true,
-							"makeOpaque": true
+							"fileName": "F-15E\\DCS F15EWSO WHH.jpg"
 						},
 						{
 							"name": "F-18HC",
-							"fileName": "F-15E\\DCS F15EWSO HCH.jpg",
-							"opacity": 1.0,
-							"width": 650,
-							"height": 800,
-							"left": 550,
-							"top": 100,
-							"xOffsetStart": 1,
-							"xOffsetFinish": 1286,
-							"yOffsetStart": 1,
-							"yOffsetFinish": 1340,
-							"enabled": false,
-							"useAsSwitch": true,
-							"makeOpaque": true
+							"fileName": "F-15E\\DCS F15EWSO HCH.jpg"
 						}
 					]
 				},
 				{
-					"name": "RMFD_StrikeEagleWSO",
-					"enabled": true,
-					"makeOpaque": true
+					"name": "RMFD_MudHenWSO"
 				}
 			]
+		},
+		{
+			"name": "F-15EW3",
+			"tag": "F-15E",
+			"displayName": "F-15E Mud Hen (WSO) MFD 4",
+			"fileName": "_High Contrast MFDs\\DCS F15EWSO MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MudHenWSO"
+				},
+				{
+					"name": "WHKEY_MudHenWSO",
+					"fileName": "F-15E\\DCS F15EWSO THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EWSO WHH.jpg"
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EWSO HCH.jpg"
+						}
+					]
+				},
+				{
+					"name": "RMFD_MudHenWSO"
+				},
+				{
+					"name": "MFD3_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EWso MFD4 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EWso MFD4 HiVis.jpg"
+				}
+
+			]
 		}
+
 	]
 }

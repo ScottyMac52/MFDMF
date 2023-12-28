@@ -176,8 +176,8 @@
 			var productAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
 			var copyrightAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute;
 			var companyAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyCompanyAttribute)) as AssemblyCompanyAttribute;
-			var versionAttribute = exeAssem.GetCustomAttributes().FirstOrDefault(ca => ca.GetType() == typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-			return $"{productAttribute?.Product} Copyright {companyAttribute?.Company} {copyrightAttribute?.Copyright} version {versionAttribute?.InformationalVersion}";
+			var versionAttribute = exeAssem.GetName().Version;
+			return $"{productAttribute?.Product}{Environment.NewLine}{companyAttribute?.Company}{Environment.NewLine}{copyrightAttribute?.Copyright}{Environment.NewLine}{versionAttribute}";
 		}
 
 		/// <summary>

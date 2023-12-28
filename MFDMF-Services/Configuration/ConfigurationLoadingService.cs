@@ -141,7 +141,7 @@
 
                             _logger.LogDebug($"Configuration: {currentSubConfig.Name} using {currentSubDisplay?.Name ?? "Scratch"} Using file: {currentSubConfig?.FileName ?? "None"} Size: ({currentSubConfig.Width ?? 0},{currentSubConfig.Height ?? 0}) Location: ({currentSubConfig.Left ?? 0}, {currentSubConfig.Top ?? 0})");
                             _logger.LogDebug($"Cropping offsets: ({currentSubConfig.XOffsetStart ?? 0}, {currentSubConfig.YOffsetStart ?? 0}) to ({currentSubConfig.XOffsetFinish ?? 0}, {currentSubConfig.YOffsetFinish ?? 0}) Opacity: {currentSubConfig.Opacity}");
-                            _logger.LogDebug($"Image properties: UseAsSwitch: {currentSubConfig.UseAsSwitch ?? false} MakeOpaque: {currentSubConfig.MakeOpaque ?? false} Enabled: {currentSubConfig.Enabled ?? false}");
+                            _logger.LogDebug($"Image properties: UseAsSwitch: {currentSubConfig.UseAsSwitch ?? false} Enabled: {currentSubConfig.Enabled ?? false}");
                         });
                     });
                 }
@@ -166,7 +166,7 @@
 			{
                 // Get any of the displays where the configuration name contains their name
                 var currentDisplays = displays?.Where(dd => dd.Name == config?.Name || (config?.Name?.Contains(dd.Name, StringComparison.CurrentCulture) ?? false));
-                if (currentDisplays.Count() == 0)
+                if (!currentDisplays.Any())
                 {
                     currentDisplay = new DisplayDefinition(config);
                 }
@@ -193,7 +193,6 @@
             config.ModuleName ??= arg?.ModuleName;
             config.FilePath ??= arg?.FilePath;
             config.FileName ??= arg?.FileName;
-            config.MakeOpaque ??= false;
             config.Center ??= false;
             config.Opacity ??= currentDisplay?.Opacity ?? 1.0F;
             config.RulerName = (_settings.ShowRulers ?? false) ? $"Ruler-{_settings.RulerSize ?? 0}" : null;

@@ -19,7 +19,6 @@
 				{
 					"name": "JOYKEY_NADIR",
 					"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
-					"makeOpaque": true,
 					"enabled": true,
 					"left": 10,
 					"width": 600,
@@ -51,7 +50,6 @@
 				{
 					"name": "JOYKEY_NADIR",
 					"fileName": "SA-342\\SA342 NADIR Keypad.jpg",
-					"makeOpaque": true,
 					"enabled": true,
 					"left": 10,
 					"width": 600,
