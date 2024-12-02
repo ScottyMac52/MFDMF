@@ -52,7 +52,7 @@
 			});
 			_loggerFactory = Host.Services.GetRequiredService<ILoggerFactory>();
 			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
-			_logger?.LogInformation($"Starting {GetVersionString()}");
+			_logger.LogInformation($"Starting {GetVersionString()}");
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
 		}
 
@@ -132,7 +132,10 @@
 			_logger?.LogSystemShutdown(e?.ApplicationExitCode ?? 0);
 			using (Host)
 			{
-				await Host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(true);
+				if (Host != null)
+				{
+					await Host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(true);
+				}
 			}
 			base.OnExit(e);
 		}

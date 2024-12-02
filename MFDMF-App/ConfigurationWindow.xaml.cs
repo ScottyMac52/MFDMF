@@ -80,11 +80,11 @@ namespace MFDMFApp
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> used to create the <see cref="ILogger"/></param>
 		/// <param name="settings">The <see cref="AppSettings"/> for the application</param>
 		/// <param name="configurationProvider"></param>
-		public ConfigurationWindow(IModuleDefinition module, IConfigurationDefinition configurationDefinition, ILoggerFactory loggerFactory, AppSettings settings, IConfigurationProvider configurationProvider)
+		public ConfigurationWindow(IModuleDefinition module, IConfigurationDefinition configurationDefinition, AppSettings settings, IConfigurationProvider configurationProvider, ILogger<ConfigurationWindow>? logger = null)
 		{
 			ModuleDefinition = module;
 			_settings = settings;
-			_logger = loggerFactory?.CreateLogger(typeof(ConfigurationWindow));
+			_logger = logger;
 			Configuration = configurationDefinition;
 			_configurationProvider = configurationProvider;
 			ImageDictionary = _configurationProvider.LoadConfigurationImages(module, configurationDefinition, Properties.Resources.THROTTLEKEY, Properties.Resources.HOTASKEY);
@@ -170,8 +170,8 @@ namespace MFDMFApp
                 if (!Directory.Exists(kneeBoardPath))
 				{
 					Directory.CreateDirectory(kneeBoardPath);
-					_logger?.LogInformation($"Creating {kneeBoardPath}");
-				}
+                    _logger?.LogInformation($"Creating {kneeBoardPath}");
+                }
 				if(File.Exists(origFile))
 				{
 					File.Delete(origFile);

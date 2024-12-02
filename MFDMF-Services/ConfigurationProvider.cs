@@ -100,12 +100,16 @@ namespace MFDMF_Services
 			var bitmapDictionary = new Dictionary<string, ImageDefinition>();
 			CheckCacheFolder(module);
 			var imageDictionary = LoadBitmaps(config, throttleKey, hotasKey);
+#pragma warning disable CA1416 // Validate platform compatibility
 			_logger.LogInformation($"Configuration: {config.Name} has {imageDictionary.Count} images.");
+#pragma warning restore CA1416 // Validate platform compatibility
 			var fileTemplate = Path.Combine(_cacheFolder, $"{config.GetImagePrefix(new List<string>() { })}");
 			var cacheFile = $"{fileTemplate}.png";
 			var cacheFileExists = File.Exists(cacheFile);
 			var key = $"{module.ModuleName}-{config.Name}";
+#pragma warning disable CA1416 // Validate platform compatibility
 			imageDictionary.TryGetValue(key, out var mainImage);
+#pragma warning restore CA1416 // Validate platform compatibility
 			_logger.LogDebug($"Processing image {key}");
 
 			config?.SubConfigurations?.ForEach(subConfig =>
@@ -117,40 +121,74 @@ namespace MFDMF_Services
 				var fileExists = File.Exists(cacheFile);
 				if (fileExists)
 				{
+#pragma warning disable CA1416 // Validate platform compatibility
 					currentConfig = (Bitmap)Image.FromFile(cacheFile);
+#pragma warning restore CA1416 // Validate platform compatibility
 				}
 				else
 				{
+#pragma warning disable CA1416 // Validate platform compatibility
 					var graphicsUnit = GraphicsUnit.Pixel;
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
                     currentConfig = (Bitmap)mainImage.Clone(mainImage.GetBounds(ref graphicsUnit), PixelFormat.Format24bppRgb);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 					if (imageDictionary.TryGetValue(key, out var sourceImage))
 					{
+#pragma warning disable CA1416 // Validate platform compatibility
 						using (var g = Graphics.FromImage(currentConfig))
 						{
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
                             g.CompositingMode = CompositingMode.SourceOver;
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 							var newLocation = (subConfig.Center ?? false) ? subConfig.GetCenterTo(config) : new Point(subConfig.Left ?? config.Left ?? 0, subConfig.Top ?? config.Top ?? 0);
 							var croppingArea = new Rectangle(newLocation, new Size(subConfig.Width ?? 0, subConfig.Height ?? 0));
 							_logger.LogDebug($"Using image: {key} to paint configuration {subConfig.Name} for {subConfig}");
+#pragma warning disable CA1416 // Validate platform compatibility
 							g.DrawImage(sourceImage, croppingArea);
+#pragma warning restore CA1416 // Validate platform compatibility
 
 							ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(subConfig, (subsubConfig) =>
 							{
 								var key = $"{module.ModuleName}-{config.Name}-{subsubConfig.Name}";
+#pragma warning disable CA1416 // Validate platform compatibility
 								if (imageDictionary.TryGetValue(key, out var sourceImage))
 								{
+#pragma warning disable CA1416 // Validate platform compatibility
 									using var graphicsSuperimposed = Graphics.FromImage(currentConfig);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 									graphicsSuperimposed.CompositingMode = CompositingMode.SourceOver;
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 									var newLocation = (subsubConfig.Center ?? false) ? subsubConfig.GetCenterTo(subConfig) : new Point(subsubConfig.Left ?? subConfig.Left ?? config.Left ?? 0, subsubConfig.Top ?? subConfig.Top ?? config.Top ?? 0);
 									var croppingArea = new Rectangle(newLocation, new Size(subsubConfig.Width ?? 0, subsubConfig.Height ?? 0));
 									_logger.LogDebug($"Using image: {key} to paint configuration {subsubConfig.Name} for {subsubConfig}");
+#pragma warning disable CA1416 // Validate platform compatibility
 									graphicsSuperimposed.DrawImage(sourceImage, croppingArea);
+#pragma warning restore CA1416 // Validate platform compatibility
 								}
+#pragma warning restore CA1416 // Validate platform compatibility
 							});
 						}
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 						using var graphics = Graphics.FromImage(currentConfig);
+#pragma warning restore CA1416 // Validate platform compatibility
 						CreateRulersAsRequired(config, graphics);
+#pragma warning disable CA1416 // Validate platform compatibility
 						currentConfig.Save(cacheFile);
+#pragma warning restore CA1416 // Validate platform compatibility
 					}
+#pragma warning restore CA1416 // Validate platform compatibility
 				}
 				var bitMapCache = new ImageDefinition() { Bitmap = currentConfig, CacheFile = cacheFile, Key = key };
 				bitmapDictionary.Add(key, bitMapCache);
@@ -160,10 +198,14 @@ namespace MFDMF_Services
 			{
 				if (!cacheFileExists || forceReload)
 				{
+#pragma warning disable CA1416 // Validate platform compatibility
 					using var graphics = Graphics.FromImage(mainImage);
+#pragma warning restore CA1416 // Validate platform compatibility
 					CreateRulersAsRequired(config, graphics);
 					_logger.LogDebug($"Creating cache file {cacheFile}");
+#pragma warning disable CA1416 // Validate platform compatibility
 					mainImage.Save($"{fileTemplate}.png");
+#pragma warning restore CA1416 // Validate platform compatibility
 				}
 			}
 			catch (Exception ex)
@@ -184,7 +226,11 @@ namespace MFDMF_Services
 				var xCenter = (config.Width ?? 0) / 2;
 				var yCenter = (config.Height ?? 0) / 2;
 
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				g.DrawLine(Pens.Red, new System.Drawing.Point(0, yCenter), new System.Drawing.Point(config.Width ?? 0, yCenter));
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 
 				for (int x = 0; x < (config.Width ?? 0); x++)
 				{
@@ -192,17 +238,31 @@ namespace MFDMF_Services
 					{
 						var startPoint = new System.Drawing.Point(x, yCenter - 10);
 						var endPoint = new System.Drawing.Point(x, yCenter + 10);
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 						g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 					}
 
 					if (x % 100 == 0)
 					{
 						var textPoint = new PointF(x - 10, (float)yCenter + 10);
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 						g.DrawString($"{x}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 					}
 				}
 
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				g.DrawLine(Pens.Red, new System.Drawing.Point(xCenter, 0), new System.Drawing.Point(xCenter, config.Height ?? 0));
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 
 				for (int y = 0; y < (config.Height ?? 0); y++)
 				{
@@ -210,13 +270,23 @@ namespace MFDMF_Services
 					{
 						var startPoint = new System.Drawing.Point(xCenter - 10, y);
 						var endPoint = new System.Drawing.Point(xCenter + 10, y);
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 						g.DrawLine(Pens.OrangeRed, startPoint, endPoint);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 					}
 
 					if (y % 100 == 0)
 					{
 						var textPoint = new PointF(xCenter + 10, y - 5);
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 						g.DrawString($"{y}", System.Drawing.SystemFonts.DefaultFont, System.Drawing.Brushes.Red, textPoint);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 					}
 				}
 			}
@@ -243,17 +313,43 @@ namespace MFDMF_Services
 		{
 			var cropRect = new Rectangle(cropping.CroppingStart, new Size(cropping.CroppedWidth, cropping.CroppedHeight));
 			_logger.LogDebug($"Creating bitmap {displayGeometry?.Width ?? 0} * {displayGeometry?.Height ?? 0}");
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 			var newBitmap = new Bitmap(displayGeometry?.Width ?? cropping.CroppedWidth, displayGeometry?.Height ?? cropping.CroppedHeight, PixelFormat.Format24bppRgb);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 			using (var g = Graphics.FromImage(newBitmap))
 			{
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				var matrix = new ColorMatrix
 				{
 					Matrix33 = cropping.Opacity ?? 1.0F
 				};
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				using var imageAttributes = new ImageAttributes();
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				g.DrawImage(src, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), cropRect.Left, cropRect.Top, cropRect.Width, cropRect.Height, GraphicsUnit.Pixel, imageAttributes);
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 			}
+#pragma warning restore CA1416 // Validate platform compatibility
 			return newBitmap;
 		}
 
@@ -297,14 +393,28 @@ namespace MFDMF_Services
 		private Dictionary<string, Bitmap> LoadBitmaps(IConfigurationDefinition configurationDefinition, string throttleKey, string hotasKey)
 		{
 			string filePath, fileSource;
+#pragma warning disable CA1416 // Validate platform compatibility
 			var imageDictionary = new Dictionary<string, Bitmap>();
+#pragma warning restore CA1416 // Validate platform compatibility
 			(filePath, fileSource) = GetImageFilename(configurationDefinition, throttleKey, hotasKey);
 			_logger?.LogInformation($"Loading file: {fileSource} for Configuration {configurationDefinition.ModuleName}-{configurationDefinition.Name} Throttle:{throttleKey} HOTAS:{hotasKey}");
+#pragma warning disable CA1416 // Validate platform compatibility
 			var bitMap = (Bitmap)Image.FromFile(fileSource, true);
+#pragma warning restore CA1416 // Validate platform compatibility
 			var key = $"{configurationDefinition.ModuleName}-{configurationDefinition.Name}";
 			using var croppedBitmap = Crop(bitMap, configurationDefinition, configurationDefinition);
+#pragma warning disable CA1416 // Validate platform compatibility
 			var pageUnit = GraphicsUnit.Pixel;
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 			imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone(croppedBitmap.GetBounds(ref pageUnit), PixelFormat.Format24bppRgb));
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 			var currentConfig = configurationDefinition;
 
 			ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>
@@ -316,10 +426,16 @@ namespace MFDMF_Services
 					throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
 				}
 				_logger?.LogInformation($"Loading file: {fileSource} for {subConfig}");
+#pragma warning disable CA1416 // Validate platform compatibility
 				bitMap = (Bitmap)Image.FromFile(fileSource);
+#pragma warning restore CA1416 // Validate platform compatibility
 				var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
 				using var croppedBitmap = Crop(bitMap, subConfig, subConfig);
+#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416 // Validate platform compatibility
 				imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone());
+#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416 // Validate platform compatibility
 			});
 
 			return imageDictionary;
@@ -338,6 +454,7 @@ namespace MFDMF_Services
 				}
 				if (!File.Exists(fileSource))
 				{
+					_logger.LogCritical($"Unable to find file: {fileSource}");
 					throw new FileNotFoundException($"Unable to find the specified file at {fileSource}");
 				}
 			}

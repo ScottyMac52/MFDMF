@@ -1,0 +1,57 @@
+{
+	"modules": [
+		{
+			"name": "AH-64D",
+			"tag": "AH-64D",
+			"displayName": "AH-64D Apache Gunship",
+			"fileName": "AH-64\\DCS AH64D MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_AH-64"
+				},
+				{
+					"name": "WHKEY_AH-64",
+					"filename": "AH-64\\DCS AH64D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_AH-64"
+				},
+				{
+					"name": "MFD3_AH-64",
+					"fileName": "AH-64\\DCS AH64D MFD34.jpg"
+				},
+				{
+					"name": "MFD4_AH-64",
+					"fileName": "AH-64\\DCS AH64D MFD34.jpg"
+				}
+
+			]
+		},
+		{
+			"name": "AH-64DHV",
+			"tag": "AH-64D",
+			"displayName": "AH-64D Apache Gunship Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS AH64D MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_AH-64DHV"
+				},
+				{
+					"name": "WHKEY_AH-64DHV",
+					"filename": "AH-64\\DCS AH64D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_AH-64DHV"
+				},
+				{
+					"name": "MFD3_AH-64",
+					"fileName": "_High Contrast MFDs\\DCS AH64D MFD34 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_AH-64",
+					"fileName": "_High Contrast MFDs\\DCS AH64D MFD34 HiVis.jpg"
+				}
+			]
+		}
+	]
+}

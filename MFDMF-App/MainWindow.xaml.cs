@@ -21,7 +21,6 @@ namespace MFDMFApp
 		private const string UnableToLoad = "Unable to load the configuration!";
 		#region IoC Injected fields
 		private readonly AppSettings _settings;
-		private readonly ILoggerFactory _loggerFactory;
 		private readonly ILogger<MainWindow> _logger;
 		private readonly StartOptions? _startOptions;
 		private readonly IConfigurationProvider _configurationProvider;
@@ -65,13 +64,12 @@ namespace MFDMFApp
 		/// <param name="settings"><see cref="AppSettings"/> loaded via Dependency Injection</param>
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> logging factory loaded via Dependency Injection</param>
 		/// <param name="configurationProvider"></param>
-		public MainWindow(IOptions<AppSettings> settings, ILoggerFactory loggerFactory, IConfigurationProvider configurationProvider)
+		public MainWindow(IOptions<AppSettings> settings, ILogger<MainWindow> logger, IConfigurationProvider configurationProvider)
 		{
 			InitializeComponent();
 			_settings = settings.Value;
-			_loggerFactory = loggerFactory;
+			_logger = logger;
 			_configurationProvider = configurationProvider;
-			_logger = _loggerFactory.CreateLogger<MainWindow>();
 			_windowList = new SortedList<string, ConfigurationWindow>();
 			_startOptions = (StartOptions?) ((MainApp)Application.Current).Host?.Services.GetService(typeof(StartOptions));
 		}
@@ -95,7 +93,7 @@ namespace MFDMFApp
             eneabledConfigurations?.ForEach(config =>
 			{
 #pragma warning disable CS8604 // Possible null reference argument.
-                var configWindow = new ConfigurationWindow(_selectedModule, config, _loggerFactory, _settings, _configurationProvider)
+                var configWindow = new ConfigurationWindow(_selectedModule, config, _settings, _configurationProvider)
 				{
 					SubConfigurationNames = _subModule
 				};
