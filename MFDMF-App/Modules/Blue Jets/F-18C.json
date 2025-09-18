@@ -11,17 +11,7 @@
 				},
 				{
 					"name": "WHKEY_Hornet",
-					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-					"subConfigDef": [
-						{
-							"name": "F-18WH",
-							"fileName": "FA-18C\\DCS FA18C WHH.jpg"
-						},
-						{
-							"name": "F-18HC",
-							"fileName": "FA-18C\\DCS FA18C HCH.jpg"
-						}
-					]
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 				},
 				{
 					"name": "RMFD_Hornet"
@@ -39,17 +29,7 @@
 				},
 				{
 					"name": "WHKEY_Hornet",
-					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-					"subConfigDef": [
-						{
-							"name": "F-18WH",
-							"fileName": "FA-18C\\DCS FA18C WHH.jpg"
-						},
-						{
-							"name": "F-18HC",
-							"fileName": "FA-18C\\DCS FA18C HCH.jpg"
-						}
-					]
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 				},
 				{
 					"name": "RMFD_Hornet"
@@ -67,17 +47,7 @@
 				},
 				{
 					"name": "WHKEY_Hornet",
-					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-					"subConfigDef": [
-						{
-							"name": "F-18WH",
-							"fileName": "FA-18C\\DCS FA18C WHH.jpg"
-						},
-						{
-							"name": "F-18HC",
-							"fileName": "FA-18C\\DCS FA18C HCH.jpg"
-						}
-					]
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 				},
 				{
 					"name": "RMFD_Hornet"
@@ -103,17 +73,7 @@
 				},
 				{
 					"name": "WHKEY_Hornet",
-					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG",
-					"subConfigDef": [
-						{
-							"name": "F-18WH",
-							"fileName": "FA-18C\\DCS FA18C WHH.jpg"
-						},
-						{
-							"name": "F-18HC",
-							"fileName": "FA-18C\\DCS FA18C HCH.jpg"
-						}
-					]
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
 				},
 				{
 					"name": "RMFD_Hornet"

@@ -21,7 +21,6 @@ namespace MFDMFApp
 		private const string UnableToLoad = "Unable to load the configuration!";
 		#region IoC Injected fields
 		private readonly AppSettings _settings;
-		private readonly ILoggerFactory _loggerFactory;
 		private readonly ILogger<MainWindow> _logger;
 		private readonly StartOptions? _startOptions;
 		private readonly IConfigurationProvider _configurationProvider;
@@ -65,15 +64,57 @@ namespace MFDMFApp
 		/// <param name="settings"><see cref="AppSettings"/> loaded via Dependency Injection</param>
 		/// <param name="loggerFactory"><see cref="ILoggerFactory"/> logging factory loaded via Dependency Injection</param>
 		/// <param name="configurationProvider"></param>
-		public MainWindow(IOptions<AppSettings> settings, ILoggerFactory loggerFactory, IConfigurationProvider configurationProvider)
+		public MainWindow(IOptions<AppSettings> settings, ILogger<MainWindow> logger, IConfigurationProvider configurationProvider)
 		{
 			InitializeComponent();
 			_settings = settings.Value;
-			_loggerFactory = loggerFactory;
+			_logger = logger;
 			_configurationProvider = configurationProvider;
-			_logger = _loggerFactory.CreateLogger<MainWindow>();
 			_windowList = new SortedList<string, ConfigurationWindow>();
 			_startOptions = (StartOptions?) ((MainApp)Application.Current).Host?.Services.GetService(typeof(StartOptions));
+
+			this.LocationChanged += MainWindow_LocationChanged;
+		}
+
+		private void MainWindow_LocationChanged(object? sender, EventArgs e)
+		{
+			SaveWindowPosition();
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			SaveWindowPosition();
+			_logger?.LogInformation(Properties.Resources.MainWindowClosing);
+			DestroyWindows();
+		}
+
+		private void SaveWindowPosition()
+		{
+			var appDataPath = MainApp.AppDataFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var settingsFile = Path.Combine(appDataPath, "windowposition.json");
+			var positionSettings = new WindowPositionSettings
+			{
+				MainWindowLeft = this.Left,
+				MainWindowTop = this.Top
+			};
+			var json = System.Text.Json.JsonSerializer.Serialize(positionSettings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+			File.WriteAllText(settingsFile, json);
+		}
+
+		private void RestoreWindowPosition()
+		{
+			var appDataPath = MainApp.AppDataFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var settingsFile = Path.Combine(appDataPath, "windowposition.json");
+			if (File.Exists(settingsFile))
+			{
+				var json = File.ReadAllText(settingsFile);
+				var positionSettings = System.Text.Json.JsonSerializer.Deserialize<WindowPositionSettings>(json);
+				if (positionSettings?.MainWindowLeft != null && positionSettings?.MainWindowTop != null)
+				{
+					this.Left = positionSettings.MainWindowLeft.Value;
+					this.Top = positionSettings.MainWindowTop.Value;
+				}
+			}
 		}
 		#endregion Constructor
 		
@@ -95,7 +136,7 @@ namespace MFDMFApp
             eneabledConfigurations?.ForEach(config =>
 			{
 #pragma warning disable CS8604 // Possible null reference argument.
-                var configWindow = new ConfigurationWindow(_selectedModule, config, _loggerFactory, _settings, _configurationProvider)
+                var configWindow = new ConfigurationWindow(_selectedModule, config, _settings, _configurationProvider)
 				{
 					SubConfigurationNames = _subModule
 				};
@@ -160,40 +201,57 @@ namespace MFDMFApp
 		/// <param name="forceReload">If true then the module selection is forced</param>
 		public void ChangeSelectedModule(string moduleName, bool forceReload)
 		{
-			if(forceReload)
-			{
-				cbModules.SelectedIndex = -1;
-			}
-			if (moduleName != (string?)cbModules?.SelectedValue)
-			{
-				if(cbModules != null)
-				{
-					cbModules.SelectedValue = moduleName;
-					if(cbModules.SelectedIndex == -1)
-					{
-						IsValid = false;
-						_logger?.LogError($"Unable to find a configuration named {moduleName}");
-						throw new ArgumentOutOfRangeException(nameof(moduleName));
-					}
-					else
-					{
-						IsValid = true;
-					}
-				}
-			}
-			UpdateMenu();
-		}
+            if (forceReload)
+            {
+                cbModules.SelectedIndex = -1;
+            }
+            if (moduleName != (string?)cbModules?.SelectedValue)
+            {
+                if (cbModules != null)
+                {
+                    // Log available modules for debugging
+                    var availableModules = ((List<IModuleDefinition>)cbModules.ItemsSource).Select(m => m.ModuleName).ToList();
+                    _logger?.LogInformation("Trying to select module: " + moduleName);
+
+                    // Find the module in the list
+                    var moduleToSelect = availableModules.FirstOrDefault(m => string.Equals(m, moduleName, StringComparison.OrdinalIgnoreCase));
+                    if (moduleToSelect != null)
+                    {
+                        cbModules.SelectedValue = moduleToSelect;
+                        if (cbModules.SelectedIndex == -1)
+                        {
+                            IsValid = false;
+                            _logger?.LogError($"Unable to find a configuration named {moduleName}");
+                            throw new ArgumentOutOfRangeException(nameof(moduleName));
+                        }
+                        else
+                        {
+                            IsValid = true;
+                        }
+                    }
+                    else
+                    {
+                        IsValid = false;
+                        _logger?.LogError($"Module name '{moduleName}' not found in available modules.");
+                        throw new ArgumentOutOfRangeException(nameof(moduleName));
+                    }
+                }
+            }
+            UpdateMenu();
+        }
 
 		/// <summary>
 		/// Event for the module selection change
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			try
 			{
-				DestroyWindows();
+                DestroyWindows();
 				if (e.AddedItems.Count == 0)
 				{
 					_selectedModule = null;
@@ -227,19 +285,6 @@ namespace MFDMFApp
 		}
 
 		/// <summary>
-		/// Window is closing so clean up
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			_logger?.LogInformation(Properties.Resources.MainWindowClosing);
-			DestroyWindows();
-		}
-
-		/// <summary>
 		/// Window is loaded and ready to be setup
 		/// </summary>
 		/// <param name="sender"></param>
@@ -250,7 +295,9 @@ namespace MFDMFApp
 		{
 			try
 			{
-				var watch = System.Diagnostics.Stopwatch.StartNew();
+                RestoreWindowPosition();
+
+                var watch = System.Diagnostics.Stopwatch.StartNew();
 				ReloadConfiguration();
 				watch.Stop();
 				_logger?.LogInformation($"Main window loaded in: {watch.ElapsedMilliseconds} milliseconds");
@@ -350,34 +397,33 @@ namespace MFDMFApp
 			ReloadConfiguration(true);
 		}
 
-		/// <summary>
-		/// Used to always load the configuration
-		/// </summary>
-		/// <exception cref="UnauthorizedAccessException"></exception>
-		/// <exception cref="NotSupportedException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
-		private void ReloadConfiguration(bool forceReload = false)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var mainApp = Application.Current as MainApp;
-			mainApp?.ReloadConfiguration();
-			_module = _startOptions?.ModuleName;
-			_subModule = _startOptions?.SubModuleName;
-			var module = (string?)cbModules?.SelectedValue;
-			DestroyWindows();
-			SetupWindow();
-			var selectedModule = module ??= _module ??= _settings.DefaultConfiguration;
-			if (!string.IsNullOrEmpty(selectedModule))
-			{
-				_logger?.LogInformation($"Loading module {selectedModule}");
-				ChangeSelectedModule(selectedModule, forceReload);
-			}
-			watch.Stop();
-			_logger?.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
-		}
-
+        /// <summary>
+        /// Used to always load the configuration
+        /// </summary>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public void ReloadConfiguration(bool forceReload = false)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var mainApp = Application.Current as MainApp;
+            mainApp?.ReloadConfiguration();
+            _module = _startOptions?.ModuleName;
+            _subModule = _startOptions?.SubModuleName;
+            DestroyWindows();
+            SetupWindow();
+            var selectedModule = _module ?? _settings.DefaultConfiguration;
+            if (!string.IsNullOrEmpty(selectedModule))
+            {
+                _logger?.LogInformation($"Loading module {selectedModule}");
+                ChangeSelectedModule(selectedModule, forceReload);
+            }
+            watch.Stop();
+            _logger?.LogInformation($"Reloaded configuration in: {watch.ElapsedMilliseconds} milliseconds");
+        }
+        
 		private void UpdateMenu()
 		{
 			mnuEditConfiguration.IsEnabled = false;
@@ -399,5 +445,21 @@ namespace MFDMFApp
 		}
 
 		#endregion Menu Item processing
+
+        public void SubscribeToModuleSwitch(MainApp app)
+        {
+            app.ModuleSwitchRequested += (module, subModule) =>
+            {
+                _logger.LogInformation($"Module switch requested: {module}, {subModule}");
+                SwitchModule(module, subModule);
+            };
+        }
+
+        public void SwitchModule(string moduleName, string subModuleName)
+        {
+            _startOptions.ModuleName = moduleName;
+            _startOptions.SubModuleName = subModuleName;
+            ReloadConfiguration(true);
+        }
 	}
 }

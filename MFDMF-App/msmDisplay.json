@@ -5,12 +5,15 @@
 		"height": 1440
 	},
 	{
+		"name": "Aux",
+		"width": 1440,
+		"height": 2560
+	},
+	{
 		"name": "LMFD",
-		"enabled":  false,
-		"alwaysOnTop": false,
-		"width": 870,
-		"height": 700,
-		"left": -1280,
+		"width": 600,
+		"height": 600,
+		"left": 2561,
 		"top": 0,
 		"xOffsetStart": 101,
 		"xOffsetFinish": 776,
@@ -19,26 +22,11 @@
 		"opacity": 1.0
 	},
 	{
-		"name": "WHKEY",
-		"enabled": true,
-		"alwaysOnTop": false,
-		"width": 1200,
-		"height": 1200,
-		"left": 1360,
-		"top": 0,
-		"xOffsetStart": 0,
-		"yOffsetStart": 0,
-		"xOffsetFinish": 3330,
-		"yOffsetFinish": 2295,
-		"opacity": 1.0
-	},
-	{
 		"name": "RMFD",
-		"enabled": false,
-		"alwaysOnTop": false,
-		"width": 870,
-		"height": 700,
-		"left": 3005,
+		"width": 600,
+		"height": 600,
+		"left": 3161,
+		"top": 0,
 		"xOffsetStart": 903,
 		"xOffsetFinish": 1576,
 		"yOffsetStart": 250,
@@ -46,40 +34,88 @@
 		"opacity": 1.0
 	},
 	{
-		"name": "Flir",
-		"enabled": false,
-		"alwaysOnTop": false,
-		"offsets": {
-			"top": -45,
-			"width": -490,
-			"height": -260
-		}
+		"name": "MFD3",
+		"width": 600,
+		"height": 600,
+		"left": 2561,
+		"top": 601,
+		"xOffsetStart": 101,
+		"xOffsetFinish": 776,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
 	},
 	{
-		"name": "LMFDOffset",
-		"enabled": false,
-		"alwaysOnTop": false,
-		"xOffsetStart": 0,
-		"xOffsetFinish": 667,
-		"yOffsetStart": 0,
-		"yOffsetFinish": 441
+		"name": "MFD4",
+		"width": 600,
+		"height": 600,
+		"left": 3161,
+		"top": 601,
+		"xOffsetStart": 903,
+		"xOffsetFinish": 1576,
+		"yOffsetStart": 250,
+		"yOffsetFinish": 900,
+		"opacity": 1.0
 	},
 	{
-		"name": "RMFDOffset",
-		"enabled": false,
-		"alwaysOnTop": false,
+		"name": "WHKEY",
+		"width": 1200,
+		"height": 1200,
+		"left": 2561,
+		"top": 1202,
 		"xOffsetStart": 0,
-		"xOffsetFinish": 667,
 		"yOffsetStart": 0,
-		"yOffsetFinish": 441
+		"xOffsetFinish": 3330,
+		"yOffsetFinish": 2295,
+		"opacity": 1.0
 	},
 	{
-		"name": "WHKEY_CTSProfOffset",
+		"name": "CDU",
+		"left": 400,
+		"enabled": true,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 694,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 352,
+		"opacity": 1.0
+	},
+	{
+		"name": "UFC",
+		"left": 400,
+		"top": 400,
+		"enabled": true,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1730,
+		"yOffsetStart": 590,
+		"yOffsetFinish": 990,
+		"opacity": 1.0
+	},
+	{
+		"name": "F-18WH",
+		"opacity": 1.0,
+		"width": 550,
+		"height": 700,
+		"left": 482,
+		"top": 100,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1286,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 1340,
 		"enabled": false,
-		"alwaysOnTop": false,
-		"xOffsetStart": 0,
-		"xOffsetFinish": 1449,
-		"yOffsetStart": 0,
-		"yOffsetFinish": 1184
+		"useAsSwitch": true
+	},
+	{
+		"name": "F-18HC",
+		"opacity": 1.0,
+		"width": 650,
+		"height": 800,
+		"left": 550,
+		"top": 100,
+		"xOffsetStart": 1,
+		"xOffsetFinish": 1286,
+		"yOffsetStart": 1,
+		"yOffsetFinish": 1340,
+		"enabled": false,
+		"useAsSwitch": true
 	}
 ]

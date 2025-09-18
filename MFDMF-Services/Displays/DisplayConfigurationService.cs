@@ -48,7 +48,7 @@
 		public async Task<IEnumerable<IDisplayDefinition>> LoadDisplaysAsync()
 		{
 			var returnList = new List<IDisplayDefinition>();
-			var jsonFile = Environment.ExpandEnvironmentVariables(_settings.DisplayConfigurationFile);
+            var jsonFile = Environment.ExpandEnvironmentVariables(_settings.DisplayConfigurationFile);
 			_logger?.LogInformation($"Loading configuration from {jsonFile}");
 			var fileContent = await File.ReadAllTextAsync(jsonFile).ConfigureAwait(false);
 			var displayList = JsonConvert.DeserializeObject<IEnumerable<DisplayDefinition>>(fileContent);
