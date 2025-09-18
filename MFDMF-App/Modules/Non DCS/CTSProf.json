@@ -1,6 +1,5 @@
 {
-	"modules" :
-	[
+	"modules": [
 		{
 			"name": "CTSProf",
 			"displayName": "CTS Configuration Profile",
@@ -9,25 +8,16 @@
 				{
 					"name": "LMFD_CTSMFD",
 					"xOffsetStart": 0,
-					"xOffsetFinish": 668,
+					"xOffsetFinish": 1665,
 					"yOffsetStart": 0,
-					"yOffsetFinish": 441
-				},
-				{
-					"name": "WHKEY_CTSProf",
-					"fileName": "vr_hotas_sel.jpg",
-					"xOffsetStart": 0,
-					"xOffsetFinish": 1449,
-					"yOffsetStart": 0,
-					"yOffsetFinish": 1184
+					"yOffsetFinish": 1668
 				},
 				{
 					"name": "RMFD_CTSMFD",
-					"fileName": "CTSConfigRMFD.jpg",
-					"xOffsetStart": 0,
-					"xOffsetFinish": 670,
+					"xOffsetStart": 1666,
+					"xOffsetFinish": 3330,
 					"yOffsetStart": 0,
-					"yOffsetFinish": 443
+					"yOffsetFinish": 1668
 				}
 			]
 		}

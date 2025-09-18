@@ -107,7 +107,13 @@
 		[JsonProperty("createKneeboard")]
 		public bool? CreateKneeboard { get; set; }
 
-		public override string ToString()
+        [JsonProperty("mainWindowLeft")]
+        public double? MainWindowLeft { get; set; }
+
+        [JsonProperty("mainWindowTop")]
+        public double? MainWindowTop { get; set; }
+
+        public override string ToString()
 		{
 			var cachingStatus = (TurnOffCache ?? false) ? "No" : "Yes";
 			var rulerStatus = (ShowRulers ?? false) ? $"Yes: {RulerSize ?? 0}px" : "No";

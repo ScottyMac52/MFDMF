@@ -2,7 +2,9 @@
   "profiles": {
     "MFDMFApp": {
       "commandName": "Project",
-      "commandLineArgs": "-m \"FA-18CHV3\" -s \"F-18WH\""
+      "commandLineArgs": "-m \"FA-18CHV3\" ",
+      "hotReloadEnabled": false,
+      "nativeDebugging": true
     }
   }
 }

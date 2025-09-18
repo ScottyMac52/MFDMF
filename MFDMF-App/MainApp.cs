@@ -1,7 +1,8 @@
 ﻿namespace MFDMFApp
 {
 	using CommandLine;
-	using MFDMF_Models.Models;
+    using MFDMF_Models.Interfaces;
+    using MFDMF_Models.Models;
 	using MFDMF_Services;
 	using MFDMF_Services.Configuration;
 	using MFDMF_Services.Displays;
@@ -12,17 +13,20 @@
 	using Microsoft.Extensions.Options;
 	using Microsoft.Win32;
 	using System;
-	using System.IO;
+    using System.Collections.Generic;
+    using System.IO;
+	using System.IO.Pipes;
 	using System.Linq;
 	using System.Reflection;
+	using System.Threading.Tasks;
 	using System.Windows;
 	using System.Windows.Threading;
 
 	public class MainApp : Application
 	{
-		private readonly ILoggerFactory? _loggerFactory;
-		private readonly ILogger? _logger;
+		private readonly ILogger<MainApp> _logger;
 		private AppSettings? _settings;
+		private const string PipeName = "MFDMFAppPipe";
 
 		public IHost? Host { get; }
 
@@ -50,24 +54,48 @@
 				services.AddSingleton(GetStartOptions(args));
 				services.AddSingleton<MainWindow>();
 			});
-			_loggerFactory = Host.Services.GetRequiredService<ILoggerFactory>();
-			_logger = _loggerFactory.CreateLogger(typeof(MainApp));
-			_logger.LogInformation($"Starting {GetVersionString()}");
+
+			// Get ILogger<MainApp> from DI
+			_logger = Host.Services.GetRequiredService<ILogger<MainApp>>();
+			_logger.LogInformation("Starting {Version}", GetVersionString());
 			DispatcherUnhandledException += MainApp_DispatcherUnhandledException;
+			StartPipeServer();
 		}
+
+		private IEnumerable<IModuleDefinition>? _cachedModules;
+		private string? _lastModulesDirectory;
+		private string? _lastFileSpec;
 
 		/// <summary>
 		/// Reloads the current configuration
 		/// </summary>
-		public void ReloadConfiguration()
+		public void ReloadConfiguration(bool forceReload = false)
 		{
 			_settings = Host?.Services.GetService<IOptions<AppSettings>>()?.Value;
 			var modulesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Modules");
-			var moduleProvider = Host?.Services.GetService<IConfigurationProvider>();
-			var modules = moduleProvider?.GetModulesAsync(modulesDirectory, _settings?.FileSpec).Result;
-			if(_settings != null)
-			{ 
-				_settings.ModuleItems = modules;
+			var fileSpec = _settings?.FileSpec;
+
+			// Only reload if forced or if path/spec changed
+			if (forceReload || _cachedModules == null || _lastModulesDirectory != modulesDirectory || _lastFileSpec != fileSpec)
+			{
+				var moduleProvider = Host?.Services.GetService<IConfigurationProvider>();
+				_cachedModules = moduleProvider?.GetModulesAsync(modulesDirectory, fileSpec).Result;
+				_lastModulesDirectory = modulesDirectory;
+				_lastFileSpec = fileSpec;
+			}
+
+			if (_settings != null)
+			{
+				_settings.ModuleItems = _cachedModules;
+			}
+
+			if (forceReload)
+			{
+				MainWindow = Host?.Services?.GetRequiredService<MainWindow>();
+				if (MainWindow is MainWindow mw)
+				{
+					mw.ReloadConfiguration(true);
+				}
 			}
 		}
 
@@ -108,15 +136,13 @@
 		/// <exception cref="InvalidOperationException"></exception>
 		protected override async void OnStartup(StartupEventArgs e)
 		{
-			if(Host != null)
+			if (Host != null)
 			{
-				await (Host.StartAsync()).ConfigureAwait(true);
-				MainWindow = Host?.Services?.GetRequiredService<MainWindow>();
-				_logger?.LogSystemStart();
-				if(MainWindow != null)
-				{
-					MainWindow.Show();
-				}
+				await Host.StartAsync().ConfigureAwait(true);
+				MainWindow = Host.Services.GetRequiredService<MainWindow>();
+				((MainWindow)MainWindow).SubscribeToModuleSwitch(this);
+				_logger.LogSystemStart();
+				MainWindow.Show();
 			}
 			base.OnStartup(e);
 		}
@@ -155,13 +181,42 @@
 		/// </summary>
 		public static string? SavedGamesFolder => GetSpecialFolder("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}", Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", "SavedGames"));
 
-		/// <summary>
-		/// Uses the registry to get the specified folder location
-		/// </summary>
-		/// <param name="folderName"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		private static string? GetSpecialFolder(string? folderName, string? defaultValue = null)
+		private void StartPipeServer()
+		{
+			Task.Run(async () =>
+			{
+				while (true)
+				{
+					using var server = new NamedPipeServerStream(PipeName, PipeDirection.In);
+					await server.WaitForConnectionAsync();
+					using var reader = new StreamReader(server);
+					var parameters = await reader.ReadLineAsync();
+					if (!string.IsNullOrEmpty(parameters))
+					{
+						var args = parameters.Split(' ');
+						// Process the new parameters on the UI thread
+						Application.Current.Dispatcher.Invoke(() => ProcessParameters(args));
+					}
+				}
+			});
+		}
+
+		public event Action<string, string>? ModuleSwitchRequested;
+
+		private void ProcessParameters(string[] args)
+		{
+            var startOptions = GetStartOptions(args);
+            _logger.LogInformation($"Switching to Module: {startOptions.ModuleName}, SubModule: {startOptions.SubModuleName}");
+            ModuleSwitchRequested?.Invoke(startOptions.ModuleName, startOptions.SubModuleName);
+        }
+
+        /// <summary>
+        /// Uses the registry to get the specified folder location
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        private static string? GetSpecialFolder(string? folderName, string? defaultValue = null)
 		{
 			var regKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
 			var regKeyValue = folderName;

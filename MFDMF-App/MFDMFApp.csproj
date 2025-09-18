@@ -1,30 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 	<SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <RootNamespace>MFDMFApp</RootNamespace>
+	<PublishSingleFile>true</PublishSingleFile>
+	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<RootNamespace>MFDMFApp</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <StartupObject>MFDMFApp.Program</StartupObject>
+    <StartupObject>Program</StartupObject>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Scott McIntosh</Authors>
     <Company>Vyper Industries</Company>
     <Product>Multi-Function Display Management Framework</Product>
-    <Copyright>© 2018-2024</Copyright>
+    <Copyright>© 2018-2025</Copyright>
     <ApplicationIcon>mfd_xkl_icon.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
-    <Version>4.0.0</Version>
+    <Version>5.0.0</Version>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageProjectUrl>https://github.com/ScottyMac52/MFDMF</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ScottyMac52/MFDMF</RepositoryUrl>
     <RepositoryType>GitHUb</RepositoryType>
-    <PackageTags>4.0</PackageTags>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <PackageTags>5.0</PackageTags>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
     <Nullable>enable</Nullable>
     <Title>Multi-Function Display Management Framework</Title>
     <Description>Multi-Function Display Management Framework requires elements of CTS to be installed in order to properly operate. Please see https://www.digitalcombatsimulator.com/en/files/3043393/ for information about CTS and installation instructions.</Description>
@@ -42,7 +43,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\Output</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
