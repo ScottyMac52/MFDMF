@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       runtime_id:
-        description: "RID (win-x64, linux-x64, osx-x64)"
+        description: "RID (e.g., win-x64, linux-x64, osx-x64)"
         required: false
         default: "win-x64"
       configuration:
@@ -239,8 +239,8 @@ Filename: "{app}\${env:APP_EXE_NAME}"; Description: "Launch ${env:APP_NAME}"; Fl
 
       - name: Build installer (setup.exe)
         shell: pwsh
-        run: &
-          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
       - name: Upload setup.exe artifact
         uses: actions/upload-artifact@v4
