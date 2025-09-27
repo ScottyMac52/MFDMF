@@ -34,7 +34,7 @@ on:
         required: false
         default: "false"
       release_tag:
-        description: "Release tag (e.g., v1.0.0). Leave blank to auto-generate."
+        description: "Release tag (e.g., v5.0.0). If blank, uses v<run_number>."
         required: false
         default: ""
       release_name:
@@ -42,27 +42,22 @@ on:
         required: false
         default: ""
       prerelease:
-        description: "Mark as prerelease (true/false)"
+        description: "Override prerelease flag (true/false). Leave blank for auto."
         required: false
-        default: "false"
+        default: ""
 
 env:
   DOTNET_VERSION: "8.0.x"
-  # Change this to your entry project that produces the EXE:
   PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
 
-  # Defaults (overridable via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
   CONFIGURATION_DEFAULT: "Release"
   SELF_CONTAINED_DEFAULT: "true"
   PUBLISH_TRIMMED_DEFAULT: "false"
 
-  # Single-file & related publish settings:
   PUBLISH_SINGLE_FILE: "true"
   READY_TO_RUN: "false"
   PUBLISH_DIR: "artifacts/publish"
-
-  # Optional NuGet source (leave empty to use default sources)
   NUGET_SOURCE: ""
 
 jobs:
@@ -196,18 +191,24 @@ jobs:
           NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$NAME" ]]; then NAME="Release ${TAG}"; fi
 
-          PRERELEASE="${{ github.event.inputs.prerelease }}"
-          if [[ -z "$PRERELEASE" ]]; then PRERELEASE="false"; fi
+          # Auto-prerelease if tag includes -alpha/-beta/-rc, else false.
+          PRERELEASE_INPUT="${{ github.event.inputs.prerelease }}"
+          if [[ -n "$PRERELEASE_INPUT" ]]; then
+            PRERELEASE="$PRERELEASE_INPUT"
+          else
+            if [[ "$TAG" =~ -(alpha|beta|rc) ]]; then PRERELEASE="true"; else PRERELEASE="false"; fi
+          fi
 
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "Releases page: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build-and-publish.outputs.artifact_name }}
-          path: artifacts
+        # default path = ./<artifact_name>; we'll re-zip from there
 
       - name: Package artifact into a single zip
         id: pack
@@ -219,11 +220,11 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
 
-          # Create a zip of EVERYTHING under artifacts (files + subfolders)
-          (cd artifacts && zip -r "../${ARCHIVE}" .)
+          # zip the downloaded artifact folder into one file
+          zip -r "$ARCHIVE" "${{ needs.build-and-publish.outputs.artifact_name }}"
 
-          # Optionally also upload the main EXE for convenience if one exists
-          EXE_PATH="$(find artifacts -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
+          # also try to find a main .exe (optional convenience upload)
+          EXE_PATH="$(find "${{ needs.build-and-publish.outputs.artifact_name }}" -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
 
           echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
           echo "exe=${EXE_PATH}" >> "$GITHUB_OUTPUT"
@@ -247,6 +248,7 @@ jobs:
               gh release create "$TAG" --title "$NAME" --generate-notes --repo "$GITHUB_REPOSITORY"
             fi
           fi
+          echo "Release URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
 
       - name: Upload assets (zip + optional exe)
         env:
@@ -263,3 +265,5 @@ jobs:
           else
             gh release upload "$TAG" "$ARCHIVE" --clobber --repo "$GITHUB_REPOSITORY"
           fi
+
+          echo "Uploaded assets to: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
