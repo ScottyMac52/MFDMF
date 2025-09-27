@@ -7,8 +7,14 @@ on:
   push:
     branches: [ "main", "master" ]
     tags: [ "v*", "V*" ]     # build + release when pushing a tag like v1.2.3
+    paths-ignore:
+      - '.github/workflows/**/*.yml'
+      - '.github/workflows/**/*.yaml'
   pull_request:
     branches: [ "main", "master" ]
+    paths-ignore:
+      - '.github/workflows/**/*.yml'
+      - '.github/workflows/**/*.yaml'
   workflow_dispatch:
     inputs:
       runtime_id:
@@ -43,7 +49,7 @@ on:
 env:
   DOTNET_VERSION: "8.0.x"
   # Change this to your entry project that produces the EXE:
-  PROJECT_PATH: "YourApp/YourApp.csproj"
+  PROJECT_PATH: "MFDMF-App/MFDMFApp.cspro"
 
   # Defaults (can be overridden via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
@@ -213,6 +219,37 @@ jobs:
 
           NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$NAME" ]]; then
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
             NAME="Release ${TAG}"
           fi
 
