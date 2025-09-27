@@ -221,14 +221,14 @@ jobs:
           TAG="${{ steps.relvals.outputs.tag }}"
           NAME="${{ steps.relvals.outputs.name }}"
           PRERELEASE="${{ steps.relvals.outputs.prerelease }}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $TAG exists."
           else
             echo "Creating release $TAG..."
             if [[ "$PRERELEASE" == "true" ]]; then
-              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease
+              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease --repo "$GITHUB_REPOSITORY"
             else
-              gh release create "$TAG" --title "$NAME" --generate-notes
+              gh release create "$TAG" --title "$NAME" --generate-notes --repo "$GITHUB_REPOSITORY"
             fi
           fi
 
@@ -240,4 +240,4 @@ jobs:
           set -e
           TAG="${{ steps.relvals.outputs.tag }}"
           # --clobber overwrites assets with the same name, avoiding the "update asset" API.
-          gh release upload "$TAG" artifacts/** --clobber
+          gh release upload "$TAG" artifacts/** --clobber --repo "$GITHUB_REPOSITORY"
