@@ -412,32 +412,40 @@ namespace MFDMF_Services
             string filePath, fileSource;
 #pragma warning disable CA1416 // Validate platform compatibility
             var imageDictionary = new Dictionary<string, Bitmap>();
-            (filePath, fileSource) = GetImageFilename(configurationDefinition, throttleKey, hotasKey);
-            _logger?.LogInformation($"Loading file: {fileSource} for Configuration {configurationDefinition.ModuleName}-{configurationDefinition.Name} Throttle:{throttleKey} HOTAS:{hotasKey}");
-            var bitMap = (Bitmap)Image.FromFile(fileSource, true);
-            var key = $"{configurationDefinition.ModuleName}-{configurationDefinition.Name}";
-            using var croppedBitmap = Crop(bitMap, configurationDefinition, configurationDefinition);
-            var pageUnit = GraphicsUnit.Pixel;
-            imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone(croppedBitmap.GetBounds(ref pageUnit), PixelFormat.Format24bppRgb));
-#pragma warning restore CA1416 // Validate platform compatibility
-            var currentConfig = configurationDefinition;
 
-            ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>
+            try
             {
-                filePath = subConfig.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(subConfig.FilePath) : subConfig.FilePath;
-                fileSource = Path.Combine(filePath, subConfig.FileName);
-                if (!File.Exists(fileSource))
-                {
-                    throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
-                }
-                _logger?.LogInformation($"Loading file: {fileSource} for {subConfig}");
-#pragma warning disable CA1416 // Validate platform compatibility
-                bitMap = (Bitmap)Image.FromFile(fileSource);
-                var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
-                using var croppedBitmap = Crop(bitMap, subConfig, subConfig);
-                imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone());
+                (filePath, fileSource) = GetImageFilename(configurationDefinition, throttleKey, hotasKey);
+                _logger?.LogInformation($"Loading file: {fileSource} for Configuration {configurationDefinition.ModuleName}-{configurationDefinition.Name} Throttle:{throttleKey} HOTAS:{hotasKey}");
+                var bitMap = (Bitmap)Image.FromFile(fileSource, true);
+                var key = $"{configurationDefinition.ModuleName}-{configurationDefinition.Name}";
+                using var croppedBitmap = Crop(bitMap, configurationDefinition, configurationDefinition);
+                var pageUnit = GraphicsUnit.Pixel;
+                imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone(croppedBitmap.GetBounds(ref pageUnit), PixelFormat.Format24bppRgb));
 #pragma warning restore CA1416 // Validate platform compatibility
-            });
+                var currentConfig = configurationDefinition;
+
+                ConfigurationDefinition.WalkConfigurationDefinitionsWithAction(currentConfig, (subConfig) =>
+                {
+                    filePath = subConfig.FilePath.Contains("%", StringComparison.InvariantCultureIgnoreCase) ? Environment.ExpandEnvironmentVariables(subConfig.FilePath) : subConfig.FilePath;
+                    fileSource = Path.Combine(filePath, subConfig.FileName);
+                    if (!File.Exists(fileSource))
+                    {
+                        throw new FileNotFoundException($"Unable to find the specified file at {filePath}", subConfig.FileName);
+                    }
+                    _logger?.LogInformation($"Loading file: {fileSource} for {subConfig}");
+#pragma warning disable CA1416 // Validate platform compatibility
+                    bitMap = (Bitmap)Image.FromFile(fileSource);
+                    var key = $"{currentConfig.ModuleName}-{currentConfig.Name}-{subConfig.Name}";
+                    using var croppedBitmap = Crop(bitMap, subConfig, subConfig);
+                    imageDictionary.Add(key, (Bitmap)croppedBitmap.Clone());
+#pragma warning restore CA1416 // Validate platform compatibility
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"There was a critical error while loading {configurationDefinition} for {throttleKey} and {hotasKey}");
+            }
 
             return imageDictionary;
         }
