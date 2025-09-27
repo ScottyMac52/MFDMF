@@ -75,7 +75,6 @@ jobs:
       self_contained:   ${{ steps.resolve.outputs.self_contained }}
       publish_trimmed:  ${{ steps.resolve.outputs.publish_trimmed }}
       artifact_name:    ${{ steps.nameartifact.outputs.artifact_name }}
-      publish_dir:      ${{ steps.nameartifact.outputs.publish_dir }}
 
     steps:
       - name: Checkout
@@ -168,15 +167,13 @@ jobs:
         shell: pwsh
         run: |
           $artifactName = "single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}"
-          $publishDir   = "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
           "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
-          "publish_dir=$publishDir"     >> $env:GITHUB_OUTPUT
 
       - name: Upload artifact (single EXE + support files)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.nameartifact.outputs.artifact_name }}
-          path: ${{ steps.nameartifact.outputs.publish_dir }}
+          path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
           if-no-files-found: error
 
   release:
@@ -212,6 +209,25 @@ jobs:
           name: ${{ needs.build-and-publish.outputs.artifact_name }}
           path: artifacts
 
+      - name: Package artifact into a single zip
+        id: pack
+        shell: bash
+        run: |
+          set -e
+          TAG="${{ steps.relvals.outputs.tag }}"
+          RID="${{ needs.build-and-publish.outputs.runtime_id }}"
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
+
+          # Create a zip of EVERYTHING under artifacts (files + subfolders)
+          (cd artifacts && zip -r "../${ARCHIVE}" .)
+
+          # Optionally also upload the main EXE for convenience if one exists
+          EXE_PATH="$(find artifacts -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
+
+          echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
+          echo "exe=${EXE_PATH}" >> "$GITHUB_OUTPUT"
+
       - name: Ensure release exists (create if missing)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -232,12 +248,18 @@ jobs:
             fi
           fi
 
-      - name: Upload assets (overwrite if they exist)
+      - name: Upload assets (zip + optional exe)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -e
           TAG="${{ steps.relvals.outputs.tag }}"
-          # --clobber overwrites assets with the same name, avoiding the "update asset" API.
-          gh release upload "$TAG" artifacts/** --clobber --repo "$GITHUB_REPOSITORY"
+          ARCHIVE="${{ steps.pack.outputs.archive }}"
+          EXE="${{ steps.pack.outputs.exe }}"
+
+          if [[ -n "$EXE" ]]; then
+            gh release upload "$TAG" "$ARCHIVE" "$EXE" --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release upload "$TAG" "$ARCHIVE" --clobber --repo "$GITHUB_REPOSITORY"
+          fi
