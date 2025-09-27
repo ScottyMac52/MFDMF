@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+  	<OutputType>WinExe</OutputType>
+	<TargetFramework>net8.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 	<SelfContained>true</SelfContained>
 	<PublishSingleFile>true</PublishSingleFile>
@@ -521,4 +521,5 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+
 </Project>
