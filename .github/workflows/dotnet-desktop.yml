@@ -20,36 +20,29 @@ on:
         required: false
         default: "true"
       publish_trimmed:
-        description: "Trim (true/false) — leave false unless you’ve validated"
+        description: "Trim (true/false) — validate before enabling"
         required: false
         default: "false"
 
 env:
   DOTNET_VERSION: "8.0.x"
-  CONFIGURATION: "Release"
   # Change this to your entry project that produces the EXE:
   PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
-  # Default runtime identifier (overridable via workflow_dispatch input):
-  RUNTIME_ID: "win-x64"
+  # Defaults (can be overridden via workflow_dispatch inputs):
+  RUNTIME_ID_DEFAULT: "win-x64"
+  CONFIGURATION_DEFAULT: "Release"
+  SELF_CONTAINED_DEFAULT: "true"
+  PUBLISH_TRIMMED_DEFAULT: "false"
   # Single-file & related publish settings:
   PUBLISH_SINGLE_FILE: "true"
-  SELF_CONTAINED: "true"
-  PUBLISH_TRIMMED: "false"
   READY_TO_RUN: "false"
-  # Output folder (relative to repo root)
   PUBLISH_DIR: "artifacts/publish"
-  # NuGet source override if needed (leave empty to use default sources)
+  # Optional NuGet source (leave empty to use default sources)
   NUGET_SOURCE: ""
 
 jobs:
   build-and-publish:
-    runs-on: windows-2022  # Includes VS 2022 toolchain
-    env:
-      # Resolve inputs (strings) with fallbacks to env defaults
-      EFFECTIVE_RUNTIME_ID: ${{ github.event.inputs.runtime_id || env.RUNTIME_ID }}
-      EFFECTIVE_CONFIGURATION: ${{ github.event.inputs.configuration || env.CONFIGURATION }}
-      EFFECTIVE_SELF_CONTAINED: ${{ github.event.inputs.self_contained || env.SELF_CONTAINED }}
-      EFFECTIVE_TRIMMED: ${{ github.event.inputs.publish_trimmed || env.PUBLISH_TRIMMED }}
+    runs-on: windows-2022
 
     steps:
       - name: Checkout
@@ -60,19 +53,32 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Print settings
+      - name: Resolve effective settings
+        shell: pwsh
         run: |
-          echo DOTNET_VERSION=${{ env.DOTNET_VERSION }}
-          echo CONFIGURATION=${{ env.CONFIGURATION }}
-          echo PROJECT_PATH=${{ env.PROJECT_PATH }}
-          echo RUNTIME_ID=${{ env.RUNTIME_ID }}
-          echo EFFECTIVE_RUNTIME_ID=${{ env.EFFECTIVE_RUNTIME_ID }}
-          echo EFFECTIVE_CONFIGURATION=${{ env.EFFECTIVE_CONFIGURATION }}
-          echo SELF_CONTAINED=${{ env.SELF_CONTAINED }}
-          echo EFFECTIVE_SELF_CONTAINED=${{ env.EFFECTIVE_SELF_CONTAINED }}
-          echo PUBLISH_TRIMMED=${{ env.PUBLISH_TRIMMED }}
-          echo EFFECTIVE_TRIMMED=${{ env.EFFECTIVE_TRIMMED }}
-          echo PUBLISH_DIR=${{ env.PUBLISH_DIR }}
+          # Pull inputs (present only for workflow_dispatch)
+          $in_runtime   = "${{ github.event.inputs.runtime_id }}"
+          $in_config    = "${{ github.event.inputs.configuration }}"
+          $in_sc        = "${{ github.event.inputs.self_contained }}"
+          $in_trim      = "${{ github.event.inputs.publish_trimmed }}"
+
+          # Fallbacks to defaults when inputs are empty (push/PR)
+          $rid   = if ([string]::IsNullOrWhiteSpace($in_runtime)) { "${{ env.RUNTIME_ID_DEFAULT }}" } else { $in_runtime }
+          $conf  = if ([string]::IsNullOrWhiteSpace($in_config))  { "${{ env.CONFIGURATION_DEFAULT }}" } else { $in_config }
+          $sc    = if ([string]::IsNullOrWhiteSpace($in_sc))      { "${{ env.SELF_CONTAINED_DEFAULT }}" } else { $in_sc }
+          $trim  = if ([string]::IsNullOrWhiteSpace($in_trim))    { "${{ env.PUBLISH_TRIMMED_DEFAULT }}" } else { $in_trim }
+
+          # Export for later steps
+          "EFFECTIVE_RUNTIME_ID=$rid"       >> $env:GITHUB_ENV
+          "EFFECTIVE_CONFIGURATION=$conf"   >> $env:GITHUB_ENV
+          "EFFECTIVE_SELF_CONTAINED=$sc"    >> $env:GITHUB_ENV
+          "EFFECTIVE_TRIMMED=$trim"         >> $env:GITHUB_ENV
+
+          Write-Host "Resolved:"
+          Write-Host "  RUNTIME_ID=$rid"
+          Write-Host "  CONFIGURATION=$conf"
+          Write-Host "  SELF_CONTAINED=$sc"
+          Write-Host "  PUBLISH_TRIMMED=$trim"
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -84,58 +90,58 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore
+        shell: pwsh
         run: |
-          if [ -n "${{ env.NUGET_SOURCE }}" ]; then
+          if (-not [string]::IsNullOrWhiteSpace("${{ env.NUGET_SOURCE }}")) {
             dotnet restore --source "${{ env.NUGET_SOURCE }}"
-          else
+          } else {
             dotnet restore
-          fi
+          }
 
-      - name: Build (solution or repo)
+      - name: Build
+        shell: pwsh
         run: |
-          # If you have a .sln, you can swap this to: dotnet build YourSolution.sln ...
-          dotnet build --no-restore -c "${{ env.CONFIGURATION }}"
+          dotnet build --no-restore -c "${{ env.EFFECTIVE_CONFIGURATION }}"
 
       - name: Run tests (if present)
+        shell: pwsh
         run: |
           if (Get-ChildItem -Recurse -Filter *.csproj | Select-String -SimpleMatch "<IsTestProject>true</IsTestProject>" -Quiet) {
-            echo "Test projects detected. Running tests..."
-            dotnet test --no-build -c "${{ env.CONFIGURATION }}" --logger "trx;LogFileName=test_results.trx"
+            Write-Host "Test projects detected. Running tests..."
+            dotnet test --no-build -c "${{ env.EFFECTIVE_CONFIGURATION }}" --logger "trx;LogFileName=test_results.trx"
           } else {
-            echo "No test projects detected. Skipping tests."
+            Write-Host "No test projects detected. Skipping tests."
           }
 
       - name: Publish single-file executable
+        shell: pwsh
         run: |
-          $rid="${{ env.EFFECTIVE_RUNTIME_ID }}"
-          $conf="${{ env.EFFECTIVE_CONFIGURATION }}"
-          $selfContained="${{ env.EFFECTIVE_SELF_CONTAINED }}"
-          $trimmed="${{ env.EFFECTIVE_TRIMMED }}"
-          $out="${{ env.PUBLISH_DIR }}/$rid"
+          $rid  = "${{ env.EFFECTIVE_RUNTIME_ID }}"
+          $conf = "${{ env.EFFECTIVE_CONFIGURATION }}"
+          $sc   = "${{ env.EFFECTIVE_SELF_CONTAINED }}"
+          $trim = "${{ env.EFFECTIVE_TRIMMED }}"
+          $out  = "${{ env.PUBLISH_DIR }}/$rid"
 
-          # Ensure output directory exists
           New-Item -ItemType Directory -Force -Path "$out" | Out-Null
 
-          # Publish with single-file options
           dotnet publish "${{ env.PROJECT_PATH }}" `
             -c "$conf" `
             -r "$rid" `
-            --self-contained:$selfContained `
+            --self-contained:$sc `
             -p:PublishSingleFile=${{ env.PUBLISH_SINGLE_FILE }} `
-            -p:PublishTrimmed=$trimmed `
+            -p:PublishTrimmed=$trim `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:EnableCompressionInSingleFile=true `
             -p:ReadyToRun=${{ env.READY_TO_RUN }} `
             -o "$out"
 
           Write-Host "Publish complete to $out"
-        shell: pwsh
 
       - name: List published files
-        run: |
-          echo "Published files:"
-          dir "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}" -Recurse
         shell: pwsh
+        run: |
+          Write-Host "Published files:"
+          Get-ChildItem -Recurse "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
 
       - name: Upload artifact (single EXE + support files)
         uses: actions/upload-artifact@v4
@@ -143,3 +149,4 @@ jobs:
           name: single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}
           path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
           if-no-files-found: error
+
