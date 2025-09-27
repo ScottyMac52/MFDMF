@@ -51,7 +51,7 @@ env:
   # Change this to your entry project that produces the EXE:
   PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
 
-  # Defaults (can be overridden via workflow_dispatch inputs):
+  # Defaults (overridable via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
   CONFIGURATION_DEFAULT: "Release"
   SELF_CONTAINED_DEFAULT: "true"
@@ -69,7 +69,6 @@ jobs:
   build-and-publish:
     runs-on: windows-2022
 
-    # Expose resolved values to downstream jobs (release)
     outputs:
       runtime_id:       ${{ steps.resolve.outputs.runtime_id }}
       configuration:    ${{ steps.resolve.outputs.configuration }}
@@ -110,12 +109,6 @@ jobs:
           "configuration=$conf"    >> $env:GITHUB_OUTPUT
           "self_contained=$sc"     >> $env:GITHUB_OUTPUT
           "publish_trimmed=$trim"  >> $env:GITHUB_OUTPUT
-
-          Write-Host "Resolved:"
-          Write-Host "  RUNTIME_ID=$rid"
-          Write-Host "  CONFIGURATION=$conf"
-          Write-Host "  SELF_CONTAINED=$sc"
-          Write-Host "  PUBLISH_TRIMMED=$trim"
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -170,14 +163,6 @@ jobs:
             -p:ReadyToRun=${{ env.READY_TO_RUN }} `
             -o "$out"
 
-          Write-Host "Publish complete to $out"
-
-      - name: List published files
-        shell: pwsh
-        run: |
-          Write-Host "Published files:"
-          Get-ChildItem -Recurse "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
-
       - id: nameartifact
         name: Name artifact
         shell: pwsh
@@ -195,72 +180,27 @@ jobs:
           if-no-files-found: error
 
   release:
-    # Create a release on tag push OR manual dispatch
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
     needs: build-and-publish
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Determine release values
         id: relvals
         shell: bash
         run: |
-          # prefer tag name on tag push
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
           else
-            # manual: use input or auto-generate
-            if [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
-              TAG="${{ github.event.inputs.release_tag }}"
-            else
-              TAG="v${GITHUB_RUN_NUMBER}"
-            fi
+            TAG="${{ github.event.inputs.release_tag }}"
+            if [[ -z "$TAG" ]]; then TAG="v${GITHUB_RUN_NUMBER}"; fi
           fi
 
           NAME="${{ github.event.inputs.release_name }}"
-          if [[ -z "$NAME" ]]; then
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-            NAME="Release ${TAG}"
-          fi
+          if [[ -z "$NAME" ]]; then NAME="Release ${TAG}"; fi
 
           PRERELEASE="${{ github.event.inputs.prerelease }}"
-          if [[ -z "$PRERELEASE" ]]; then
-            PRERELEASE="false"
-          fi
+          if [[ -z "$PRERELEASE" ]]; then PRERELEASE="false"; fi
 
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
@@ -272,15 +212,32 @@ jobs:
           name: ${{ needs.build-and-publish.outputs.artifact_name }}
           path: artifacts
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.relvals.outputs.tag }}
-          name: ${{ steps.relvals.outputs.name }}
-          prerelease: ${{ steps.relvals.outputs.prerelease }}
-          generate_release_notes: true
-          files: |
-            artifacts/**
+      - name: Ensure release exists (create if missing)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -e
+          TAG="${{ steps.relvals.outputs.tag }}"
+          NAME="${{ steps.relvals.outputs.name }}"
+          PRERELEASE="${{ steps.relvals.outputs.prerelease }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists."
+          else
+            echo "Creating release $TAG..."
+            if [[ "$PRERELEASE" == "true" ]]; then
+              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease
+            else
+              gh release create "$TAG" --title "$NAME" --generate-notes
+            fi
+          fi
 
+      - name: Upload assets (overwrite if they exist)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -e
+          TAG="${{ steps.relvals.outputs.tag }}"
+          # --clobber overwrites assets with the same name, avoiding the "update asset" API.
+          gh release upload "$TAG" artifacts/** --clobber
