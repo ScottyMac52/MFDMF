@@ -1,8 +1,12 @@
 name: .NET 8 Single EXE Publish
 
+permissions:
+  contents: write   # needed to create releases
+
 on:
   push:
     branches: [ "main", "master" ]
+    tags: [ "v*", "V*" ]     # build + release when pushing a tag like v1.2.3
   pull_request:
     branches: [ "main", "master" ]
   workflow_dispatch:
@@ -23,26 +27,50 @@ on:
         description: "Trim (true/false) — validate before enabling"
         required: false
         default: "false"
+      release_tag:
+        description: "Release tag (e.g., v1.0.0). Leave blank to auto-generate."
+        required: false
+        default: ""
+      release_name:
+        description: "Release name (optional)."
+        required: false
+        default: ""
+      prerelease:
+        description: "Mark as prerelease (true/false)"
+        required: false
+        default: "false"
 
 env:
   DOTNET_VERSION: "8.0.x"
   # Change this to your entry project that produces the EXE:
-  PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
+  PROJECT_PATH: "YourApp/YourApp.csproj"
+
   # Defaults (can be overridden via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
   CONFIGURATION_DEFAULT: "Release"
   SELF_CONTAINED_DEFAULT: "true"
   PUBLISH_TRIMMED_DEFAULT: "false"
+
   # Single-file & related publish settings:
   PUBLISH_SINGLE_FILE: "true"
   READY_TO_RUN: "false"
   PUBLISH_DIR: "artifacts/publish"
+
   # Optional NuGet source (leave empty to use default sources)
   NUGET_SOURCE: ""
 
 jobs:
   build-and-publish:
     runs-on: windows-2022
+
+    # Expose resolved values to downstream jobs (release)
+    outputs:
+      runtime_id:       ${{ steps.resolve.outputs.runtime_id }}
+      configuration:    ${{ steps.resolve.outputs.configuration }}
+      self_contained:   ${{ steps.resolve.outputs.self_contained }}
+      publish_trimmed:  ${{ steps.resolve.outputs.publish_trimmed }}
+      artifact_name:    ${{ steps.nameartifact.outputs.artifact_name }}
+      publish_dir:      ${{ steps.nameartifact.outputs.publish_dir }}
 
     steps:
       - name: Checkout
@@ -53,26 +81,29 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Resolve effective settings
+      - id: resolve
+        name: Resolve effective settings
         shell: pwsh
         run: |
-          # Pull inputs (present only for workflow_dispatch)
           $in_runtime   = "${{ github.event.inputs.runtime_id }}"
           $in_config    = "${{ github.event.inputs.configuration }}"
           $in_sc        = "${{ github.event.inputs.self_contained }}"
           $in_trim      = "${{ github.event.inputs.publish_trimmed }}"
 
-          # Fallbacks to defaults when inputs are empty (push/PR)
           $rid   = if ([string]::IsNullOrWhiteSpace($in_runtime)) { "${{ env.RUNTIME_ID_DEFAULT }}" } else { $in_runtime }
           $conf  = if ([string]::IsNullOrWhiteSpace($in_config))  { "${{ env.CONFIGURATION_DEFAULT }}" } else { $in_config }
           $sc    = if ([string]::IsNullOrWhiteSpace($in_sc))      { "${{ env.SELF_CONTAINED_DEFAULT }}" } else { $in_sc }
           $trim  = if ([string]::IsNullOrWhiteSpace($in_trim))    { "${{ env.PUBLISH_TRIMMED_DEFAULT }}" } else { $in_trim }
 
-          # Export for later steps
           "EFFECTIVE_RUNTIME_ID=$rid"       >> $env:GITHUB_ENV
           "EFFECTIVE_CONFIGURATION=$conf"   >> $env:GITHUB_ENV
           "EFFECTIVE_SELF_CONTAINED=$sc"    >> $env:GITHUB_ENV
           "EFFECTIVE_TRIMMED=$trim"         >> $env:GITHUB_ENV
+
+          "runtime_id=$rid"        >> $env:GITHUB_OUTPUT
+          "configuration=$conf"    >> $env:GITHUB_OUTPUT
+          "self_contained=$sc"     >> $env:GITHUB_OUTPUT
+          "publish_trimmed=$trim"  >> $env:GITHUB_OUTPUT
 
           Write-Host "Resolved:"
           Write-Host "  RUNTIME_ID=$rid"
@@ -83,11 +114,9 @@ jobs:
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.nuget/packages
+          path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          restore-keys: ${{ runner.os }}-nuget-
 
       - name: Restore
         shell: pwsh
@@ -143,10 +172,74 @@ jobs:
           Write-Host "Published files:"
           Get-ChildItem -Recurse "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
 
+      - id: nameartifact
+        name: Name artifact
+        shell: pwsh
+        run: |
+          $artifactName = "single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}"
+          $publishDir   = "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
+          "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
+          "publish_dir=$publishDir"     >> $env:GITHUB_OUTPUT
+
       - name: Upload artifact (single EXE + support files)
         uses: actions/upload-artifact@v4
         with:
-          name: single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}
-          path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
+          name: ${{ steps.nameartifact.outputs.artifact_name }}
+          path: ${{ steps.nameartifact.outputs.publish_dir }}
           if-no-files-found: error
+
+  release:
+    # Create a release on tag push OR manual dispatch
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine release values
+        id: relvals
+        shell: bash
+        run: |
+          # prefer tag name on tag push
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            # manual: use input or auto-generate
+            if [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
+              TAG="${{ github.event.inputs.release_tag }}"
+            else
+              TAG="v${GITHUB_RUN_NUMBER}"
+            fi
+          fi
+
+          NAME="${{ github.event.inputs.release_name }}"
+          if [[ -z "$NAME" ]]; then
+            NAME="Release ${TAG}"
+          fi
+
+          PRERELEASE="${{ github.event.inputs.prerelease }}"
+          if [[ -z "$PRERELEASE" ]]; then
+            PRERELEASE="false"
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-and-publish.outputs.artifact_name }}
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.relvals.outputs.tag }}
+          name: ${{ steps.relvals.outputs.name }}
+          prerelease: ${{ steps.relvals.outputs.prerelease }}
+          generate_release_notes: true
+          files: |
+            artifacts/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
