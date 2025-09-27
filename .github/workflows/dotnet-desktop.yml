@@ -1,110 +1,145 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
-# built on .NET Core.
-# To learn how to migrate your existing application to .NET Core,
-# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
-#
-# To configure this workflow:
-#
-# 1. Configure environment variables
-# GitHub sets default environment variables for every workflow run.
-# Replace the variables relative to your project in the "env" section below.
-#
-# 2. Signing
-# Generate a signing certificate in the Windows Application
-# Packaging Project or add an existing signing certificate to the project.
-# Next, use PowerShell to encode the .pfx file using Base64 encoding
-# by running the following Powershell script to generate the output string:
-#
-# $pfx_cert = Get-Content '.\SigningCertificate.pfx' -Encoding Byte
-# [System.Convert]::ToBase64String($pfx_cert) | Out-File 'SigningCertificate_Encoded.txt'
-#
-# Open the output file, SigningCertificate_Encoded.txt, and copy the
-# string inside. Then, add the string to the repo as a GitHub secret
-# and name it "Base64_Encoded_Pfx."
-# For more information on how to configure your signing certificate for
-# this workflow, refer to https://github.com/microsoft/github-actions-for-desktop-apps#signing
-#
-# Finally, add the signing certificate password to the repo as a secret and name it "Pfx_Key".
-# See "Build the Windows Application Packaging project" below to see how the secret is used.
-#
-# For more information on GitHub Actions, refer to https://github.com/features/actions
-# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
-# refer to https://github.com/microsoft/github-actions-for-desktop-apps
-
-name: .NET Core Desktop
+name: .NET 8 Single EXE Publish
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+    inputs:
+      runtime_id:
+        description: "RID (e.g., win-x64, linux-x64, osx-x64)"
+        required: false
+        default: "win-x64"
+      configuration:
+        description: "Build configuration"
+        required: false
+        default: "Release"
+      self_contained:
+        description: "Publish self-contained (true/false)"
+        required: false
+        default: "true"
+      publish_trimmed:
+        description: "Trim (true/false) — leave false unless you’ve validated"
+        required: false
+        default: "false"
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  CONFIGURATION: "Release"
+  # Change this to your entry project that produces the EXE:
+  PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
+  # Default runtime identifier (overridable via workflow_dispatch input):
+  RUNTIME_ID: "win-x64"
+  # Single-file & related publish settings:
+  PUBLISH_SINGLE_FILE: "true"
+  SELF_CONTAINED: "true"
+  PUBLISH_TRIMMED: "false"
+  READY_TO_RUN: "false"
+  # Output folder (relative to repo root)
+  PUBLISH_DIR: "artifacts/publish"
+  # NuGet source override if needed (leave empty to use default sources)
+  NUGET_SOURCE: ""
 
 jobs:
-
-  build:
-
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+  build-and-publish:
+    runs-on: windows-2022  # Includes VS 2022 toolchain
     env:
-      Solution_Name: MFDMF.sln
-      Wap_Project_Directory: MFDMF-App
-      Wap_Project_Path: MFDMF-App/MFDMFApp.csproj
+      # Resolve inputs (strings) with fallbacks to env defaults
+      EFFECTIVE_RUNTIME_ID: ${{ github.event.inputs.runtime_id || env.RUNTIME_ID }}
+      EFFECTIVE_CONFIGURATION: ${{ github.event.inputs.configuration || env.CONFIGURATION }}
+      EFFECTIVE_SELF_CONTAINED: ${{ github.event.inputs.self_contained || env.SELF_CONTAINED }}
+      EFFECTIVE_TRIMMED: ${{ github.event.inputs.publish_trimmed || env.PUBLISH_TRIMMED }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v2
+      - name: Print settings
+        run: |
+          echo DOTNET_VERSION=${{ env.DOTNET_VERSION }}
+          echo CONFIGURATION=${{ env.CONFIGURATION }}
+          echo PROJECT_PATH=${{ env.PROJECT_PATH }}
+          echo RUNTIME_ID=${{ env.RUNTIME_ID }}
+          echo EFFECTIVE_RUNTIME_ID=${{ env.EFFECTIVE_RUNTIME_ID }}
+          echo EFFECTIVE_CONFIGURATION=${{ env.EFFECTIVE_CONFIGURATION }}
+          echo SELF_CONTAINED=${{ env.SELF_CONTAINED }}
+          echo EFFECTIVE_SELF_CONTAINED=${{ env.EFFECTIVE_SELF_CONTAINED }}
+          echo PUBLISH_TRIMMED=${{ env.PUBLISH_TRIMMED }}
+          echo EFFECTIVE_TRIMMED=${{ env.EFFECTIVE_TRIMMED }}
+          echo PUBLISH_DIR=${{ env.PUBLISH_DIR }}
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+      - name: Restore
+        run: |
+          if [ -n "${{ env.NUGET_SOURCE }}" ]; then
+            dotnet restore --source "${{ env.NUGET_SOURCE }}"
+          else
+            dotnet restore
+          fi
 
-    # Create the app package by building and packaging the Windows Application Packaging project
-    - name: Create the app package
-      run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
-      env:
-        Appx_Bundle: Always
-        Appx_Bundle_Platforms: x86|x64
-        Appx_Package_Build_Mode: StoreUpload
-        Configuration: ${{ matrix.configuration }}
+      - name: Build (solution or repo)
+        run: |
+          # If you have a .sln, you can swap this to: dotnet build YourSolution.sln ...
+          dotnet build --no-restore -c "${{ env.CONFIGURATION }}"
 
-    # Remove the pfx
-    - name: Remove the pfx
-      run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
+      - name: Run tests (if present)
+        run: |
+          if (Get-ChildItem -Recurse -Filter *.csproj | Select-String -SimpleMatch "<IsTestProject>true</IsTestProject>" -Quiet) {
+            echo "Test projects detected. Running tests..."
+            dotnet test --no-build -c "${{ env.CONFIGURATION }}" --logger "trx;LogFileName=test_results.trx"
+          } else {
+            echo "No test projects detected. Skipping tests."
+          }
 
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: MSIX Package
-        path: ${{ env.Wap_Project_Directory }}\AppPackages
+      - name: Publish single-file executable
+        run: |
+          $rid="${{ env.EFFECTIVE_RUNTIME_ID }}"
+          $conf="${{ env.EFFECTIVE_CONFIGURATION }}"
+          $selfContained="${{ env.EFFECTIVE_SELF_CONTAINED }}"
+          $trimmed="${{ env.EFFECTIVE_TRIMMED }}"
+          $out="${{ env.PUBLISH_DIR }}/$rid"
+
+          # Ensure output directory exists
+          New-Item -ItemType Directory -Force -Path "$out" | Out-Null
+
+          # Publish with single-file options
+          dotnet publish "${{ env.PROJECT_PATH }}" `
+            -c "$conf" `
+            -r "$rid" `
+            --self-contained:$selfContained `
+            -p:PublishSingleFile=${{ env.PUBLISH_SINGLE_FILE }} `
+            -p:PublishTrimmed=$trimmed `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:ReadyToRun=${{ env.READY_TO_RUN }} `
+            -o "$out"
+
+          Write-Host "Publish complete to $out"
+        shell: pwsh
+
+      - name: List published files
+        run: |
+          echo "Published files:"
+          dir "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}" -Recurse
+        shell: pwsh
+
+      - name: Upload artifact (single EXE + support files)
+        uses: actions/upload-artifact@v4
+        with:
+          name: single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}
+          path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
+          if-no-files-found: error
