@@ -49,7 +49,7 @@ on:
 env:
   DOTNET_VERSION: "8.0.x"
   # Change this to your entry project that produces the EXE:
-  PROJECT_PATH: "MFDMF-App/MFDMFApp.cspro"
+  PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
 
   # Defaults (can be overridden via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
