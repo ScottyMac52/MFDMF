@@ -277,5 +277,3 @@ jobs:
           fi
 
           echo "Uploaded assets to: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
-
-+
