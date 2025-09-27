@@ -207,12 +207,14 @@
 		{
             var startOptions = GetStartOptions(args);
             _logger.LogInformation($"Switching to Module: {startOptions.ModuleName}, SubModule: {startOptions.SubModuleName}");
+#pragma warning disable CS8604 // Possible null reference argument.
             ModuleSwitchRequested?.Invoke(startOptions.ModuleName, startOptions.SubModuleName);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>
         /// Uses the registry to get the specified folder location
-        /// </summary>
+        /// </summary>+
         /// <param name="folderName"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>

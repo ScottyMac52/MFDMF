@@ -457,7 +457,9 @@ namespace MFDMFApp
 
         public void SwitchModule(string moduleName, string subModuleName)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             _startOptions.ModuleName = moduleName;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             _startOptions.SubModuleName = subModuleName;
             ReloadConfiguration(true);
         }
