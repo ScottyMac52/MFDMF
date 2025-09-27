@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <!-- Make this assembly Windows-only and set a minimum Windows version -->
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <RootNamespace>MFDMF_Services</RootNamespace>
     <Platforms>x64</Platforms>
