@@ -1,7 +1,7 @@
 name: .NET 8 Single EXE Publish
 
 permissions:
-  contents: write   # needed to create releases
+  contents: write   # required to create/update releases
 
 on:
   push:
@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       runtime_id:
-        description: "RID (e.g., win-x64, linux-x64, osx-x64)"
+        description: "RID (win-x64, linux-x64, osx-x64)"
         required: false
         default: "win-x64"
       configuration:
@@ -48,7 +48,7 @@ on:
 
 env:
   DOTNET_VERSION: "8.0.x"
-  # CHANGE THIS to your entry project that produces the EXE:
+  # ⬇⬇ CHANGE THIS to your entry project that produces the EXE:
   PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
 
   # Defaults (overridable via workflow_dispatch inputs):
@@ -176,10 +176,85 @@ jobs:
           path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
           if-no-files-found: error
 
+  # Build a Windows installer (setup.exe) with Inno Setup
+  setup-exe:
+    needs: build-and-publish
+    if: needs.build-and-publish.outputs.runtime_id == 'win-x64'   # only build installer for Windows
+    runs-on: windows-2022
+
+    outputs:
+      setup_artifact: ${{ steps.meta.outputs.setup_artifact }}
+
+    steps:
+      - name: Download published files
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-and-publish.outputs.artifact_name }}
+          path: _staging
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y
+
+      - id: meta
+        name: Detect EXE and set names
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path _staging -Recurse -Filter *.exe | Select-Object -First 1
+          if (-not $exe) { throw "No .exe found under _staging" }
+          $ExeName = $exe.Name
+          $AppName = "${{ github.event.repository.name }}"
+          $Tag     = ("${{ github.ref }}".StartsWith("refs/tags/")) ? "${{ github.ref }}".Substring(10) : "${{ github.event.inputs.release_tag }}"
+          if ([string]::IsNullOrWhiteSpace($Tag)) { $Tag = "v${{ github.run_number }}" }
+          "APP_NAME=$AppName"           >> $env:GITHUB_ENV
+          "APP_VERSION=$Tag"            >> $env:GITHUB_ENV
+          "APP_EXE_NAME=$ExeName"       >> $env:GITHUB_ENV
+          "setup_artifact=setup-exe-${{ needs.build-and-publish.outputs.runtime_id }}" >> $env:GITHUB_OUTPUT
+
+      - name: Generate installer script
+        shell: pwsh
+        run: |
+          $content = @"
+[Setup]
+AppName=${env:APP_NAME}
+AppVersion=${env:APP_VERSION}
+AppPublisher=${{ github.repository_owner }}
+DefaultDirName={pf}\${env:APP_NAME}
+OutputDir=dist
+OutputBaseFilename=${env:APP_NAME}-Setup-${env:APP_VERSION}
+Compression=lzma
+SolidCompression=yes
+
+[Files]
+Source: "_staging\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+
+[Icons]
+Name: "{group}\${env:APP_NAME}"; Filename: "{app}\${env:APP_EXE_NAME}"
+Name: "{commondesktop}\${env:APP_NAME}"; Filename: "{app}\${env:APP_EXE_NAME}"
+
+[Run]
+Filename: "{app}\${env:APP_EXE_NAME}"; Description: "Launch ${env:APP_NAME}"; Flags: nowait postinstall skipifsilent
+"@
+          $content | Out-File -FilePath installer.iss -Encoding UTF8 -Force
+
+      - name: Build installer (setup.exe)
+        shell: pwsh
+        run: &
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+
+      - name: Upload setup.exe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.setup_artifact }}
+          path: dist/*.exe
+          if-no-files-found: error
+
   release:
     # Only on manual dispatch or tag push
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
-    needs: build-and-publish
+    needs:
+      - build-and-publish
+      - setup-exe
     runs-on: ubuntu-latest
 
     steps:
@@ -193,11 +268,9 @@ jobs:
             TAG="${{ github.event.inputs.release_tag }}"
             if [[ -z "$TAG" ]]; then TAG="v${GITHUB_RUN_NUMBER}"; fi
           fi
-
           NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$NAME" ]]; then NAME="Release ${TAG}"; fi
 
-          # Auto-prerelease if tag includes -alpha/-beta/-rc, else false (unless overridden)
           PRERELEASE_INPUT="${{ github.event.inputs.prerelease }}"
           if [[ -n "$PRERELEASE_INPUT" ]]; then
             PRERELEASE="$PRERELEASE_INPUT"
@@ -210,13 +283,13 @@ jobs:
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
           echo "Releases page: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
 
-      - name: Download build artifact
+      - name: Download app artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build-and-publish.outputs.artifact_name }}
-          path: _staging   # put all files in a known folder
+          path: _staging
 
-      - name: Package artifact into a single zip
+      - name: Zip app files
         id: pack
         shell: bash
         run: |
@@ -225,18 +298,17 @@ jobs:
           RID="${{ needs.build-and-publish.outputs.runtime_id }}"
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
-
-          echo "Staging contents:"
-          ls -la _staging
-
-          # Zip EVERYTHING under _staging (files + subfolders)
           (cd _staging && zip -r "../$ARCHIVE" .)
-
-          # Optional: also upload the main EXE if present
           EXE_PATH="$(find _staging -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
-
           echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
           echo "exe=${EXE_PATH}"     >> "$GITHUB_OUTPUT"
+
+      - name: Download setup.exe artifact (if produced)
+        if: needs.setup-exe.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup-exe.outputs.setup_artifact }}
+          path: _setup
 
       - name: Ensure release exists (create if missing)
         env:
@@ -247,20 +319,19 @@ jobs:
           TAG="${{ steps.relvals.outputs.tag }}"
           NAME="${{ steps.relvals.outputs.name }}"
           PRERELEASE="${{ steps.relvals.outputs.prerelease }}"
-
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $TAG exists."
           else
             echo "Creating release $TAG..."
             if [[ "$PRERELEASE" == "true" ]]; then
-              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease --repo "$GITHUB_REPOSITORY"
+              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease --latest --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
             else
-              gh release create "$TAG" --title "$NAME" --generate-notes --repo "$GITHUB_REPOSITORY"
+              gh release create "$TAG" --title "$NAME" --generate-notes --latest --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
             fi
           fi
           echo "Release URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
 
-      - name: Upload assets (zip + optional exe)
+      - name: Upload assets (zip + optional exe + setup)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
@@ -269,11 +340,8 @@ jobs:
           TAG="${{ steps.relvals.outputs.tag }}"
           ARCHIVE="${{ steps.pack.outputs.archive }}"
           EXE="${{ steps.pack.outputs.exe }}"
-
-          if [[ -n "$EXE" ]]; then
-            gh release upload "$TAG" "$ARCHIVE" "$EXE" --clobber --repo "$GITHUB_REPOSITORY"
-          else
-            gh release upload "$TAG" "$ARCHIVE" --clobber --repo "$GITHUB_REPOSITORY"
-          fi
-
+          FILES=("$ARCHIVE")
+          if [[ -n "$EXE" && -f "$EXE" ]]; then FILES+=("$EXE"); fi
+          if compgen -G "_setup/*.exe" > /dev/null; then FILES+=(_setup/*.exe); fi
+          gh release upload "$TAG" "${FILES[@]}" --clobber --repo "$GITHUB_REPOSITORY"
           echo "Uploaded assets to: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
