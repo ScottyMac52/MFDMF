@@ -48,16 +48,21 @@ on:
 
 env:
   DOTNET_VERSION: "8.0.x"
+  # CHANGE THIS to your entry project that produces the EXE:
   PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"
 
+  # Defaults (overridable via workflow_dispatch inputs):
   RUNTIME_ID_DEFAULT: "win-x64"
   CONFIGURATION_DEFAULT: "Release"
   SELF_CONTAINED_DEFAULT: "true"
   PUBLISH_TRIMMED_DEFAULT: "false"
 
+  # Single-file & related publish settings:
   PUBLISH_SINGLE_FILE: "true"
   READY_TO_RUN: "false"
   PUBLISH_DIR: "artifacts/publish"
+
+  # Optional NuGet source (leave empty to use default sources)
   NUGET_SOURCE: ""
 
 jobs:
@@ -172,6 +177,7 @@ jobs:
           if-no-files-found: error
 
   release:
+    # Only on manual dispatch or tag push
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
     needs: build-and-publish
     runs-on: ubuntu-latest
@@ -191,7 +197,7 @@ jobs:
           NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$NAME" ]]; then NAME="Release ${TAG}"; fi
 
-          # Auto-prerelease if tag includes -alpha/-beta/-rc, else false.
+          # Auto-prerelease if tag includes -alpha/-beta/-rc, else false (unless overridden)
           PRERELEASE_INPUT="${{ github.event.inputs.prerelease }}"
           if [[ -n "$PRERELEASE_INPUT" ]]; then
             PRERELEASE="$PRERELEASE_INPUT"
@@ -208,7 +214,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build-and-publish.outputs.artifact_name }}
-        # default path = ./<artifact_name>; we'll re-zip from there
+          path: _staging   # put all files in a known folder
 
       - name: Package artifact into a single zip
         id: pack
@@ -220,14 +226,17 @@ jobs:
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
           ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
 
-          # zip the downloaded artifact folder into one file
-          zip -r "$ARCHIVE" "${{ needs.build-and-publish.outputs.artifact_name }}"
+          echo "Staging contents:"
+          ls -la _staging
 
-          # also try to find a main .exe (optional convenience upload)
-          EXE_PATH="$(find "${{ needs.build-and-publish.outputs.artifact_name }}" -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
+          # Zip EVERYTHING under _staging (files + subfolders)
+          (cd _staging && zip -r "../$ARCHIVE" .)
+
+          # Optional: also upload the main EXE if present
+          EXE_PATH="$(find _staging -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
 
           echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
-          echo "exe=${EXE_PATH}" >> "$GITHUB_OUTPUT"
+          echo "exe=${EXE_PATH}"     >> "$GITHUB_OUTPUT"
 
       - name: Ensure release exists (create if missing)
         env:
@@ -238,6 +247,7 @@ jobs:
           TAG="${{ steps.relvals.outputs.tag }}"
           NAME="${{ steps.relvals.outputs.name }}"
           PRERELEASE="${{ steps.relvals.outputs.prerelease }}"
+
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $TAG exists."
           else
