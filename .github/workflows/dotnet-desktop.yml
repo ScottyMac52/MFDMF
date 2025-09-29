@@ -219,22 +219,27 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
-          $tag = '${{ steps.rel.outputs.tag }}'
+          $repo = "$env:GITHUB_REPOSITORY"
+          $tag  = '${{ steps.rel.outputs.tag }}'
           $name = $tag.TrimStart('v','V')
-          if ( (gh release view $tag 2>$null) ) {
-            Write-Host "Release $tag exists."
+
+          # Ensure the release exists (avoid needing a .git folder)
+          gh release view "$tag" --repo "$repo" *> $null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Creating release $tag..."
+            gh release create "$tag" --repo "$repo" --title "$name" --generate-notes
+            if ($LASTEXITCODE -ne 0) { throw "Failed to create release $tag" }
           } else {
-            gh release create $tag --title $name --generate-notes
+            Write-Host "Release $tag exists."
           }
 
-          $setup = "MFDMF-Setup-$tag.exe"
-          if (-not (Test-Path $setup)) {
-            # try case-insensitive tag variants (v vs V, etc.)
-            $candidate = Get-ChildItem -Filter "MFDMF-Setup-*.exe" | Select-Object -First 1
-            if ($candidate) { $setup = $candidate.Name }
-          }
+          # Find the Setup.exe we downloaded from artifacts
+          $setup = Get-ChildItem -Filter "MFDMF-Setup-*.exe" | Select-Object -First 1
+          if (-not $setup) { throw "Setup.exe not found in workspace." }
 
-          if (-not (Test-Path $setup)) { throw "Setup.exe not found in workspace." }
+          # Upload (overwrite if already present)
+          gh release upload "$tag" "$($setup.FullName)" --repo "$repo" --clobber
+          if ($LASTEXITCODE -ne 0) { throw "Failed to upload $($setup.Name) to release $tag" }
 
-          gh release upload $tag "$setup" --clobber --repo "$env:GITHUB_REPOSITORY"
-          Write-Host "Release ready: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/releases/tag/$tag"
+          Write-Host "Release ready: $env:GITHUB_SERVER_URL/$repo/releases/tag/$tag"
+          $global:LASTEXITCODE = 0
