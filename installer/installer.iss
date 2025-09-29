@@ -79,7 +79,7 @@ end;
 
 function GetConfigDir(Param: string): string;
 begin
-  ; No WinAPI—simple, reliable path on Win10/11:
+  // No WinAPI—simple, reliable path on Win10/11:
   Result := ExpandConstant('{userprofile}\Saved Games\Vyper Industries\MFDMF\Config');
 end;
 
@@ -121,3 +121,4 @@ begin
     ForceDirectories(GetConfigDir(''));
 end;
 ; ==================== end ====================
+
