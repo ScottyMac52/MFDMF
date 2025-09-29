@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       runtime_id:
-        description: "RID (win-x64, linux-x64, osx-x64)"
+        description: "RID (e.g., win-x64, linux-x64, osx-x64)"
         required: false
         default: "win-x64"
       configuration:
@@ -30,99 +30,80 @@ on:
         required: false
         default: "true"
       publish_trimmed:
-        description: "Trim (true/false) — validate first"
+        description: "PublishTrimmed (true/false)"
         required: false
         default: "false"
       release_tag:
-        description: "Release tag (e.g., v5.0.0). If blank, uses v<run_number>."
-        required: false
-        default: ""
-      release_name:
-        description: "Release name"
-        required: false
-        default: ""
-      prerelease:
-        description: "Override prerelease flag (true/false). Leave blank for auto."
+        description: "Release tag (e.g., v5.0.0). Leave blank unless creating release."
         required: false
         default: ""
 
 env:
-  DOTNET_VERSION: "8.0.x"
-  PROJECT_PATH: "MFDMF-App/MFDMFApp.csproj"   # ← CHANGE ME
+  DOTNET_VERSION: 8.0.x
+  PROJECT_PATH: MFDMF-App/MFDMFApp.csproj
 
-  # Defaults that manual inputs can override
-  RUNTIME_ID_DEFAULT: "win-x64"
-  CONFIGURATION_DEFAULT: "Release"
-  SELF_CONTAINED_DEFAULT: "true"
-  PUBLISH_TRIMMED_DEFAULT: "false"
+  RUNTIME_ID_DEFAULT: win-x64
+  CONFIGURATION_DEFAULT: Release
+  SELF_CONTAINED_DEFAULT: true
+  PUBLISH_TRIMMED_DEFAULT: false
+  PUBLISH_SINGLE_FILE: true
+  READY_TO_RUN: false
 
-  # Publish settings
-  PUBLISH_SINGLE_FILE: "true"
-  READY_TO_RUN: "false"
-  PUBLISH_DIR: "artifacts/publish"
-
-  # Handy for scripts (avoid ${{ }} inside run blocks)
-  REPO_OWNER: ${{ github.repository_owner }}
-  REPO_NAME: ${{ github.event.repository.name }}
+  PUBLISH_DIR: artifacts/publish
+  NUGET_SOURCE: ""
 
 jobs:
-  build-and-publish:
-    runs-on: windows-2022
+  build:
+    name: Build & Publish
+    runs-on: windows-latest
 
     outputs:
-      runtime_id:      ${{ steps.resolve.outputs.runtime_id }}
-      artifact_name:   ${{ steps.nameartifact.outputs.artifact_name }}
+      artifact_name: ${{ steps.nameartifact.outputs.artifact_name }}
+      publish_dir:   ${{ steps.nameartifact.outputs.publish_dir }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - id: resolve
-        name: Resolve effective settings
-        shell: pwsh
+      - name: Compute effective inputs
+        id: inputs
+        shell: bash
         run: |
-          $rid  = if ([string]::IsNullOrWhiteSpace("${{ github.event.inputs.runtime_id }}")) { "${{ env.RUNTIME_ID_DEFAULT }}" } else { "${{ github.event.inputs.runtime_id }}" }
-          $conf = if ([string]::IsNullOrWhiteSpace("${{ github.event.inputs.configuration }}")) { "${{ env.CONFIGURATION_DEFAULT }}" } else { "${{ github.event.inputs.configuration }}" }
-          $sc   = if ([string]::IsNullOrWhiteSpace("${{ github.event.inputs.self_contained }}")) { "${{ env.SELF_CONTAINED_DEFAULT }}" } else { "${{ github.event.inputs.self_contained }}" }
-          $trim = if ([string]::IsNullOrWhiteSpace("${{ github.event.inputs.publish_trimmed }}")) { "${{ env.PUBLISH_TRIMMED_DEFAULT }}" } else { "${{ github.event.inputs.publish_trimmed }}" }
+          echo "rid=${{ github.event.inputs.runtime_id || env.RUNTIME_ID_DEFAULT }}" >> $GITHUB_OUTPUT
+          echo "conf=${{ github.event.inputs.configuration || env.CONFIGURATION_DEFAULT }}" >> $GITHUB_OUTPUT
+          echo "sc=${{ github.event.inputs.self_contained || env.SELF_CONTAINED_DEFAULT }}" >> $GITHUB_OUTPUT
+          echo "trim=${{ github.event.inputs.publish_trimmed || env.PUBLISH_TRIMMED_DEFAULT }}" >> $GITHUB_OUTPUT
 
-          "EFFECTIVE_RUNTIME_ID=$rid"       >> $env:GITHUB_ENV
-          "EFFECTIVE_CONFIGURATION=$conf"   >> $env:GITHUB_ENV
-          "EFFECTIVE_SELF_CONTAINED=$sc"    >> $env:GITHUB_ENV
-          "EFFECTIVE_TRIMMED=$trim"         >> $env:GITHUB_ENV
-
-          "runtime_id=$rid" >> $env:GITHUB_OUTPUT
-
-      - name: Cache NuGet
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: ${{ runner.os }}-nuget-
+      - name: Export effective inputs
+        shell: bash
+        run: |
+          echo "EFFECTIVE_RUNTIME_ID=${{ steps.inputs.outputs.rid }}"        >> $GITHUB_ENV
+          echo "EFFECTIVE_CONFIGURATION=${{ steps.inputs.outputs.conf }}"     >> $GITHUB_ENV
+          echo "EFFECTIVE_SELF_CONTAINED=${{ steps.inputs.outputs.sc }}"      >> $GITHUB_ENV
+          echo "EFFECTIVE_TRIMMED=${{ steps.inputs.outputs.trim }}"           >> $GITHUB_ENV
 
       - name: Restore
         shell: pwsh
-        run: dotnet restore
+        run: dotnet restore "${{ env.PROJECT_PATH }}"
 
-      - name: Build
-        shell: pwsh
-        run: dotnet build --no-restore -c "${{ env.EFFECTIVE_CONFIGURATION }}"
-
-      - name: Test (if any)
+      - name: Run tests (if present)
         shell: pwsh
         run: |
-          if (Get-ChildItem -Recurse -Filter *.csproj | Select-String -SimpleMatch "<IsTestProject>true</IsTestProject>" -Quiet) {
+          if (Get-ChildItem -Recurse -Filter *.csproj | Select-String -List -SimpleMatch "<IsTestProject>true</IsTestProject>" -Quiet) {
+            Write-Host "Test projects detected. Running tests..."
             dotnet test --no-build -c "${{ env.EFFECTIVE_CONFIGURATION }}" --logger "trx;LogFileName=test_results.trx"
           } else {
-            Write-Host "No test projects detected."
+            Write-Host "No test projects detected. Skipping tests."
           }
 
-      - name: Publish single-file
+      - name: Publish single-file executable
         shell: pwsh
         run: |
           $rid  = "${{ env.EFFECTIVE_RUNTIME_ID }}"
@@ -130,151 +111,114 @@ jobs:
           $sc   = "${{ env.EFFECTIVE_SELF_CONTAINED }}"
           $trim = "${{ env.EFFECTIVE_TRIMMED }}"
           $out  = "${{ env.PUBLISH_DIR }}/$rid"
-          New-Item -ItemType Directory -Force -Path $out | Out-Null
-          dotnet publish "${{ env.PROJECT_PATH }}" -c $conf -r $rid --self-contained:$sc `
+
+          New-Item -ItemType Directory -Force -Path "$out" | Out-Null
+
+          dotnet publish "${{ env.PROJECT_PATH }}" `
+            -c "$conf" `
+            -r "$rid" `
+            --self-contained:$sc `
             -p:PublishSingleFile=${{ env.PUBLISH_SINGLE_FILE }} `
             -p:PublishTrimmed=$trim `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:EnableCompressionInSingleFile=true `
             -p:ReadyToRun=${{ env.READY_TO_RUN }} `
-            -o $out
+            -o "$out"
+
+          Write-Host "Publish complete to $out"
+
+      - name: List published files
+        shell: pwsh
+        run: |
+          Write-Host "Published files:"
+          Get-ChildItem -Recurse "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
+
+      # ----------------- ADDED: build installer -----------------
+      - name: Install Inno Setup
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: choco install innosetup -y
+
+      - name: Build installer (Inno Setup) from repo installer/installer.iss
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # Resolve dotnet publish folder
+          $pubRoot = Get-ChildItem -Directory -Path "${{ env.PUBLISH_DIR }}" | Select-Object -First 1
+          if (-not $pubRoot) { throw "Publish output not found under ${{ env.PUBLISH_DIR }}" }
+          $pub = $pubRoot.FullName
+
+          # Compute version similar to release tag
+          if ($env:GITHUB_REF -like 'refs/tags/*') {
+            $tag = $env:GITHUB_REF -replace '^refs/tags/', ''
+          } elseif ('${{ github.event.inputs.release_tag }}' -ne '') {
+            $tag = '${{ github.event.inputs.release_tag }}'
+          } else {
+            $tag = 'v' + $env:GITHUB_RUN_NUMBER
+          }
+
+          # Ensure output dir exists
+          New-Item -ItemType Directory -Force -Path "_setup" | Out-Null
+
+          # Aux files location (must contain installer\installer.iss, appsettings.json, optional Modules\*.json)
+          $aux = (Resolve-Path "installer").Path
+          if (-not (Test-Path "$aux\installer.iss")) { throw "Missing installer\installer.iss" }
+
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
+            "/DPublishDir=$pub" `
+            "/DSetupAux=$aux" `
+            "/DAppVersion=$tag" `
+            "/O_setup" `
+            "installer\installer.iss"
+
+          $built = Join-Path "_setup" ("MFDMF-Setup-" + $tag + ".exe")
+          if (-not (Test-Path $built)) { throw "Installer not found: $built" }
+      # ----------------- /ADDED -----------------
 
       - id: nameartifact
         name: Name artifact
         shell: pwsh
         run: |
-          "artifact_name=single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}" >> $env:GITHUB_OUTPUT
+          $artifactName = "single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}"
+          $publishDir   = "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
+          "artifact_name=$artifactName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "publish_dir=$publishDir"     | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Upload app artifact
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.nameartifact.outputs.artifact_name }}
-          path: ${{ env.PUBLISH_DIR }}/${{ env.EFFECTIVE_RUNTIME_ID }}
-          if-no-files-found: error
-
-  setup-exe:
-    needs: build-and-publish
-    if: needs.build-and-publish.outputs.runtime_id == 'win-x64'
-    runs-on: windows-2022
-
-    outputs:
-      setup_artifact: ${{ steps.meta.outputs.setup_artifact }}
-
-    steps:
-      - name: Download app artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.build-and-publish.outputs.artifact_name }}
-          path: _staging
-
-      - name: Install Inno Setup
-        shell: pwsh
-        run: choco install innosetup -y
-
-      - id: meta
-        name: Detect EXE and set names
-        shell: pwsh
-        run: |
-          $exe = Get-ChildItem -Path _staging -Recurse -Filter *.exe | Select-Object -First 1
-          if (-not $exe) { throw "No .exe found under _staging" }
-          $ExeName = $exe.Name
-          $Tag = if ("${{ github.ref }}".StartsWith("refs/tags/")) { "${{ github.ref }}".Substring(10) } else { "${{ github.event.inputs.release_tag }}" }
-          if ([string]::IsNullOrWhiteSpace($Tag)) { $Tag = "v${{ github.run_number }}" }
-          "APP_NAME=${{ env.REPO_NAME }}"   >> $env:GITHUB_ENV
-          "APP_VERSION=$Tag"                >> $env:GITHUB_ENV
-          "APP_EXE_NAME=$ExeName"           >> $env:GITHUB_ENV
-          "setup_artifact=setup-exe-win-x64" >> $env:GITHUB_OUTPUT
-
-      - name: Generate installer script
-        shell: pwsh
-        run: |
-          $lines = @()
-          $lines += "[Setup]"
-          $lines += "AppName=$env:APP_NAME"
-          $lines += "AppVersion=$env:APP_VERSION"
-          $lines += "AppPublisher=$env:REPO_OWNER"
-          $lines += "DefaultDirName={pf}\$($env:APP_NAME)"
-          $lines += "OutputDir=dist"
-          $lines += "OutputBaseFilename=$($env:APP_NAME)-Setup-$($env:APP_VERSION)"
-          $lines += "Compression=lzma"
-          $lines += "SolidCompression=yes"
-          $lines += ""
-          $lines += "[Files]"
-          $lines += "Source: ""_staging\*""; DestDir: ""{app}""; Flags: recursesubdirs createallsubdirs ignoreversion"
-          $lines += ""
-          $lines += "[Icons]"
-          $lines += "Name: ""{group}\$($env:APP_NAME)""; Filename: ""{app}\$($env:APP_EXE_NAME)"""
-          $lines += "Name: ""{commondesktop}\$($env:APP_NAME)""; Filename: ""{app}\$($env:APP_EXE_NAME)"""
-          $lines += ""
-          $lines += "[Run]"
-          $lines += "Filename: ""{app}\$($env:APP_EXE_NAME)""; Description: ""Launch $($env:APP_NAME)""; Flags: nowait postinstall skipifsilent"
-          $lines | Set-Content -Path installer.iss -Encoding UTF8
-
-      - name: Build installer
-        shell: pwsh
-        run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "installer.iss"
-
-      - name: Upload setup.exe artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.meta.outputs.setup_artifact }}
-          path: dist/*.exe
-          if-no-files-found: error
+          path: |
+            ${{ steps.nameartifact.outputs.publish_dir }}/**
+            _setup/*.exe
 
   release:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
-    needs:
-      - build-and-publish
-      - setup-exe
+    name: Release
+    needs: build
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - name: Compute release values
+      - name: Determine release values
         id: relvals
         shell: bash
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
           else
-            TAG="${{ github.event.inputs.release_tag }}"
-            if [[ -z "$TAG" ]]; then TAG="v${GITHUB_RUN_NUMBER}"; fi
-          fi
-          NAME="${{ github.event.inputs.release_name }}"
-          if [[ -z "$NAME" ]]; then NAME="Release ${TAG}"; fi
-          PRE="${{ github.event.inputs.prerelease }}"
-          if [[ -z "$PRE" ]]; then
-            if [[ "$TAG" =~ -(alpha|beta|rc) ]]; then PRE="true"; else PRE="false"; fi
+            if [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
+              TAG="${{ github.event.inputs.release_tag }}"
+            else
+              TAG="v${GITHUB_RUN_NUMBER}"
+            fi
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "name=$NAME" >> "$GITHUB_OUTPUT"
-          echo "prerelease=$PRE" >> "$GITHUB_OUTPUT"
 
-      - name: Download app artifact
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build-and-publish.outputs.artifact_name }}
-          path: _staging
-
-      - name: Zip app files
-        id: pack
-        shell: bash
-        run: |
-          set -e
-          TAG="${{ steps.relvals.outputs.tag }}"
-          RID="${{ needs.build-and-publish.outputs.runtime_id }}"
-          ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
-          (cd _staging && zip -r "../$ARCHIVE" .)
-          EXE_PATH="$(find _staging -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
-          echo "archive=${ARCHIVE}" >> "$GITHUB_OUTPUT"
-          echo "exe=${EXE_PATH}"     >> "$GITHUB_OUTPUT"
-
-      - name: Download setup.exe artifact (if produced)
-        if: needs.setup-exe.result == 'success'
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.setup-exe.outputs.setup_artifact }}
-          path: _setup
+            name: single-exe-${{ needs.build.outputs.artifact_name && env.RUNTIME_ID_DEFAULT || env.RUNTIME_ID_DEFAULT }}
+            # fallback ensures we still fetch something if name isn’t propagated
 
       - name: Create or update GitHub Release
         env:
@@ -283,17 +227,37 @@ jobs:
         run: |
           set -e
           TAG="${{ steps.relvals.outputs.tag }}"
-          NAME="${{ steps.relvals.outputs.name }}"
-          PRE="${{ steps.relvals.outputs.prerelease }}"
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release exists."
+          NAME="${TAG#v}"
+          PRERELEASE="false"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists."
           else
-            if [[ "$PRE" == "true" ]]; then
-              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease --latest --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
+            echo "Creating release $TAG..."
+            if [[ "$PRERELEASE" == "true" ]]; then
+              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease
             else
-              gh release create "$TAG" --title "$NAME" --generate-notes --latest --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
+              gh release create "$TAG" --title "$NAME" --generate-notes
             fi
           fi
+
+      - name: Zip publish folder for convenience
+        id: pack
+        shell: bash
+        run: |
+          set -e
+          TAG="${{ steps.relvals.outputs.tag }}"
+          RID="${{ env.RUNTIME_ID_DEFAULT }}"
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
+          if [ -d "single-exe-${RID}" ]; then
+            zip -r "$ARCHIVE" "single-exe-${RID}"
+          else
+            echo "single-exe-${RID} not found; zipping current directory contents"
+            zip -r "$ARCHIVE" .
+          fi
+          echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
+          EXE_PATH="$(find . -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
+          echo "exe=${EXE_PATH}" >> "$GITHUB_OUTPUT"
 
       - name: Upload release assets
         env:
