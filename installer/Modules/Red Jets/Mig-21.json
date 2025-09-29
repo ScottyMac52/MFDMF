@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "Mig-21",
+			"displayName": "Mig-21bis",
+			"fileName": "Mig-21\\DCS Mig21 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-21"
+				},
+				{
+					"name": "WHKEY_Mig-21",
+					"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-21"
+				}
+			]
+		},
+		{
+			"name": "Mig-21HV",
+			"displayName": "Mig-21bis Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS Mig21 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Mig-21"
+				},
+				{
+					"name": "WHKEY_Mig-21",
+					"filename": "Mig-21\\DCS Mig21 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_Mig-21"
+				}
+			]
+		}
+	]
+}

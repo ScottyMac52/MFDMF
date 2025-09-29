@@ -1,0 +1,105 @@
+{
+	"modules": [
+		{
+			"name": "F-14P",
+			"tag": "F-14B",
+			"displayName": "F-14B Tomcat (Pilot)",
+			"fileName": "F-14\\DCS F14Plt MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_TomcatPILOT",
+					"enabled": true
+				},
+				{
+					"name": "WHKEY_TomcatPILOT",
+					"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-14\\DCS F14Plt WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 482,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-14\\DCS F14Plt HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_TomcatPILOT"
+				}
+			]
+		},
+		{
+			"name": "F-14PHV",
+			"tag": "F-14B",
+			"displayName": "F-14B Tomcat (Pilot) Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS F14Plt MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_TomcatPILOT"
+				},
+				{
+					"name": "WHKEY_TomcatPILOT",
+					"fileName": "F-14\\DCS F14Plt THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-14\\DCS F14Plt WHH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-14\\DCS F14Plt HCH.jpg",
+							"opacity": 1.0,
+							"width": 650,
+							"height": 800,
+							"left": 550,
+							"top": 100,
+							"xOffsetStart": 1,
+							"xOffsetFinish": 1286,
+							"yOffsetStart": 1,
+							"yOffsetFinish": 1340,
+							"enabled": false,
+							"useAsSwitch": true
+						}
+					]
+				},
+				{
+					"name": "RMFD_TomcatPILOT"
+				}
+			]
+		}
+	]
+}

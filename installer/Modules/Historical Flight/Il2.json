@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "IL-2_BoS",
+			"displayName": "IL-2 Sturmovik: Battle of Stalingrad",
+			"fileName": "IL-2\\IL2GB MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_IL-2"
+				},
+				{
+					"name": "WHKEY_IL-2",
+					"filename": "IL-2\\IL2GB THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_IL-2"
+				}
+			]
+		},
+		{
+			"name": "IL-2_BoSHV",
+			"displayName": "IL-2 Sturmovik: Battle of Stalingrad HiViz",
+			"fileName": "_High Contrast MFDs\\IL2GB MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_IL-2"
+				},
+				{
+					"name": "WHKEY_IL-2",
+					"filename": "IL-2\\IL2GB THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_IL-2"
+				}
+			]
+		}
+	]
+}

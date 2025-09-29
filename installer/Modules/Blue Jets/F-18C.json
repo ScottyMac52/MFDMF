@@ -1,0 +1,92 @@
+{
+	"modules": [
+		{
+			"name": "FA-18C",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 2 MFD",
+			"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Hornet"
+				}
+			]
+		},
+		{
+			"name": "FA-18CHV",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 2 MFD Hi Viz ",
+			"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Hornet"
+				}
+			]
+		},
+		{
+			"name": "FA-18C3",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 3 MFD",
+			"fileName": "FA-18C\\DCS FA18C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "MFD3_Hornet",
+					"fileName": "FA-18C\\DCS FA18C MFD3.jpg"
+				},
+				{
+					"name": "MFD4_Hornet",
+					"fileName": "FA-18C\\DCS FA18C MFD3.jpg"
+				}
+			]
+		},
+		{
+			"name": "FA-18CHV3",
+			"tag": "FA-18C_hornet",
+			"displayName": "F-18C Block 20 Hornet 3 MFD Hi Viz ",
+			"fileName": "_High Contrast MFDs\\DCS FA18C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Hornet"
+				},
+				{
+					"name": "WHKEY_Hornet",
+					"fileName": "FA-18C\\DCS FA18C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Hornet"
+				},
+				{
+					"name": "MFD3_Hornet",
+					"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_Hornet",
+					"fileName": "_High Contrast MFDs\\DCS FA18C MFD3 HiVis.jpg"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,76 @@
+{
+	"modules": [
+		{
+			"name": "F-15EP",
+			"tag": "F-15E",
+			"displayName": "F-15E Mud Hen (Pilot)",
+			"fileName": "F-15E\\DCS F15EPlt MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MudHenPILOT"
+				},
+				{
+					"name": "WHKEY_MudHenPILOT",
+					"fileName": "F-15E\\DCS F15EPlt THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EPlt WHH.jpg",
+							"useAsSwitch": true,
+							"enabled":  false
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EPlt HCH.jpg",
+							"useAsSwitch": true,
+							"enabled": false
+						}
+					]
+				},
+				{
+					"name": "RMFD_MudHenPILOT"
+				}
+			]
+		},
+		{
+			"name": "F-15EPHV3",
+			"tag": "F-15E",
+			"displayName": "F-15E Mud Hen (Pilot) Hi Viz MFD 4",
+			"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MudHenPILOT"
+				},
+				{
+					"name": "WHKEY_MudHenPILOT",
+					"fileName": "F-15E\\DCS F15EPlt THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EPlt WHH.jpg",
+							"useAsSwitch": true,
+							"enabled": false
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EPlt HCH.jpg",
+							"useAsSwitch": true,
+							"enabled": false
+						}
+					]
+				},
+				{
+					"name": "RMFD_MudHenPILOT"
+				},
+				{
+					"name": "MFD3_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD3 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EPlt MFD3 HiVis.jpg"
+				}
+			]
+		}
+	]
+}

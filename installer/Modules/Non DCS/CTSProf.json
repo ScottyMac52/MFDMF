@@ -1,0 +1,25 @@
+{
+	"modules": [
+		{
+			"name": "CTSProf",
+			"displayName": "CTS Configuration Profile",
+			"fileName": "CTSConfigLMFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_CTSMFD",
+					"xOffsetStart": 0,
+					"xOffsetFinish": 1665,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 1668
+				},
+				{
+					"name": "RMFD_CTSMFD",
+					"xOffsetStart": 1666,
+					"xOffsetFinish": 3330,
+					"yOffsetStart": 0,
+					"yOffsetFinish": 1668
+				}
+			]
+		}
+	]
+}

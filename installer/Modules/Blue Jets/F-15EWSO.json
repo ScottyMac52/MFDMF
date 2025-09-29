@@ -1,0 +1,70 @@
+{
+	"modules": [
+		{
+			"name": "F-15EW",
+			"tag": "F-15E",
+			"displayName": "F-15E Mud Hen (WSO)",
+			"fileName": "F-15E\\DCS F15EWSO MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MudHenWSO"
+				},
+				{
+					"name": "WHKEY_MudHenWSO",
+					"fileName": "F-15E\\DCS F15EWSO THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EWSO WHH.jpg"
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EWSO HCH.jpg"
+						}
+					]
+				},
+				{
+					"name": "RMFD_MudHenWSO"
+				}
+			]
+		},
+		{
+			"name": "F-15EW3",
+			"tag": "F-15E",
+			"displayName": "F-15E Mud Hen (WSO) MFD 4",
+			"fileName": "_High Contrast MFDs\\DCS F15EWSO MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MudHenWSO"
+				},
+				{
+					"name": "WHKEY_MudHenWSO",
+					"fileName": "F-15E\\DCS F15EWSO THROTTLE.JPG",
+					"subConfigDef": [
+						{
+							"name": "F-18WH",
+							"fileName": "F-15E\\DCS F15EWSO WHH.jpg"
+						},
+						{
+							"name": "F-18HC",
+							"fileName": "F-15E\\DCS F15EWSO HCH.jpg"
+						}
+					]
+				},
+				{
+					"name": "RMFD_MudHenWSO"
+				},
+				{
+					"name": "MFD3_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EWso MFD4 HiVis.jpg"
+				},
+				{
+					"name": "MFD4_MudHen",
+					"fileName": "_High Contrast MFDs\\DCS F15EWso MFD4 HiVis.jpg"
+				}
+
+			]
+		}
+
+	]
+}

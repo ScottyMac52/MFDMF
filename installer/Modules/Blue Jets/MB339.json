@@ -1,0 +1,40 @@
+{
+	"modules": [
+		{
+			"name": "MB339",
+			"tag": "MB339",
+			"displayName": "MB339",
+			"fileName": "MB-339\\DCS MB339 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MB339"
+				},
+				{
+					"name": "WHKEY_MB339",
+					"filename": "MB-339\\DCS MB339 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_MB339"
+				}
+			]
+		},
+		{
+			"name": "MB339HV",
+			"tag": "MB339",
+			"displayName": "MB339 Hi Viz",
+			"fileName": "_High Contrast MFDs\\DCS MB339 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_MB339"
+				},
+				{
+					"name": "WHKEY_MB339",
+					"filename": "MB-339\\DCS MB339 THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_MB339"
+				}
+			]
+		}
+	]
+}

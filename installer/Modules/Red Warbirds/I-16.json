@@ -1,0 +1,23 @@
+{
+	"modules": [
+		{
+			"name": "I-16",
+			"displayName": "I-16 Ishak",
+			"filename": "I-16\\DCS I16 THROTTLE.jpg",
+			"configurations": [
+				{
+					"name": "WHKEY_I-16",
+					"filename": "I-16\\DCS I16 THROTTLE.jpg"
+				},
+				{
+					"name": "LMFD_I-16",
+					"enabled": false
+				},
+				{
+					"name": "RMFD_I-16",
+					"enabled": false
+				}
+			]
+		}
+	]
+}

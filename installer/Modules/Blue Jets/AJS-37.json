@@ -1,0 +1,96 @@
+{
+	"modules": [
+		{
+			"name": "AJS-37",
+			"tag": "AJS37",
+			"displayName": "AJS-37 Viggen",
+			"fileName": "AJS-37\\DCS AJS37 MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Viggen"
+				},
+				{
+					"name": "WHKEY_Viggen",
+					"fileName": "AJS-37\\DCS AJS37 THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Viggen"
+				},
+				{
+					"name": "JOYKEY_AJS-37-CK37",
+					"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+					"enabled": true,
+					"width": 380,
+					"height": 500,
+					"left": 10,
+					"top": 10,
+					"xOffsetStart": 0,
+					"xOffsetFinish": 517,
+					"yOffsetStart": 30,
+					"yOffsetFinish": 680,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_AJS-37-BX",
+					"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+					"enabled": true,
+					"width": 280,
+					"height": 500,
+					"left": 10,
+					"top": 525,
+					"xOffsetStart": 518,
+					"xOffsetFinish": 875,
+					"yOffsetStart": 30,
+					"yOffsetFinish": 680,
+					"opacity": 1.0
+				}
+			]
+		},
+		{
+			"name": "AJS-37HV",
+			"tag": "AJS37",
+			"displayName": "AJS-37 Viggen HiViz",
+			"fileName": "_High Contrast MFDs\\DCS AJS37 MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Viggen"
+				},
+				{
+					"name": "WHKEY_Viggen",
+					"fileName": "AJS-37\\DCS AJS37 THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Viggen"
+				},
+				{
+					"name": "JOYKEY_AJS-37-CK37",
+					"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+					"enabled": true,
+					"width": 380,
+					"height": 500,
+					"left": 10,
+					"top": 10,
+					"xOffsetStart": 0,
+					"xOffsetFinish": 517,
+					"yOffsetStart": 30,
+					"yOffsetFinish": 680,
+					"opacity": 1.0
+				},
+				{
+					"name": "JOYKEY_AJS-37-BX",
+					"filename": "AJS-37\\DCS AJS37 CK37.jpg",
+					"enabled": true,
+					"width": 280,
+					"height": 500,
+					"left": 10,
+					"top": 525,
+					"xOffsetStart": 518,
+					"xOffsetFinish": 875,
+					"yOffsetStart": 30,
+					"yOffsetFinish": 680,
+					"opacity": 1.0
+				}
+			]
+		}
+	]
+}

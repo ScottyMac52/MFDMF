@@ -1,0 +1,38 @@
+{
+	"modules": [
+		{
+			"name": "SW_Sqns",
+			"displayName": "Star Wars Squadrons",
+			"fileName": "SW_Sqns\\SW_Sqns MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_SW_Sqns"
+				},
+				{
+					"name": "WHKEY_SW_Sqns",
+					"filename": "SW_Sqns\\SW_Sqns THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_SW_Sqns"
+				}
+			]
+		},
+		{
+			"name": "SW_SqnsHV",
+			"displayName": "Star Wars Squadrons Hi Viz",
+			"fileName": "_High Contrast MFDs\\SW_Sqns MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_SW_Sqns"
+				},
+				{
+					"name": "WHKEY_SW_Sqns",
+					"filename": "SW_Sqns\\SW_Sqns THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_SW_Sqns"
+				}
+			]
+		}
+	]
+}

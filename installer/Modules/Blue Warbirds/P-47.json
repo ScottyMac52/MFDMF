@@ -1,0 +1,42 @@
+{
+	"modules": [
+		{
+			"name": "P-47D",
+			"tag":  "P-47D-30",
+			"displayName": "P-47D Thunderbolt",
+			"fileName": "P-47D\\DCS P47D MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_P-47D"
+				},
+				{
+					"name": "WHKEY_P-47D",
+					"filename": "P-47D\\DCS P47D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_P-47D"
+				}
+			]
+		},
+		{
+			"name": "P-47DHV",
+			"tag": "P-47D-30",
+			"displayName": "P-47D Thunderbolt HiViz",
+			"fileName": "_High Contrast MFDs\\DCS P47D MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_P-47DHV"
+				},
+				{
+					"name": "WHKEY_P-47DHV",
+					"filename": "P-47D\\DCS P47D THROTTLE.jpg"
+				},
+				{
+					"name": "RMFD_P-47DHV"
+				}
+			]
+		}
+
+
+	]
+}

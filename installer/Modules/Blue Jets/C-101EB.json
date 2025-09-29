@@ -1,0 +1,62 @@
+{
+	"modules": [
+		{
+			"name": "C-101EB",
+			"tag": "C-101EB",
+			"displayName": "C-101EB Aviojet",
+			"fileName": "C-101\\DCS C101EB MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_C-101EB"
+				},
+				{
+					"name": "WHKEY_C-101EB",
+					"filename": "C-101\\DCS C101EB THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_C-101EB"
+				},
+				{
+					"name": "JOYKEY_FD",
+					"enabled": true,
+					"xOffsetStart": 1,
+					"xOffsetFinish": 836,
+					"yOffsetStart": 1,
+					"yOffsetFinish": 1028,
+					"width": 260,
+					"height": 400,
+					"fileName": "C-101\\DCS C101EB FD.jpg"
+				}
+			]
+		},
+		{
+			"name": "C-101EBHV",
+			"tag": "C-101EB",
+			"displayName": "C-101EB Aviojet HiViz",
+			"fileName": "_High Contrast MFDs\\DCS C101EB MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_C-101EB"
+				},
+				{
+					"name": "WHKEY_C-101EB",
+					"filename": "C-101\\DCS C101EB THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_C-101EB"
+				},
+				{
+					"name": "JOYKEY_FD",
+					"enabled": true,
+					"xOffsetStart": 1,
+					"xOffsetFinish": 836,
+					"yOffsetStart": 1,
+					"yOffsetFinish": 1028,
+					"width": 260,
+					"height": 400,
+					"fileName": "C-101\\DCS C101EB FD.jpg"
+				}
+			]
+		}
+	]
+}

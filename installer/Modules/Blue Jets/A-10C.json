@@ -1,0 +1,56 @@
+{
+	"modules": [
+		{
+			"name": "A-10C",
+			"tag": "A-10C",
+			"displayName": "A-10C Warthog",
+			"fileName": "A-10C\\DCS A10C MFD.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Warthog"
+				},
+				{
+					"name": "WHKEY_Warthog",
+					"fileName": "A-10C\\DCS A10C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Warthog"
+				},
+				{
+					"name": "CDU_Warthog",
+					"filename": "A-10C\\DCS A10C CDU.jpg"
+				},
+				{
+					"name": "UFC_Warthog",
+					"filename": "A-10C\\DCS A-10C UFC.jpg"
+				}
+			]
+		},
+		{
+			"name": "A-10CHV",
+			"tag": "A-10C",
+			"displayName": "A-10C Warthog HiViz",
+			"fileName": "_High Contrast MFDs\\DCS A10C MFD HiVis.jpg",
+			"configurations": [
+				{
+					"name": "LMFD_Warthog"
+				},
+				{
+					"name": "WHKEY_Warthog",
+					"fileName": "A-10C\\DCS A10C THROTTLE.JPG"
+				},
+				{
+					"name": "RMFD_Warthog"
+				},
+				{
+					"name": "CDU_Warthog",
+					"filename": "A-10C\\DCS A10C CDU.jpg"
+				},
+				{
+					"name": "UFC_Warthog",
+					"filename": "A-10C\\DCS A-10C UFC.jpg"
+				}
+			]
+		}
+	]
+}
