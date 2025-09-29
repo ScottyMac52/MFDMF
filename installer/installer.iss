@@ -52,21 +52,6 @@ Name: "{commondesktop}\MFDMF"; Filename: "{app}\MFDMFApp.exe"; Tasks: desktopico
 Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
 
 [Code]
-const
-  KF_FLAG_DEFAULT = $00000000;
-  // FOLDERID_SavedGames ({4C5C32FF-BB9D-43B0-B5B4-BD0E116F75A8})
-  FOLDERID_SavedGames_S = '{4C5C32FF-BB9D-43B0-B5B4-BD0E116F75A8}';
-
-type
-  THandle = LongWord;
-  HRESULT = LongInt;
-  PPWideChar = ^PWideChar;
-
-function SHGetKnownFolderPath(const rfid: TGUID; dwFlags: DWORD; hToken: THandle; var ppszPath: PWideChar): HRESULT;
-  external 'SHGetKnownFolderPath@Shell32.dll stdcall';
-procedure CoTaskMemFree(pv: Pointer);
-  external 'CoTaskMemFree@ole32.dll stdcall';
-
 var
   GSkipModules: Boolean;
   GDetectPath: string;
@@ -85,30 +70,10 @@ begin
   Result := ExpandConstant('{param:' + Name + '|' + DefaultValue + '}');
 end;
 
-function GetSavedGamesFolder(): string;
-var
-  p: PWideChar;
-  guid: TGUID;
-begin
-  p := nil;
-  try
-    guid := StringToGUID(FOLDERID_SavedGames_S);
-    if SHGetKnownFolderPath(guid, KF_FLAG_DEFAULT, 0, p) = 0 then
-    begin
-      Result := p;
-      CoTaskMemFree(p);
-    end
-    else
-      Result := ExpandConstant('{userprofile}\Saved Games');
-  except
-    // safety fallback if StringToGUID or the API throws
-    Result := ExpandConstant('{userprofile}\Saved Games');
-  end;
-end;
-
 function GetConfigDir(Param: string): string;
 begin
-  Result := AddBackslash(GetSavedGamesFolder) + 'Vyper Industries\MFDMF\Config';
+  // No API calls, no custom types—works on Win 11 just fine
+  Result := ExpandConstant('{userprofile}\Saved Games\Vyper Industries\MFDMF\Config');
 end;
 
 function ShouldInstallModulesRegular(): Boolean; begin Result := not GSkipModules; end;
@@ -141,4 +106,5 @@ begin
     ForceDirectories(GetConfigDir(''));
 end;
 ; ==================== end installer/installer.iss ====================
+
 
