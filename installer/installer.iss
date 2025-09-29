@@ -120,5 +120,6 @@ begin
   if CurStep = ssInstall then
     ForceDirectories(GetConfigDir(''));
 end;
-; ==================== end ====================
+// ==================== end ====================
+
 
