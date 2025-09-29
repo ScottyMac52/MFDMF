@@ -140,19 +140,24 @@ jobs:
           if (-not (Test-Path $auxJson)) {
             if (Test-Path "appsettings.json") {
               Copy-Item "appsettings.json" $auxJson -Force
+              Write-Host "Copied repo root appsettings.json -> installer/appsettings.json"
             } else {
-@'
-{
-  "FileSpec": "*.json",
-  "FilePath": "C:\\Program Files\\Vyper Industries\\MFDMF\\Modules"
-}
-'@ | Set-Content -Path $auxJson -Encoding UTF8 -NoNewline
+              $data = [ordered]@{
+                FileSpec = "*.json"
+                FilePath = "C:\Program Files\Vyper Industries\MFDMF\Modules"
+              } | ConvertTo-Json -Depth 2
+              Set-Content -Path $auxJson -Value $data -Encoding UTF8
+              Write-Host "Created default installer/appsettings.json"
             }
           }
 
           if (Test-Path "Modules") {
-            New-Item -ItemType Directory -Force -Path (Join-Path $aux "Modules") | Out-Null
-            Copy-Item "Modules\*.json" (Join-Path $aux "Modules") -Recurse -Force -ErrorAction SilentlyContinue
+            $dst = Join-Path $aux "Modules"
+            New-Item -ItemType Directory -Force -Path $dst | Out-Null
+            Copy-Item "Modules\*.json" $dst -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Host "Copied Modules/*.json into installer/Modules"
+          } else {
+            Write-Host "No repo Modules folder; continuing"
           }
 
       - name: Build installer (Setup.exe)
