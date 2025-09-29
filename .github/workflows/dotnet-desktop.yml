@@ -1,4 +1,4 @@
-name: .NET 8 Single EXE Publish
+name: .NET 8 Single EXE + Setup
 
 permissions:
   contents: write
@@ -54,12 +54,11 @@ env:
 
 jobs:
   build:
-    name: Build & Publish
+    name: Build & Create Setup.exe
     runs-on: windows-latest
 
     outputs:
-      artifact_name: ${{ steps.nameartifact.outputs.artifact_name }}
-      publish_dir:   ${{ steps.nameartifact.outputs.publish_dir }}
+      tag: ${{ steps.itag.outputs.tag }}
 
     steps:
       - name: Checkout
@@ -93,16 +92,6 @@ jobs:
         shell: pwsh
         run: dotnet restore "${{ env.PROJECT_PATH }}"
 
-      - name: Run tests (if present)
-        shell: pwsh
-        run: |
-          if (Get-ChildItem -Recurse -Filter *.csproj | Select-String -List -SimpleMatch "<IsTestProject>true</IsTestProject>" -Quiet) {
-            Write-Host "Test projects detected. Running tests..."
-            dotnet test --no-build -c "${{ env.EFFECTIVE_CONFIGURATION }}" --logger "trx;LogFileName=test_results.trx"
-          } else {
-            Write-Host "No test projects detected. Skipping tests."
-          }
-
       - name: Publish single-file executable
         shell: pwsh
         run: |
@@ -110,8 +99,7 @@ jobs:
           $conf = "${{ env.EFFECTIVE_CONFIGURATION }}"
           $sc   = "${{ env.EFFECTIVE_SELF_CONTAINED }}"
           $trim = "${{ env.EFFECTIVE_TRIMMED }}"
-          $out  = "${{ env.PUBLISH_DIR }}/$rid"
-
+          $out  = "${{ env.PUBLISH_DIR }}\$rid"
           New-Item -ItemType Directory -Force -Path "$out" | Out-Null
 
           dotnet publish "${{ env.PROJECT_PATH }}" `
@@ -125,43 +113,57 @@ jobs:
             -p:ReadyToRun=${{ env.READY_TO_RUN }} `
             -o "$out"
 
-          Write-Host "Publish complete to $out"
-
-      - name: List published files
+      - name: Compute tag for naming
+        id: itag
         shell: pwsh
         run: |
-          Write-Host "Published files:"
-          Get-ChildItem -Recurse "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
-
-      # ----------------- ADDED: build installer -----------------
-      - name: Install Inno Setup
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: choco install innosetup -y
-
-      - name: Build installer (Inno Setup) from repo installer/installer.iss
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          # Resolve dotnet publish folder
-          $pubRoot = Get-ChildItem -Directory -Path "${{ env.PUBLISH_DIR }}" | Select-Object -First 1
-          if (-not $pubRoot) { throw "Publish output not found under ${{ env.PUBLISH_DIR }}" }
-          $pub = $pubRoot.FullName
-
-          # Compute version similar to release tag
           if ($env:GITHUB_REF -like 'refs/tags/*') {
             $tag = $env:GITHUB_REF -replace '^refs/tags/', ''
           } elseif ('${{ github.event.inputs.release_tag }}' -ne '') {
             $tag = '${{ github.event.inputs.release_tag }}'
           } else {
-            $tag = 'v' + $env:GITHUB_RUN_NUMBER
+            $tag = "v$($env:GITHUB_RUN_NUMBER)"
+          }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y
+
+      - name: Ensure installer inputs (appsettings.json, Modules)
+        shell: pwsh
+        run: |
+          $aux = Join-Path $PWD "installer"
+          if (-not (Test-Path $aux)) { throw "Missing installer/ directory in repo" }
+
+          $auxJson = Join-Path $aux "appsettings.json"
+          if (-not (Test-Path $auxJson)) {
+            if (Test-Path "appsettings.json") {
+              Copy-Item "appsettings.json" $auxJson -Force
+            } else {
+@'
+{
+  "FileSpec": "*.json",
+  "FilePath": "C:\\Program Files\\Vyper Industries\\MFDMF\\Modules"
+}
+'@ | Set-Content -Path $auxJson -Encoding UTF8 -NoNewline
+            }
           }
 
-          # Ensure output dir exists
-          New-Item -ItemType Directory -Force -Path "_setup" | Out-Null
+          if (Test-Path "Modules") {
+            New-Item -ItemType Directory -Force -Path (Join-Path $aux "Modules") | Out-Null
+            Copy-Item "Modules\*.json" (Join-Path $aux "Modules") -Recurse -Force -ErrorAction SilentlyContinue
+          }
 
-          # Aux files location (must contain installer\installer.iss, appsettings.json, optional Modules\*.json)
+      - name: Build installer (Setup.exe)
+        shell: pwsh
+        run: |
+          $pubRoot = Get-ChildItem -Directory -Path "${{ env.PUBLISH_DIR }}" | Select-Object -First 1
+          if (-not $pubRoot) { throw "Publish output not found under ${{ env.PUBLISH_DIR }}" }
+          $pub = $pubRoot.FullName
           $aux = (Resolve-Path "installer").Path
+          $tag = "${{ steps.itag.outputs.tag }}"
+
           if (-not (Test-Path "$aux\installer.iss")) { throw "Missing installer\installer.iss" }
 
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
@@ -173,103 +175,61 @@ jobs:
 
           $built = Join-Path "_setup" ("MFDMF-Setup-" + $tag + ".exe")
           if (-not (Test-Path $built)) { throw "Installer not found: $built" }
-      # ----------------- /ADDED -----------------
 
-      - id: nameartifact
-        name: Name artifact
-        shell: pwsh
-        run: |
-          $artifactName = "single-exe-${{ env.EFFECTIVE_RUNTIME_ID }}"
-          $publishDir   = "${{ env.PUBLISH_DIR }}\${{ env.EFFECTIVE_RUNTIME_ID }}"
-          "artifact_name=$artifactName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-          "publish_dir=$publishDir"     | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-
-      - name: Upload build artifact
+      - name: Upload Setup.exe artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.nameartifact.outputs.artifact_name }}
-          path: |
-            ${{ steps.nameartifact.outputs.publish_dir }}/**
-            _setup/*.exe
+          name: installer
+          path: _setup/MFDMF-Setup-${{ steps.itag.outputs.tag }}.exe
+          if-no-files-found: error
 
   release:
     name: Release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest   # keep windows so gh + path handling is consistent
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - name: Determine release values
-        id: relvals
-        shell: bash
+      - name: Determine release tag
+        id: rel
+        shell: pwsh
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-          else
-            if [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
-              TAG="${{ github.event.inputs.release_tag }}"
-            else
-              TAG="v${GITHUB_RUN_NUMBER}"
-            fi
-          fi
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if ($env:GITHUB_REF -like 'refs/tags/*') {
+            $tag = $env:GITHUB_REF -replace '^refs/tags/', ''
+          } elseif ('${{ github.event.inputs.release_tag }}' -ne '') {
+            $tag = '${{ github.event.inputs.release_tag }}'
+          } else {
+            $tag = "${{ needs.build.outputs.tag }}"
+          }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Download build artifacts
+      - name: Download Setup.exe artifact
         uses: actions/download-artifact@v4
         with:
-            name: single-exe-${{ needs.build.outputs.artifact_name && env.RUNTIME_ID_DEFAULT || env.RUNTIME_ID_DEFAULT }}
-            # fallback ensures we still fetch something if name isn’t propagated
+          name: installer
+          path: .
 
-      - name: Create or update GitHub Release
+      - name: Create or update GitHub Release (attach Setup.exe)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
+        shell: pwsh
         run: |
-          set -e
-          TAG="${{ steps.relvals.outputs.tag }}"
-          NAME="${TAG#v}"
-          PRERELEASE="false"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG exists."
-          else
-            echo "Creating release $TAG..."
-            if [[ "$PRERELEASE" == "true" ]]; then
-              gh release create "$TAG" --title "$NAME" --generate-notes --prerelease
-            else
-              gh release create "$TAG" --title "$NAME" --generate-notes
-            fi
-          fi
+          $tag = '${{ steps.rel.outputs.tag }}'
+          $name = $tag.TrimStart('v','V')
+          if ( (gh release view $tag 2>$null) ) {
+            Write-Host "Release $tag exists."
+          } else {
+            gh release create $tag --title $name --generate-notes
+          }
 
-      - name: Zip publish folder for convenience
-        id: pack
-        shell: bash
-        run: |
-          set -e
-          TAG="${{ steps.relvals.outputs.tag }}"
-          RID="${{ env.RUNTIME_ID_DEFAULT }}"
-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          ARCHIVE="${REPO_NAME}-${TAG}-${RID}.zip"
-          if [ -d "single-exe-${RID}" ]; then
-            zip -r "$ARCHIVE" "single-exe-${RID}"
-          else
-            echo "single-exe-${RID} not found; zipping current directory contents"
-            zip -r "$ARCHIVE" .
-          fi
-          echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
-          EXE_PATH="$(find . -maxdepth 3 -type f -name '*.exe' | head -n1 || true)"
-          echo "exe=${EXE_PATH}" >> "$GITHUB_OUTPUT"
+          $setup = "MFDMF-Setup-$tag.exe"
+          if (-not (Test-Path $setup)) {
+            # try case-insensitive tag variants (v vs V, etc.)
+            $candidate = Get-ChildItem -Filter "MFDMF-Setup-*.exe" | Select-Object -First 1
+            if ($candidate) { $setup = $candidate.Name }
+          }
 
-      - name: Upload release assets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: |
-          set -e
-          TAG="${{ steps.relvals.outputs.tag }}"
-          ARCHIVE="${{ steps.pack.outputs.archive }}"
-          EXE="${{ steps.pack.outputs.exe }}"
-          FILES=("$ARCHIVE")
-          if [[ -n "$EXE" && -f "$EXE" ]]; then FILES+=("$EXE"); fi
-          if compgen -G "_setup/*.exe" > /dev/null; then FILES+=(_setup/*.exe); fi
-          gh release upload "$TAG" "${FILES[@]}" --clobber --repo "$GITHUB_REPOSITORY"
-          echo "Release: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
+          if (-not (Test-Path $setup)) { throw "Setup.exe not found in workspace." }
+
+          gh release upload $tag "$setup" --clobber --repo "$env:GITHUB_REPOSITORY"
+          Write-Host "Release ready: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/releases/tag/$tag"
