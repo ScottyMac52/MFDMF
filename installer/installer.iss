@@ -1,14 +1,16 @@
 ; ==================== installer/installer.iss ====================
+; Build with:
+;   ISCC.exe ^
+;     "/DPublishDir=<dotnet publish output>" ^
+;     "/DSetupAux=installer" ^
+;     "/DAppVersion=<tag or version>" ^
+;     "installer\installer.iss"
 
-; These are supplied at build time by ISCC command line:
-;   /DPublishDir=...   → the dotnet publish output folder
-;   /DSetupAux=...     → repo folder containing appsettings.json and Modules (usually "installer")
-;   /DAppVersion=...   → tag or version string to show and to name the .exe
 #ifndef PublishDir
   #error PublishDir not defined. Call ISCC with /DPublishDir=...
 #endif
 #ifndef SetupAux
-  #define SetupAux "."
+  #define SetupAux "installer"
 #endif
 #ifndef AppVersion
   #define AppVersion "0.0.0"
@@ -28,20 +30,20 @@ DisableDirPage=no
 DisableProgramGroupPage=yes
 
 [Files]
-; Main payload: everything that dotnet publish produced
+; Main payload from dotnet publish
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
-; Always place appsettings.json in the user-writable Saved Games config directory
+; Always deploy appsettings.json to the user config folder
 Source: "{#SetupAux}\appsettings.json"; DestDir: "{code:GetConfigDir}"; Flags: ignoreversion
 
-; Modules JSON rules:
-;  - normal case (no /skipModules): allow overwrite
+; Modules JSON:
+; - normal case (no /skipModules): allow overwrite
 Source: "{#SetupAux}\Modules\*.json"; DestDir: "{app}\Modules"; Flags: ignoreversion recursesubdirs; Check: ShouldInstallModulesRegular
-;  - /skipModules case: only install JSON files that don't exist yet
+; - with /skipModules: only install files that don't exist yet
 Source: "{#SetupAux}\Modules\*.json"; DestDir: "{app}\Modules"; Flags: ignoreversion recursesubdirs onlyifdoesntexist; Check: ShouldInstallModulesOnlyIfMissing
 
 [Dirs]
-; Ensure Modules folder exists even if repo doesn't include any .json files
+; Ensure Modules exists even if no JSONs are shipped
 Name: "{app}\Modules"; Flags: uninsalwaysuninstall
 
 [Icons]
@@ -77,16 +79,24 @@ end;
 
 function GetConfigDir(Param: string): string;
 begin
-  // No API calls, no custom types—works on Win 11 just fine
+  ; No WinAPI—simple, reliable path on Win10/11:
   Result := ExpandConstant('{userprofile}\Saved Games\Vyper Industries\MFDMF\Config');
 end;
 
-function ShouldInstallModulesRegular(): Boolean; begin Result := not GSkipModules; end;
-function ShouldInstallModulesOnlyIfMissing(): Boolean; begin Result := GSkipModules; end;
+function ShouldInstallModulesRegular(): Boolean;
+begin
+  Result := not GSkipModules;
+end;
+
+function ShouldInstallModulesOnlyIfMissing(): Boolean;
+begin
+  Result := GSkipModules;
+end;
 
 procedure InitializeDefaults();
 begin
   GSkipModules := HasSwitch('skipModules');
+
   GDetectPath := GetParamValue('detect', '');
   if GDetectPath <> '' then
     GDetectFound := FileExists(GDetectPath)
@@ -94,7 +104,7 @@ begin
     GDetectFound := False;
 
   if GDetectPath <> '' then
-    Log(Format('Detect file check: %s  exists=%s', [GDetectPath, BoolToText(GDetectFound)]));
+    Log('Detect file check: ' + GDetectPath + '  exists=' + BoolToText(GDetectFound))
   else
     Log('Detect file check: /detect not supplied (skipping)');
 end;
@@ -110,7 +120,4 @@ begin
   if CurStep = ssInstall then
     ForceDirectories(GetConfigDir(''));
 end;
-; ==================== end installer/installer.iss ====================
-
-
-
+; ==================== end ====================
