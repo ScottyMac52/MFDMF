@@ -55,7 +55,7 @@ Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription
 const
   KF_FLAG_DEFAULT = $00000000;
   // FOLDERID_SavedGames ({4C5C32FF-BB9D-43B0-B5B4-BD0E116F75A8})
-  FOLDERID_SavedGames: TGUID = '{4C5C32FF-BB9D-43B0-B5B4-BD0E116F75A8}';
+  FOLDERID_SavedGames_S = '{4C5C32FF-BB9D-43B0-B5B4-BD0E116F75A8}';
 
 type
   THandle = LongWord;
@@ -86,14 +86,24 @@ begin
 end;
 
 function GetSavedGamesFolder(): string;
-var p: PWideChar;
+var
+  p: PWideChar;
+  guid: TGUID;
 begin
   p := nil;
-  if SHGetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_DEFAULT, 0, p) = 0 then begin
-    Result := p;
-    CoTaskMemFree(p);
-  end else
+  try
+    guid := StringToGUID(FOLDERID_SavedGames_S);
+    if SHGetKnownFolderPath(guid, KF_FLAG_DEFAULT, 0, p) = 0 then
+    begin
+      Result := p;
+      CoTaskMemFree(p);
+    end
+    else
+      Result := ExpandConstant('{userprofile}\Saved Games');
+  except
+    // safety fallback if StringToGUID or the API throws
     Result := ExpandConstant('{userprofile}\Saved Games');
+  end;
 end;
 
 function GetConfigDir(Param: string): string;
@@ -131,3 +141,4 @@ begin
     ForceDirectories(GetConfigDir(''));
 end;
 ; ==================== end installer/installer.iss ====================
+
