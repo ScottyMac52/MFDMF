@@ -57,6 +57,11 @@ var
   GDetectPath: string;
   GDetectFound: Boolean;
 
+function BoolToText(B: Boolean): string;
+begin
+  if B then Result := 'true' else Result := 'false';
+end;
+
 function HasSwitch(const Switch: string): Boolean;
 var s: string;
 begin
@@ -89,7 +94,7 @@ begin
     GDetectFound := False;
 
   if GDetectPath <> '' then
-    Log(Format('Detect file check: %s  exists=%s', [GDetectPath, GetBOOLStr(GDetectFound)]))
+    Log(Format('Detect file check: %s  exists=%s', [GDetectPath, BoolToText(GDetectFound)]));
   else
     Log('Detect file check: /detect not supplied (skipping)');
 end;
@@ -106,5 +111,6 @@ begin
     ForceDirectories(GetConfigDir(''));
 end;
 ; ==================== end installer/installer.iss ====================
+
 
 
